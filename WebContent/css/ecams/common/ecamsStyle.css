@@ -1,0 +1,564 @@
+@charset "EUC-KR";
+.title-bar{
+	background: linear-gradient( to top,  #E0F8F7, white );
+	width:100%; 
+	margin-top:4rem;
+	height: 2rem;
+	border-radius: 5px; 
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.title-bar>span{
+	line-height: 2rem;
+	vertical-align: middle;
+	text-align: left;
+}
+
+.title-bar>img{
+	line-height: 2rem;
+	vertical-align: middle;
+}
+
+.ecams-subframe {
+	width:100%; 
+	height:calc(100vh - 6.5rem)
+}
+
+.ecams-row {
+	margin:0px; 
+	margin-top:0px;
+	margin-bottom:0px; 
+	padding:0px; 
+	padding-top:0px;
+	padding-bottom:0px;
+	padding:0px;
+}
+
+/* main */
+#page_title {
+	height: 75px;
+	position: relative;
+	border-bottom: 2px solid #666;
+	margin: 0 20px;
+}
+
+#page_title>h1 {
+	position: absolute;
+	bottom: 11px;
+	font-size: 22px;
+	font-weight: bold;
+	color: #444;
+	display: inline-block;
+}
+
+#page_title>ol {
+	position: absolute;
+	bottom: 20px;
+	right: 0px;
+	list-style: none;
+	display: inline-block;
+}
+
+#page_title>ol>li {
+	display: inline-block;
+}
+
+#page_title>ol>li>a:link {
+	color: #999;
+	text-decoration: none;
+}
+
+#page_title>ol>li>a:hover {
+	color: #333;
+	text-decoration: none;
+}
+
+#page_title>ol>li>a:active {
+	color: #999;
+	text-decoration: none;
+}
+
+#page_title>ol>li>a:visited {
+	color: #999;
+	text-decoration: none;
+}
+
+#page_title>ol>.this_page {
+	color: #333;
+}
+
+.defaultFrame {
+	margin:30px 5px 0;
+}
+
+.float-right {
+	float: right;
+}
+
+.float-left {
+	float: left;
+}
+
+.search-md-background {
+	height:120px; 
+	clear: both; 
+	background-color: #EFF2FB;
+	border-radius: 5px;
+}
+
+.border-style-black {
+	width: auto;
+	height: auto;
+	overflow:hidden;
+	padding-bottom: 5px;
+	background-color: #EFF2FB;
+	border-radius: 5px; 
+	border:1px solid #888888;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.margin-5-top {
+	margin-top: 5px;
+}
+
+.margin-6-top {
+	margin-top: 6px;
+}
+
+
+.margin-7-top {
+	margin-top: 7px;
+}
+
+.margin-9-top {
+	margin-top: 9px;
+}
+
+
+.margin-10-top {
+	margin-top: 10px;
+}
+
+.margin-15-top {
+	margin-top: 15px;
+}
+
+.margin-17-top {
+	margin-top: 17px;
+}
+
+.margin-20-top {
+	margin-top: 20px;
+}
+
+.margin-25-top {
+	margin-top: 25px;
+}
+
+.margin-30-top {
+	margin-top: 30px;
+}
+
+.margin-35-top {
+	margin-top: 35px;
+}
+
+.margin-40-top {
+	margin-top: 40px;
+}
+
+.margin-5-bottom {
+	margin-bottom: 5px;
+}
+
+.margin-10-bottom {
+	margin-bottom: 10px;
+}
+
+.margin-15-bottom {
+	margin-bottom: 15px;
+}
+
+.margin-20-bottom {
+	margin-bottom: 20px;
+}
+
+.margin-25-bottom {
+	margin-bottom: 25px;
+}
+
+.margin-30-bottom {
+	margin-bottom: 30px;
+}
+
+.margin-35-bottom {
+	margin-bottom: 35px;
+}
+
+.margin-40-bottom {
+	margin-bottom: 40px;
+}
+
+.margin-5-left {
+	margin-left: 5px;
+}
+
+.margin-10-left {
+	margin-left: 10px;
+}
+
+.margin-15-left {
+	margin-left: 15px;
+}
+
+.margin-20-left {
+	margin-left: 20px;
+}
+
+.margin-25-left {
+	margin-left: 25px;
+}
+
+.margin-30-left {
+	margin-left: 30px;
+}
+
+.margin-35-left {
+	margin-left: 35px;
+}
+
+.margin-40-left {
+	margin-left: 40px;
+}
+
+.margin-5-right {
+	margin-right: 5px;
+}
+
+.margin-10-right {
+	margin-right: 10px;
+}
+
+.margin-15-right {
+	margin-right: 15px;
+}
+
+.margin-20-right {
+	margin-right: 20px;
+}
+
+.margin-25-right {
+	margin-right: 25px;
+}
+
+.margin-30-right {
+	margin-right: 30px;
+}
+
+.margin-35-right {
+	margin-right: 35px;
+}
+
+.margin-40-right {
+	margin-right: 40px;
+}
+
+
+.padding-5-left {
+	padding-left: 5px;
+}
+
+.padding-10-left {
+	padding-left: 10px;
+}
+
+.padding-15-left {
+	padding-left: 15px;
+}
+
+.padding-20-left {
+	padding-left: 20px;
+}
+
+.padding-25-left {
+	padding-left: 25px;
+}
+
+.padding-30-left {
+	padding-left: 30px;
+}
+
+.padding-35-left {
+	padding-left: 35px;
+}
+
+.padding-40-right {
+	padding-right: 40px;
+}
+
+.padding-5-right {
+	padding-right: 5px;
+}
+
+.padding-10-right {
+	padding-right: 10px;
+}
+
+.padding-15-right {
+	padding-right: 15px;
+}
+
+.padding-20-right {
+	padding-right: 20px;
+}
+
+.padding-25-right {
+	padding-right: 25px;
+}
+
+.padding-30-right {
+	padding-right: 30px;
+}
+
+.padding-35-right {
+	padding-right: 35px;
+}
+
+.padding-40-right {
+	padding-right: 40px;
+}
+
+.padding-5-top {
+	padding-top: 5px;
+}
+
+.padding-10-top {
+	padding-top: 10px;
+}
+
+.padding-15-top {
+	padding-top: 15px;
+}
+
+.padding-20-top {
+	padding-top: 20px;
+}
+
+.padding-25-top {
+	padding-top: 25px;
+}
+
+.padding-30-top {
+	padding-top: 30px;
+}
+
+.padding-35-top {
+	padding-top: 35px;
+}
+
+.padding-40-top {
+	padding-top: 40px;
+}
+
+.padding-5-bottom {
+	padding-bottom: 5px;
+}
+
+.padding-10-bottom {
+	padding-bottom: 10px;
+}
+
+.padding-15-bottom {
+	padding-bottom: 15px;
+}
+
+.padding-20-bottom {
+	padding-bottom: 20px;
+}
+
+.padding-25-bottom {
+	padding-bottom: 25px;
+}
+
+.padding-30-bottom {
+	padding-bottom: 30px;
+}
+
+.padding-35-bottom {
+	padding-bottom: 35px;
+}
+
+.padding-40-bottom {
+	padding-bottom: 40px;
+}
+
+.width-100 {
+	width: 100%;
+}
+
+.width-95 {
+	width: 95%;
+}
+
+.width-94 {
+	width: 94%;
+}
+
+.width-93 {
+	width: 93%;
+}
+
+.width-90 {
+	width: 90%;
+}
+
+.width-80 {
+	width: 80%;
+}
+
+.width-70 {
+	width: 70%;
+}
+
+.width-63 {
+	width: 63%;
+}
+
+.width-65 {
+	width: 65%;
+}
+
+
+.width-60 {
+	width: 60%;
+}
+
+.width-50 {
+	width: 50%;
+}
+
+.width-48 {
+	width: 48%;
+}
+
+.width-45 {
+	width: 45%;
+}
+
+.width-43 {
+	width: 43%;
+}
+
+.width-42 {
+	width: 42%;
+}
+
+.width-41 {
+	width: 41%;
+}
+
+.width-40 {
+	width: 40%;
+}
+
+.width-38 {
+	width: 38%;
+}
+
+.width-35 {
+	width: 35%;
+}
+
+.width-30 {
+	width: 30%;
+}
+
+.width-25 {
+	width: 25%;
+}
+
+.width-20 {
+	width: 20%;
+}
+
+.width-15 {
+	width: 15%;
+}
+
+.width-10 {
+	width: 10%;
+}
+
+.width-7 {
+	width: 7%;
+}
+
+.width-6 {
+	width: 6%;
+}
+
+.width-5 {
+	width: 5%;
+}
+
+.width-4 {
+	width: 4%;
+}
+
+.width-3 {
+	width: 3%;
+}
+
+.width-2 {
+	width: 2%;
+}
+.width-1 {
+	width: 1%;
+}
+
+.width-400px {
+	width: 400px;
+}
+
+.width-default-btn {
+	width: 100px;
+}
+
+.height-100 {
+	height: 100%;
+}
+
+.combo-height {
+	height: 30px;
+	font-size: 8px;
+	line-height: 15px;
+}
+
+.file-tree {
+	float: left; 
+	height: 300px;
+	width: auto;
+	overflow: scroll;
+	border-radius: 5px; 
+	border: 1px solid #888888;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.right-div {
+	float: left; 
+	height: 300px; 
+	width: auto;
+}
+
+.pull-content {
+	max-height: 100%; 
+	max-width: 100%;
+}
+
+.no-padding {
+	padding: 0 !important;
+}
+
+.default-grid-height {
+	height: 300px;
+}
