@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>형상관리 로그인123123</title>
+<title>형상관리 로그인123123123</title>
 
 <c:import url="/webPage/common/common.jsp" />
 
