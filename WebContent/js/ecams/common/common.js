@@ -57,57 +57,6 @@ function ajaxCallWithJson(url, requestData, dataType) {
 	else return 'ERR';
 };
 
-
-/*
-function jsonAjax(uid)
-{
-
-   $.ajax({
-    type: "post",
-    url: "./test_json.php",
-    cache: false,
-    dataType :'text',
-    data: {'uid':uid},
-    success: function(data, status){
-           var json = eval("(" + data + ")");
-         // OR  var json =$.parseJSON(data);
-           
-	  if(typeof(json.result) != 'undefined')
-	  {
-		if(json.result != ''){
-			alert(json.result);
-		}else{
-			$("#list_loop").empty(); //초기화
-			$.each(json.msg, function(key,state) {
-				$("#list_loop").append(''+state["userid"]+' ('+state["name"]+')');
-			}); 
-		}
-	  }
-     },
-     error: onError
-     });
-     
-     return false;
-}
-
-function onError(data, status, errorThrown){ alert(data.responseText+' '+status+' '+errorThrown); }
-*/
-
-
-
-
-/*
-function makeFileDataToJson(keyName, getFileData, requestType) {
-	
-	var ajaxRequestData = {
-		[keyName]: JSON.stringify(getFileData),
-		requestType: requestType
-	}
-	
-	return ajaxRequestData;
-};
-*/
-
 function Request(){
 	var requestParam ="";
     this.getParameter = function(param){

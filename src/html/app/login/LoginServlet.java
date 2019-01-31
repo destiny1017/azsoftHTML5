@@ -1,8 +1,6 @@
 package html.app.login;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,12 +12,6 @@ import javax.servlet.http.HttpSession;
 import com.ecams.service.list.LoginManager;
 import com.google.gson.*;
 
-import app.common.PrjInfo;
-import app.common.SysInfo;
-import app.common.SystemPath;
-import app.eCmd.Cmd0100;
-import app.eCmr.Cmr0100;
-import app.eCmr.Cmr0200;
 import html.app.common.ParsingCommon;
 
 @WebServlet("/webPage/login/Login")
@@ -59,7 +51,7 @@ public class LoginServlet extends HttpServlet {
 		} finally {
 		}
 		
-	}//end of getSysInfo() method statement
+	}
 	
 	private String isValidLoginUser(HttpServletRequest request) throws SQLException, Exception {
 		
@@ -69,7 +61,7 @@ public class LoginServlet extends HttpServlet {
 		return gson.toJson(loginManager.isValid(userId, userPwd));
 	}
 	
-private String getUserName(HttpServletRequest request) throws SQLException, Exception {
+	private String getUserName(HttpServletRequest request) throws SQLException, Exception {
 		
 		String userId = ParsingCommon.parsingRequestJsonParamToString(request, "userId");
 		HttpSession session = request.getSession();
@@ -80,16 +72,4 @@ private String getUserName(HttpServletRequest request) throws SQLException, Exce
 		
 		return gson.toJson( session.getId() );
 	}
-	
-/*	private String getConfirmInfo(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String>	confirmInfoMap = null;
-		confirmInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "confirmInfoData");
-		return gson.toJson( cmr0200.confSelect(	confirmInfoMap.get("sysCd"),
-												confirmInfoMap.get("strReqCd"),
-												confirmInfoMap.get("strRsrcCd"),
-												confirmInfoMap.get("userId"),
-												confirmInfoMap.get("strQry")) );
-	}*/
-	
-
 }
