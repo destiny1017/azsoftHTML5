@@ -14,7 +14,7 @@
 	<section>
 		<div class="login-form">
 		    <form id="ecamsLoginForm" method="post">
-		        <h2 class="text-center">로그인22</h2>       
+		        <h2 class="text-center">로그인</h2>       
 		        <div class="form-group">
 		        	<sbux-input 
 						id="idx_input_id" 

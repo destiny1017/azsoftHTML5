@@ -93,9 +93,7 @@ function isValidLogin() {
 		userPwd		: 	JSON.stringify(SBUxMethod.get('idx_input_pwd')),
 		requestType	: 	'ISVALIDLOGIN'
 	}
-	
 	ajaxReturnData = ajaxCallWithJson('/webPage/login/Login', userInfo, 'json');
-	
 	return ajaxReturnData;
 }
 
