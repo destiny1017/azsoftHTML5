@@ -20,7 +20,7 @@ function menu_set(){   // 메뉴리스트
 	SBUxMethod.refresh('menu_json');
 }
 
-function menuBarClick(event) {
+function menuBarClick(event) { 
 	console.dir(event.target);
 	if(event.target.className.indexOf('top-item') >= 0 ){
 		if(event.target.innerText === '') parentMenuText = event.target.parentNode.innerText;
