@@ -22,9 +22,12 @@ function menu_set(){   // 메뉴리스트
 
 function menuBarClick(event) {
 	console.dir(event.target);
-	if(event.target.className === 'sbux-meu-top-item-txt-wrap') parentMenuText = event.target.innerText;
+	if(event.target.className.indexOf('top-item') >= 0 ){
+		if(event.target.innerText === '') parentMenuText = event.target.parentNode.innerText;
+		else parentMenuText = event.target.innerText;
+	}
 	
-	if(event.target.className === 'sbux-meu-sub-item-txt') {
+	if(event.target.className.indexOf('sub-item') >= 0 ){
 		childMenuText = event.target.innerText;
 		$('#titleText').html('[' + parentMenuText + ']' + childMenuText);
 	}
