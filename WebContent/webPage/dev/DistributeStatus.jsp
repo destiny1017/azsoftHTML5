@@ -41,8 +41,8 @@
 						<sbux-select id="cboGbn" name="cboGbn" uitype="single" jsondata-ref = "cboGbn" jsondata-text="cm_codename" jsondata-value="cm_micode"  style="width:100%;"></sbux-select>
 					</div>
 					<div class="col-xs-12 col-sm-2">
-						<sbux-radio id="rdo_norm1" name="rdo_norm" uitype="normal" text="신청일기준" value="0" onclick="cmdQry_Proc()" checked></sbux-radio>
-						<sbux-radio id="rdo_norm2" name="rdo_norm" uitype="normal" text="완료일기준" value="1" onclick="cmdQry_Proc()"></sbux-radio>
+						<sbux-radio id="rdo_norm1" name="rdo_norm" uitype="normal" text="신청일기준" value="0" checked></sbux-radio>
+						<sbux-radio id="rdo_norm2" name="rdo_norm" uitype="normal" text="완료일기준" value="1"></sbux-radio>
 					</div>
 					<div class="col-xs-12 col-sm-1">
 						<sbux-button id="btn_cmdQry" name="btn_cmdQry" uitype="normal" text="조&nbsp;&nbsp;&nbsp;&nbsp;회" onclick="cmdQry_Proc()"></sbux-button>

@@ -162,7 +162,6 @@ public class SysInfo{
             String tmpSyscd = "";
             String tstInfo = "";
 			while (rs.next()){
-				/*
 				if (rs.getRow() == 1 && strSelMsg.length() > 0 &&strSelMsg != "" && !strSelMsg.equals("")) {
 					rst = new HashMap<String,String>();
 					rst.put("ID", "0");
@@ -177,7 +176,6 @@ public class SysInfo{
 					rtList.add(rst);
 					rst = null;
 				}
-				*/
 				tstCnt = 0;
 				tstInfo = rs.getString("cm_sysinfo");
 				rst = new HashMap<String,String>();

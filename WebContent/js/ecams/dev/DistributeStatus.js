@@ -158,7 +158,8 @@ function getSysInfo(){
         data : tmpData,
         dataType : 'json',
         async : true, 
-        success : function(data) {        	
+        success : function(data) {   
+        	console.log(data);
         	syscd_combo = data;        	        	        	
         	SBUxMethod.refresh('syscd_combo');
         },
@@ -205,9 +206,70 @@ function cboGbn_set(){
 
 function cmdQry_Proc(){
 	var tmpObj = {};
+	var ajaxMenuData = null;
 	
 	tmpObj.syscd = SBUxMethod.get("syscd_combo");
+	tmpObj.jobcd = "0000";
+	if(SBUxMethod.get("input_text3") !== undefined){
+		tmpObj.spms = SBUxMethod.get("input_text3");
+	} else {
+		tmpObj.spms = "";
+	}
 	
+	tmpObj.stepcd = SBUxMethod.get("stepcbo");
+	tmpObj.reqcd = SBUxMethod.get("reqcd_combo"); 
+	tmpObj.req = strReqCD;
+	tmpObj.UserID = userid;
+	tmpObj.dategbn = SBUxMethod.get("rdo_norm");
+	
+	var strStD = SBUxMethod.get("datStD");
+	var strEdD = SBUxMethod.get("datEdD");
+	
+	if(strStD > strEdD){
+		alert("조회기간을 정확하게 선택하여 주십시오.");
+		return;
+	}  
+	
+	tmpObj.stDt = strStD;
+	tmpObj.edDt = strEdD;
+	
+	if(strReqCD == "04"){
+		tmpObj.docno = "0";
+		tmpObj.gbn = SBUxMethod.get("cboGbn");
+	} else {
+		tmpObj.docno = "0";
+		tmpObj.gbn = "ALL";
+	}
+	
+	tmpObj.prgname = "";	// 상세조회 버튼 미존재
+	
+	if(SBUxMethod.get("chkbox_norm").chkbox_norm === true){
+		tmpObj.chkSelf = "true";
+		tmpObj.userName ="";
+	} else {
+		tmpObj.chkSelf = "false";
+		
+		if(SBUxMethod.get("input_text2") !== undefined){
+			tmpObj.userName = SBUxMethod.get("input_text2");
+		} else {
+			tmpObj.userName = "";
+		}
+		
+	}
+	console.log(tmpObj);
+	var tmpData = {
+			prjData: JSON.stringify(tmpObj),
+			requestType : 'getFileList'			
+	}
+		
+	ajaxMenuData = ajaxCallWithJson('/webPage/dev/DistributeStatus', tmpData, 'json');
+	
+	var cnt = Object.keys(ajaxMenuData).length;			// json 객체 길이 구하기			
+	SBUxMethod.set('idxLabel_norm11', '총'+cnt+'건');		// 총 개수 표현		
+	
+	grid_data = ajaxMenuData;
+	datagrid.rebuild();
+	tmpObj = null;
 }
 
 function createGrid(){

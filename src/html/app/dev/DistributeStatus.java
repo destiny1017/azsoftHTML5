@@ -2,6 +2,7 @@ package html.app.dev;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,6 +16,7 @@ import app.common.CodeInfo;
 import app.common.SysInfo;
 import app.common.SystemPath;
 import app.common.UserInfo;
+import app.eCmr.Cmr1100;
 import html.app.common.ParsingCommon;
 
 /**
@@ -28,6 +30,7 @@ public class DistributeStatus extends HttpServlet {
 	CodeInfo codeinfo = new CodeInfo();
 	SystemPath syspath = new SystemPath();
 	SysInfo sysinfo = new SysInfo();
+	Cmr1100 cmr1100 = new Cmr1100();
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -57,6 +60,9 @@ public class DistributeStatus extends HttpServlet {
 				case "getSysInfo":
 					response.getWriter().write( getSysInfo(request) );
 					break;
+				case "getFileList":
+					response.getWriter().write( getFileList(request) );
+					break;
 				default : 
 					break;
 			}
@@ -85,5 +91,11 @@ public class DistributeStatus extends HttpServlet {
 		String user = null;
 		user = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
 		return gson.toJson(sysinfo.getSysInfo(user, "Y","ALL","N",""));
+	}
+	
+	private String getFileList (HttpServletRequest request) throws SQLException, Exception {
+		HashMap<String, String>				 childrenMap = null;
+		childrenMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "prjData");
+		return gson.toJson( cmr1100.getFileList(childrenMap) );
 	}
 }

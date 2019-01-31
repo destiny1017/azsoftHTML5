@@ -39,12 +39,6 @@ $(document).ready(function(){
 		
 	}
 	
-	if(strReqCD == "01"){
-		$("#titleText").html("<font color='#6c6c6c'><strong>[등록]</strong> | <strong>SR진행현황(등록)</strong></font>");
-	} else if(strReqCD == "02") {
-		$("#titleText").html("<font color='#6c6c6c'><strong>[접수]</strong> | <strong>SR진행현황(접수)</strong></font>");
-	}	
-	
 	SBUxMethod.set('datStD', today);
 	SBUxMethod.set('datEdD', today);
 	dept_set();
@@ -218,7 +212,7 @@ function cmdQry_Proc(){	// 조회
 	}          	
 					
 	tmpObj.userid = userid;
-	console.dir(tmpObj);
+
 	var tmpData = {
 			prjData: 		JSON.stringify(tmpObj),
 			requestType : 'PrjInfo'			
@@ -231,7 +225,6 @@ function cmdQry_Proc(){	// 조회
         dataType : 'json',
         async : true, 
         success : function(data) {
-        	console.log(data);
 			var cnt = Object.keys(data).length;				// json 객체 길이 구하기			
 			SBUxMethod.set('label_norm13', '총'+cnt+'건');	// 총 개수 표현		
 			
