@@ -48,90 +48,60 @@ $(document).ready(function(){
 });
 
 function dept_set(){	// 요청부서
+	var ajaxResultData = null;
 	var tmpData = {
 			requestType : 'TeamInfo'			
 	}	
-    $.ajax({
-        type : "POST",
-        url : "/webPage/regist/SRStatus",
-        data : tmpData,
-        dataType : 'json',
-        async : true, 
-        success : function(data) {  
-        	cboDept1 = data;
-        	SBUxMethod.refresh('cboDept1');
-        },
-        error : function(req, stat, error) {
-            console.log(error);
-            alert(error);
-        }
-      });    		    
+	
+	ajaxResultData = ajaxCallWithJson('/webPage/regist/SRStatus', tmpData, 'json');
+	
+	cboDept1 = ajaxResultData;
+	SBUxMethod.refresh('cboDept1');
 } 
 
 function dept_set2(){	// 등록부서
+	var ajaxResultData = null;
 	var tmpData = {
 			requestType : 'TeamInfo2'			
 	}
-    $.ajax({
-        type : "POST",
-        url : "/webPage/regist/SRStatus",
-        data : tmpData,
-        dataType : 'json',
-        async : true, 
-        success : function(data) {  
-        	cboDept2 = data;
-        	SBUxMethod.refresh('cboDept2');
-        },
-        error : function(req, stat, error) {
-            console.log(error);
-            alert(error);
-        }
-      });    		    
+	
+	ajaxResultData = ajaxCallWithJson('/webPage/regist/SRStatus', tmpData, 'json');
+	cboDept2 = ajaxResultData;
+	SBUxMethod.refresh('cboDept2');
 }
 
 function codeinfo_set(){	// 코드인포
+	var ajaxResultData = null;
 	var tmpData = {
 			requestType : 'CodeInfo'			
 	}
+	ajaxResultData = ajaxCallWithJson('/webPage/regist/SRStatus', tmpData, 'json');
 	
-    $.ajax({
-        type : "POST",
-        url : "/webPage/regist/SRStatus",
-        data : tmpData,
-        dataType : 'json',
-        async : true, 
-        success : function(data) {  
-        	cboSta1 = data;
-        	cboSta2 = data;
-        	
-        	cboSta1.push({
-        		cm_macode : "ISRSTA",
-        		cm_micode : "XX",
-        		cm_codename : "미완료전체"
-        	});
-        	
-        	cboSta2.push({
-        		cm_macode : "ISRSTAUSR",
-        		cm_micode : "XX",
-        		cm_codename : "미완료전체"
-        	});
-        	
-        	cboSta1 = cboSta1.filter(function(data) {
-        	   return data.cm_macode === "ISRSTA";
-        	});
-        	
-        	cboSta2 = cboSta2.filter(function(data) {
-        	   return data.cm_macode === "ISRSTAUSR";
-        	});
-        	
-        	SBUxMethod.refresh('cboSta1');
-        	SBUxMethod.refresh('cboSta2');
-        },
-        error : function(req, stat, error) {
-            console.log(error);
-            alert(error);
-        }
-      });    		    
+	cboSta1 = ajaxResultData;
+	cboSta2 = ajaxResultData;
+	
+	cboSta1.push({
+		cm_macode : "ISRSTA",
+		cm_micode : "XX",
+		cm_codename : "미완료전체"
+	});
+	
+	cboSta2.push({
+		cm_macode : "ISRSTAUSR",
+		cm_micode : "XX",
+		cm_codename : "미완료전체"
+	});
+	
+	cboSta1 = cboSta1.filter(function(data) {
+	   return data.cm_macode === "ISRSTA";
+	});
+	
+	cboSta2 = cboSta2.filter(function(data) {
+	   return data.cm_macode === "ISRSTAUSR";
+	});
+	
+	SBUxMethod.refresh('cboSta1');
+	SBUxMethod.refresh('cboSta2');
 }
 
 function fnChange(args){ // 달력 활성화
@@ -155,7 +125,7 @@ function fnChange(args){ // 달력 활성화
 }
 
 function cmdQry_Proc(){	// 조회
-	
+	var ajaxResultData = null;
 	var errSw = false;
 	if(SBUxMethod.get("cboSta2") != "00" && SBUxMethod.get("cboSta1") != "00"){
 		if(SBUxMethod.get("cboSta2") != "3" && SBUxMethod.get("cboSta2") != "8" && SBUxMethod.get("cboSta2") != "9"){	// 3 : 제외 / 8 : 진행중단 / 9 : 완료
@@ -218,47 +188,36 @@ function cmdQry_Proc(){	// 조회
 			requestType : 'PrjInfo'			
 	}
 	
-	$.ajax({
-        type : "POST",
-        url : "/webPage/regist/SRStatus",
-        data : tmpData,
-        dataType : 'json',
-        async : true, 
-        success : function(data) {
-			var cnt = Object.keys(data).length;				// json 객체 길이 구하기			
-			SBUxMethod.set('label_norm13', '총'+cnt+'건');	// 총 개수 표현		
-			
-			grid_data = data;
-        	datagrid.rebuild(); 		// rebuild 없어도 나오긴 함 검색버튼 두번 누르면    	
-        	
-        	
-        	$(data).each(function(i){
-				if(data[i].color == '3' || data[i].color == 'A'){
-					datagrid.setRowStyle(i+1, 'data', 'color', '#FF0000');	//반려 또는 취소
-					datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
-				} else if (data[i].color == 'R'){
-					datagrid.setRowStyle(i+1, 'data', 'color', '#FF8000');	// 접수
-					datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
-				} else if (data[i].color == 'C'){
-					datagrid.setRowStyle(i+1, 'data', 'color', '#145A32');	// 개발
-					datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
-				} else if (data[i].color == 'T'){
-					datagrid.setRowStyle(i+1, 'data', 'color', '#BE81F7');	// 테스트
-					datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
-				} else if (data[i].color == 'P'){
-					datagrid.setRowStyle(i+1, 'data', 'color', '#045FB4');	// 적용
-					datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
-				} else if (data[i].color == '9'){
-					datagrid.setRowStyle(i+1, 'data', 'color', '#2E2E2E');	// 처리완료
-					datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
-				}
-			});
-        },
-        error : function(req, stat, error) {
-            console.log(error);
-            alert(error);
-        }
-      });           	
+	ajaxResultData = ajaxCallWithJson('/webPage/regist/SRStatus', tmpData, 'json');
+	
+	var cnt = Object.keys(ajaxResultData).length;				// json 객체 길이 구하기			
+	SBUxMethod.set('label_norm13', '총'+cnt+'건');	// 총 개수 표현		
+	
+	grid_data = ajaxResultData;
+	//datagrid.rebuild(); 		// rebuild 없어도 나오긴 함 검색버튼 두번 누르면    	
+	datagrid.refresh();
+	
+	$(ajaxResultData).each(function(i){
+		if(ajaxResultData[i].color == '3' || ajaxResultData[i].color == 'A'){
+			datagrid.setRowStyle(i+1, 'data', 'color', '#FF0000');	//반려 또는 취소
+			datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
+		} else if (ajaxResultData[i].color == 'R'){
+			datagrid.setRowStyle(i+1, 'data', 'color', '#FF8000');	// 접수
+			datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
+		} else if (ajaxResultData[i].color == 'C'){
+			datagrid.setRowStyle(i+1, 'data', 'color', '#145A32');	// 개발
+			datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
+		} else if (ajaxResultData[i].color == 'T'){
+			datagrid.setRowStyle(i+1, 'data', 'color', '#BE81F7');	// 테스트
+			datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
+		} else if (ajaxResultData[i].color == 'P'){
+			datagrid.setRowStyle(i+1, 'data', 'color', '#045FB4');	// 적용
+			datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
+		} else if (ajaxResultData[i].color == '9'){
+			datagrid.setRowStyle(i+1, 'data', 'color', '#2E2E2E');	// 처리완료
+			datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
+		}
+	});
 }
 
 function createGrid(){
@@ -299,23 +258,4 @@ function createGrid(){
 		{caption : ['SR완료일'],	ref : 'isreddate',width : '100px',  style : 'text-align:center',	type : 'output'}
 	];
 	datagrid = _SBGrid.create(SBGridProperties); // 만들어진 SBGridProperties 객체를 파라메터로 전달합니다.
-}
-
-function doDataToExcel(){	// 엑셀저장
-	
-	var headerDef = new Array();
-	var tmpObject = new Object();
-	var excelData = new Array();
-	
-	$(SBGridProperties.columns).each(function(i){
-		headerDef.push(SBGridProperties.columns[i].ref);
-		tmpObject[SBGridProperties.columns[i].ref] = datagrid.getCellData(0,i+1);
-	});
-	
-	excelData.push(tmpObject);
-	tmpObject = null;
-    
-	console.log(headerDef);
-	console.log(tmpObject);
-	
 }

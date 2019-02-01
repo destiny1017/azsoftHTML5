@@ -28,16 +28,6 @@ if(mm < 10){
 today = yyyy + '/' + mm + '/' + dd;
 
 $(document).ready(function(){
-	if(strReqCD == "01"){
-		$("#titleText").html("<font color='#6c6c6c'><strong>[개발]</strong> | <strong>체크아웃현황</strong></font>");
-	} else if(strReqCD == "03") {
-		$("#titleText").html("<font color='#6c6c6c'><strong>[테스트]</strong> | <strong>배포현황(테스트)</strong></font>");
-	} else if(strReqCD == "04"){
-		$("#titleText").html("<font color='#6c6c6c'><strong>[적용]</strong> | <strong>배포현황</strong></font>");
-	} else if(strReqCD == "07"){
-		$("#titleText").html("<font color='#6c6c6c'><strong>[개발]</strong> | <strong>체크인현황</strong></font>");
-	}
-	
 	SBUxMethod.set('datStD', today);
 	SBUxMethod.set('datEdD', today);
 	createGrid();
@@ -65,109 +55,69 @@ function strReqCD_set(){
 }
 
 function userInfo_check(){	// 사용자의 관리자 권한 여부 체크
+	var ajaxResultData = null;
 	var tmpData = {
 			requestType : 'UserInfochk',
 			UserId : userid
 	}
 	
-	$.ajax({
-        type : "POST",
-        url : "/webPage/dev/DistributeStatus",
-        data : tmpData,
-        dataType : 'json',
-        async : true, 
-        success : function(data) { 
-        	if('1' == data[0].cm_admin){
-        		SBUxMethod.set('chkbox_norm', 'false');
-        		SBUxMethod.attr('input_text2', 'disabled', 'false');
-        	}
-        },
-        error : function(req, stat, error) {
-            console.log(error);
-            alert(error);
-        }
-      });
+	ajaxResultData = ajaxCallWithJson('/webPage/dev/DistributeStatus', tmpData, 'json');
+	
+	if('1' == ajaxResultData[0].cm_admin){
+		SBUxMethod.set('chkbox_norm', 'false');
+		SBUxMethod.attr('input_text2', 'disabled', 'false');
+	}
 }
 
 function codeInfo_set(){ // 신청종류
+	var ajaxResultData = null;
 	var tmpData = {
 			requestType : 'CodeInfoSet'
 	}
-	$.ajax({
-        type : "POST",
-        url : "/webPage/dev/DistributeStatus",
-        data : tmpData,
-        dataType : 'json',
-        async : true, 
-        success : function(data) { 
-        	reqcd_combo = data;
-        	
-        	reqcd_combo = reqcd_combo.filter(function(data) {
-        		if(strReqCD == "01"){        	   		
-        			if(data.cm_micode === "01" || data.cm_micode === "02" || data.cm_micode === "11" || data.cm_micode === "00"){
-        				return true;
-        			} else {
-        				return false;
-        			}        			
-         	   	} else if (data.cm_micode == strReqCD || data.cm_micode === "00" || data.cm_micode === "03" || data.cm_micode === "06" || data.cm_micode === "07" || data.cm_micode === "94") {
-         	   		return true;
-         	   	} else {
-         	   		return false;
-         	   	}
-         	});
-        	
-        	SBUxMethod.refresh('reqcd_combo');
-        },
-        error : function(req, stat, error) {
-            console.log(error);
-            alert(error);
-        }
-      });
+	
+	ajaxResultData = ajaxCallWithJson('/webPage/dev/DistributeStatus', tmpData, 'json');
+	
+	reqcd_combo = ajaxResultData;
+	
+	reqcd_combo = reqcd_combo.filter(function(data) {
+		if(strReqCD == "01"){        	   		
+			if(data.cm_micode === "01" || data.cm_micode === "02" || data.cm_micode === "11" || data.cm_micode === "00"){
+				return true;
+			} else {
+				return false;
+			}        			
+ 	   	} else if (data.cm_micode == strReqCD || data.cm_micode === "00" || data.cm_micode === "03" || data.cm_micode === "06" || data.cm_micode === "07" || data.cm_micode === "94") {
+ 	   		return true;
+ 	   	} else {
+ 	   		return false;
+ 	   	}
+ 	});
+	
+	SBUxMethod.refresh('reqcd_combo');
 }
 
 function systemPath_set(){
+	var ajaxResultData = null;
 	var tmpData = {
 			requestType : 'SystemPathSet'
 	}
 	
-	$.ajax({
-        type : "POST",
-        url : "/webPage/dev/DistributeStatus",
-        data : tmpData,
-        dataType : 'json',
-        async : true, 
-        success : function(data) { 
-        	strTmpDir = data + "/";
-        },
-        error : function(req, stat, error) {
-            console.log(error);
-            alert(error);
-        }
-      });
+	ajaxResultData = ajaxCallWithJson('/webPage/dev/DistributeStatus', tmpData, 'json');
+	
+	strTmpDir = ajaxResultData + "/";
 }
 
 function getSysInfo(){
+	var ajaxResultData = null;
 	var tmpData = {
 			requestType : 'getSysInfo',
 			UserId : userid 
 	}
+	ajaxResultData = ajaxCallWithJson('/webPage/dev/DistributeStatus', tmpData, 'json');
 	
-	$.ajax({
-        type : "POST",
-        url : "/webPage/dev/DistributeStatus",
-        data : tmpData,
-        dataType : 'json',
-        async : true, 
-        success : function(data) {   
-        	console.log(data);
-        	syscd_combo = data;        	        	        	
-        	SBUxMethod.refresh('syscd_combo');
-        },
-        error : function(req, stat, error) {
-            console.log(error);
-            alert(error);
-        }
-      });
+	console.log(ajaxResultData);
+	syscd_combo = ajaxResultData;        	        	        	
+	SBUxMethod.refresh('syscd_combo');
 }
 
 function step_combo_init(){
@@ -206,7 +156,7 @@ function cboGbn_set(){
 
 function cmdQry_Proc(){
 	var tmpObj = {};
-	var ajaxMenuData = null;
+	var ajaxResultData = null;
 	
 	tmpObj.syscd = SBUxMethod.get("syscd_combo");
 	tmpObj.jobcd = "0000";
@@ -256,19 +206,34 @@ function cmdQry_Proc(){
 		}
 		
 	}
-	console.log(tmpObj);
+
 	var tmpData = {
 			prjData: JSON.stringify(tmpObj),
 			requestType : 'getFileList'			
 	}
 		
-	ajaxMenuData = ajaxCallWithJson('/webPage/dev/DistributeStatus', tmpData, 'json');
+	ajaxResultData = ajaxCallWithJson('/webPage/dev/DistributeStatus', tmpData, 'json');
 	
-	var cnt = Object.keys(ajaxMenuData).length;			// json 객체 길이 구하기			
+	var cnt = Object.keys(ajaxResultData).length;			// json 객체 길이 구하기			
 	SBUxMethod.set('idxLabel_norm11', '총'+cnt+'건');		// 총 개수 표현		
 	
-	grid_data = ajaxMenuData;
-	datagrid.rebuild();
+	grid_data = ajaxResultData;
+	datagrid.refresh();	
+	strReqCD_set();
+	
+	$(ajaxResultData).each(function(i){
+		if(ajaxResultData[i].errflag != "0"){
+			datagrid.setRowStyle(i+1, 'data', 'color', '#BE81F7');	//시스템처리 중 에러발생
+			datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
+		} else if (ajaxResultData[i].cr_status == '3'){
+			datagrid.setRowStyle(i+1, 'data', 'color', '#FF0000');	//반려 또는 취소
+			datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
+		} else if (ajaxResultData[i].cr_status == '0'){
+			datagrid.setRowStyle(i+1, 'data', 'color', '#0000FF');	// 진행중
+			datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
+		}
+	});
+	
 	tmpObj = null;
 }
 
@@ -293,7 +258,7 @@ function createGrid(){
 		{caption : ['신청종류'],	ref : 'sin',width : '150px',  style : 'text-align:center',	type : 'output'},
 		{caption : ['신청자'],	ref : 'editor',width : '150px',  style : 'text-align:center',	type : 'output'},
 		{caption : ['신청번호'],	ref : 'acptno',width : '150px',  style : 'text-align:center',	type : 'output'},
-		{caption : ['신청일시'],	ref : 'acptdate',width : '100px',  style : 'text-align:center', type : 'output'},
+		{caption : ['신청일시'],	ref : 'acptdate',width : '200px',  style : 'text-align:center', type : 'output'},
 		{caption : ['진행상태'],	ref : 'cm_codename',width : '100px',  style : 'text-align:center',	type : 'output'},
 		{caption : ['처리구분'],	ref : 'procgbn',width : '100px',  style : 'text-align:center',	type : 'output'},
 		{caption : ['적용예정일시'],	ref : 'grdprcreq',width : '100px',  style : 'text-align:center',	type : 'output'},
