@@ -1123,7 +1123,7 @@ public class SystemPath {
 							rst.put("cm_upseq",Integer.toString(upSeq));
 							rst.put("cm_seqno",Integer.toString(maxSeq));
 							rst.put("cr_rsrccd",RsrcCd);
-							rst.put("imagesrc"			, "./img/folderDefaultClosed.gif");
+							rst.put("imagesrc"			, "/img/folderDefaultClosed.gif");
 							if (Info.substring(26,27).equals("0") && rs.getString("volpath").equals(strHome+strDir)){
 								rst.put("cr_dsncd", rs.getString("cm_dsncd"));
 							}else{
@@ -1887,7 +1887,7 @@ public class SystemPath {
         	rsrcPathMap.put("pid"			, "-2");
         	rsrcPathMap.put("text"			, "프로그램종류");
         	rsrcPathMap.put("value"			, "");
-        	rsrcPathMap.put("imagesrc"			, "./img/folderDefaultClosed.gif");
+        	rsrcPathMap.put("imagesrc"			, "/img/folderDefaultClosed.gif");
         	rsrcPathList.add(rsrcPathMap);
         	rsrcPathMap = null;
             
@@ -1903,7 +1903,7 @@ public class SystemPath {
             	rsrcPathMap.put("text"			, rs.getString("text"));
             	rsrcPathMap.put("value"			, rs.getString("value"));
             	rsrcPathMap.put("root"			, "true");
-            	rsrcPathMap.put("imagesrc"			, "./img/folderDefaultClosed.gif");
+            	rsrcPathMap.put("imagesrc"			, "/img/folderDefaultClosed.gif");
             	rsrcPathList.add(rsrcPathMap);
             	rsrcPathMap = null;
 			}//end of while-loop statement

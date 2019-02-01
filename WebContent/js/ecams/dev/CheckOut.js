@@ -1,5 +1,5 @@
-/**
- * 체크아웃 화면의 기능 정의
+/** 체크아웃 화면 기능
+ * 
  * <pre>
  * <b>History</b>
  * 	작성자: 이용문
@@ -30,7 +30,7 @@ var reqcd 			= null;
 var localFileDownYN = false;
 var outpos 			= '';
 var reqSw			= false;
-
+var searchMOD		= '';
 
 $(document).ready(function() {
 	console.log('CheckOut.js load');
@@ -82,7 +82,7 @@ function changeSysCombo(){
 	});
 	
 	if( selectedSysData.cm_sysinfo.substring(4,5) === '1' && selectedSysData.cm_stopsw === '1' ) {
-		alert('이관통제을 위하여 일시적으로 형상관리 사용을 중지합니다.');
+		SBUxMethod.openAlert(new Alert('확인', '이관통제을 위하여 일시적으로 형상관리 사용을 중지합니다.', 'info'));
 		SBUxMethod.attr('idx_search_btn', 'readonly', 'true');
 		return;
 	}
@@ -117,7 +117,7 @@ function getLocalHomeDir() {
 	ajaxReturnData = ajaxCallWithJson('/webPage/dev/CheckOut', devHomeInfo, 'json');
 	if(ajaxReturnData !== 'ERR') {
 		if( ajaxReturnData.length === 0)
-			alert('로컬로 체크아웃을 받고자 하는 경우 \n [기본관리-사용자환경설정]에서 \n 로컬 홈디렉토리를 지정한 후 진행하시기 바랍니다.');
+			SBUxMethod.openAlert(new Alert('확인', '로컬로 체크아웃을 받고자 하는 경우 \n [기본관리-사용자환경설정]에서 \n 로컬 홈디렉토리를 지정한 후 진행하시기 바랍니다.', 'info'));
 	}
 }
 
@@ -246,9 +246,11 @@ function fileTreeClick(){
 	
 	if(hasParent && fileId !== "-1" ) {
 		if( rsrccd ===  undefined) rsrccd = subrsrccd;
-		if(root === "true" && !hasChild ) 					getChildFileTree(fileInfo, rsrccd, fileId);
+		if( root === "true" && !hasChild ) 					getChildFileTree(fileInfo, rsrccd, fileId);
 		if( dsncd !== undefined || fullpath !== undefined) 	makeFileDir(fullpath, dsncd, fileinfo, hasChild, sysgb, rsrccd);
 	}
+	
+	searchMOD = 'T';
 
 }
 
@@ -318,12 +320,12 @@ function makeFileDir(fullpath, dsncd, fileinfo, hasChild, sysgb, rsrccd){
 
 function getFileGridData(getFileData) {
 	var ajaxReturnData = null;
-	fileGrid.lockGrid();
-	fileGrid.refresh();
-	fileGrid.clearStatus();
+	//fileGrid.lockGrid();
+	//fileGrid.refresh();
+	//fileGrid.clearStatus();
 	
 	ajaxReturnData = ajaxCallWithJson('/webPage/dev/CheckOut', getFileData, 'json');
-
+	console.log(ajaxReturnData);
 	if(ajaxReturnData !== 'ERR') {
 		fileGridData = copyReferenceNone(ajaxReturnData);
 		
@@ -338,11 +340,11 @@ function getFileGridData(getFileData) {
 			});
 		}
 		
-		fileGrid.refresh();
+		fileGrid.refresh(); //체크아웃후 새로운 데이터 안가져옴
 		changeFileGridStyle(fileGridData);
 	}
 
-	fileGrid.lockGrid(false);
+	//fileGrid.lockGrid(false);
 };
 
 
@@ -472,7 +474,7 @@ function downFileCheck(downFileList) {
 		if( removedFile.cm_info.substring(44,45) == '1') {
 			localFileDownYN = true;
 			if(removedFile.pcdir1 == null || removedFile.pcdir1 == "") {
-				alert("로컬 홈디렉토리를 지정하지 않았습니다. 기본관리>사용자환경설정에서 홈디렉토리지정 후 처리하시기 바랍니다.");
+				SBUxMethod.openAlert(new Alert('확인', '로컬 홈디렉토리를 지정하지 않았습니다. 기본관리>사용자환경설정에서 홈디렉토리지정 후 처리하시기 바랍니다.', 'info'));
 				return;
 			}
 		}
@@ -484,13 +486,13 @@ function downFileCheck(downFileList) {
 		}
 	});
 	
-	if (vercnt>0){				
-		alert("버전을 선택하여 주십시요.");
+	if (vercnt>0){		
+		SBUxMethod.openAlert(new Alert('확인', '버전을 선택하여 주십시요.', 'info'));
 		return;
 	}
 	
 	if( (removedFileList.length + requestGridData.length) > 300 ){
-		alert('300건까지 신청 가능합니다.');
+		SBUxMethod.openAlert(new Alert('확인', '300건까지 신청 가능합니다.', 'info'));
 		return;
 	}
 	
@@ -567,11 +569,11 @@ function checkDuplication(downFileList) {
 	
 	if(requestGridData.length > 0 ) {
 		if((requestGridData.length + downFileList.length > 300) && localFileDownYN){
-			alert('300건 이하로 선택 가능합니다.[추가가능건수:'+(300-requestGridData.length)+']');
+			SBUxMethod.openAlert(new Alert('확인', '300건 이하로 선택 가능합니다.[추가가능건수:'+(300-requestGridData.length)+']', 'info'));
 			return;
 		}
 	}else if (downFileList.length > 300 && localFileDownYN ) {
-		alert('300건 이하로 선택 가능합니다.[추가가능건수:'+(downFileList.length)+']');
+		SBUxMethod.openAlert(new Alert('확인', '300건 이하로 선택 가능합니다.[추가가능건수:'+(downFileList.length)+']', 'info'));
 		return;
 	}
 	
@@ -608,9 +610,9 @@ function checkDuplication(downFileList) {
 
 function createElements() {
 	var SBGridProperties = {};
-	SBGridProperties.parentid = 'fileGrid';  // [필수] 그리드 영역의 div id 입니다.            
-	SBGridProperties.id = 'fileGrid';          // [필수] 그리드를 담기위한 객체명과 동일하게 입력합니다.                
-	SBGridProperties.jsonref = 'fileGridData';    // [필수] 그리드의 데이터를 나타내기 위한 json data 객체명을 입력합니다.
+	SBGridProperties.parentid = 'fileGrid';  		// [필수] 그리드 영역의 div id 입니다.            
+	SBGridProperties.id = 'fileGrid';          		// [필수] 그리드를 담기위한 객체명과 동일하게 입력합니다.                
+	SBGridProperties.jsonref = 'fileGridData';    	// [필수] 그리드의 데이터를 나타내기 위한 json data 객체명을 입력합니다.
 	
 	// 그리드의 여러 속성들을 입력합니다.
 	SBGridProperties.extendlastcol = 'scroll';
@@ -620,21 +622,21 @@ function createElements() {
 	
 	// [필수] 그리드의 컬럼을 입력합니다.  
 	SBGridProperties.columns = [
-		{caption: ['프로그램경로'],	ref: 'cm_dirpath', 	width : '500px',  type : 'output'},
-		{caption: ['프로그램명'],	ref: 'cr_rsrcname',	width : '150px',  type : 'output'},
-		{caption: ['프로그램종류'],	ref: 'jawon',		width : '100px',  type : 'output',	style : 'text-align:center'},
-		{caption: ['프로그램설명'],	ref: 'cr_story',	width : '200px',  type : 'output'},
-		{caption: ['상태'],		ref: 'codename',	width : '80px',   type : 'output',	style : 'text-align:center'},
-		{caption: ['버전'],		ref: 'cr_lstver',	width : '80px',   type : 'output',	style : 'text-align:center'},
-		{caption: ['수정자'],		ref: 'cm_username',	width : '90px',   type : 'output'},
-		{caption: ['수정일'],		ref: 'lastdt',		width : '120px',  type : 'output',	style : 'text-align:center'}
+		new GridDefaultColumn('프로그램경로', 	'cm_dirpath', 	'500px', 'output'),
+		new GridDefaultColumn('프로그램명', 	'cr_rsrcname', 	'150px', 'output'),
+		new GridDefaultColumn('프로그램종류', 	'jawon', 		'100px', 'output','text-align:center'),
+		new GridDefaultColumn('프로그램설명', 	'cr_story', 	'200px', 'output'),
+		new GridDefaultColumn('상태', 		'codename', 	'80px',  'output','text-align:center'),
+		new GridDefaultColumn('버전', 		'cr_lstver', 	'80px',  'output','text-align:center'),
+		new GridDefaultColumn('수정자', 		'cm_username', 	'90px',  'output'),
+		new GridDefaultColumn('수정일', 		'lastdt', 		'120px', 'output','text-align:center')
 	];
-	fileGrid = _SBGrid.create(SBGridProperties); // 만들어진 SBGridProperties 객체를 파라메터로 전달합니다.
+	fileGrid = _SBGrid.create(SBGridProperties); 	// 만들어진 SBGridProperties 객체를 파라메터로 전달합니다.
 	
 	var SBGridProperties2 = {};
-	SBGridProperties2.parentid = 'requestGrid';  // [필수] 그리드 영역의 div id 입니다.            
-	SBGridProperties2.id = 'requestGrid';          // [필수] 그리드를 담기위한 객체명과 동일하게 입력합니다.                
-	SBGridProperties2.jsonref = 'requestGridData';    // [필수] 그리드의 데이터를 나타내기 위한 json data 객체명을 입력합니다.
+	SBGridProperties2.parentid = 'requestGrid';  	// [필수] 그리드 영역의 div id 입니다.            
+	SBGridProperties2.id = 'requestGrid';          	// [필수] 그리드를 담기위한 객체명과 동일하게 입력합니다.                
+	SBGridProperties2.jsonref = 'requestGridData';  // [필수] 그리드의 데이터를 나타내기 위한 json data 객체명을 입력합니다.
 	
 	// 그리드의 여러 속성들을 입력합니다.
 	SBGridProperties2.extendlastcol = 'scroll';
@@ -643,15 +645,15 @@ function createElements() {
 	SBGridProperties2.rowdragmove = true;
 	
 	SBGridProperties2.columns = [
-		{caption: ['프로그램경로'],	ref: 'view_dirpath',width: '500px',  type: 'output'},
-		{caption: ['프로그램명'],	ref: 'cr_rsrcname',	width: '150px',  type: 'output'},
-		{caption: ['업무명'],		ref: 'jobname',		width: '150px',  type: 'output'},
-		{caption: ['프로그램종류'],	ref: 'jawon',		width: '100px',  type: 'output', style : 'text-align:center'},
-		{caption: ['프로그램설명'],	ref: 'cr_story',	width: '200px',  type: 'output'},
-		{caption: ['신청버전'],	ref: 'cr_lstver',	width: '80px',   type: 'output', style : 'text-align:center'},
-		{caption: ['로컬위치'],	ref: 'pcdir1',		width: '80px',   type: 'output', style : 'text-align:center'},
-		{caption: ['수정자'],		ref: 'cm_username',	width: '90px',   type: 'output'},
-		{caption: ['수정일'],		ref: 'lastdt',		width: '120px',  type: 'output', style : 'text-align:center'}
+		new GridDefaultColumn('프로그램경로', 	'view_dirpath', '500px', 'output'),
+		new GridDefaultColumn('프로그램명', 	'cr_rsrcname', 	'150px', 'output'),
+		new GridDefaultColumn('업무명', 		'jobname', 		'150px', 'output','text-align:center'),
+		new GridDefaultColumn('프로그램종류', 	'jawon', 		'100px', 'output','text-align:center'),
+		new GridDefaultColumn('프로그램설명', 	'cr_story', 	'200px', 'output'),
+		new GridDefaultColumn('신청버전', 		'cr_lstver', 	'80px',  'output','text-align:center'),
+		new GridDefaultColumn('로컬위치', 		'pcdir1', 		'80px',  'output','text-align:center'),
+		new GridDefaultColumn('수정자', 		'cm_username', 	'90px',  'output'),
+		new GridDefaultColumn('수정일', 		'lastdt', 		'120px', 'output','text-align:center')
 	];
 	requestGrid = _SBGrid.create(SBGridProperties2); // 만들어진 SBGridProperties 객체를 파라메터로 전달합니다.
 	
@@ -664,12 +666,15 @@ function createElements() {
 	fileGrid.bind('startdnd','fileGridStartDnd');
 	requestGrid.bind('startdnd','requestGridStartDnd'); 
 	
+	fileGrid.bind('dblclick','fileGridDblClick'); 
+	requestGrid.bind('dblclick','requestGridDblClick'); 
 }
 
+function fileGridDblClick() { addDataRow();	}
 
-function fileGridStartDnd() {
-	befRuestGridData = copyReferenceNone( requestGridData );
-}
+function requestGridDblClick() { deleteDataRow(); }
+
+function fileGridStartDnd() { befRuestGridData = copyReferenceNone( requestGridData ); }
 
 // 검색그리드에서 요청그리드로 드래그후 이벤트
 function requestGridAfterDnd() {
@@ -679,9 +684,7 @@ function requestGridAfterDnd() {
 }
 
 // 요청그리드 드래그 시작시 발동 이벤트
-function requestGridStartDnd() {
-	befFileGridData = copyReferenceNone( fileGridData );
-}
+function requestGridStartDnd() { befFileGridData = copyReferenceNone( fileGridData ); }
 
 //요청그리드에서 검색그리드로 드래그후 이벤트
 function fileGridAfterDnd() {
@@ -704,7 +707,7 @@ function clickSearchBtn() {
 	getFileData.reqcd 	= reqcd;
 	rsrcname = SBUxMethod.get('idx_lbl_prg_exp_txt');
 	if(rsrcname === '' || rsrcname === undefined) {
-		alert('검색단어를 입력한 후 검색하시기 바랍니다.');
+		SBUxMethod.openAlert(new Alert('확인', '검색단어를 입력한 후 검색하시기 바랍니다.', 'info'));
 		return;
 	}
 	else getFileData.rsrcname = rsrcname;
@@ -713,7 +716,7 @@ function clickSearchBtn() {
 			getFileData: JSON.stringify(getFileData)
 	}
 	
-	
+	searchMOD = 'B';
 	getFileGridData(getFileDataInfo );
 }
 
@@ -725,7 +728,7 @@ function clickCheckOutBtn(){
 		if( returnConfirmStr !== null){
 			
 			if(returnConfirmStr === 'X') {
-				alert('로컬PC에서 파일을 전송하는 결재단계가 지정되지 않았습니다. 형상관리시스템담당자에게 연락하여 주시기 바랍니다.');
+				SBUxMethod.openAlert(new Alert('확인', '로컬PC에서 파일을 전송하는 결재단계가 지정되지 않았습니다. 형상관리시스템담당자에게 연락하여 주시기 바랍니다.', 'info'));
 			}
 			if(returnConfirmStr === 'C') {
 				if(confirm('결재자를 지정하시겠습니까?')) confCall('Y');
@@ -736,7 +739,7 @@ function clickCheckOutBtn(){
 			}
 			
 			if(returnConfirmStr !== 'N' && returnConfirmStr !== 'Y' && returnConfirmStr !== 'C' && returnConfirmStr !== 'X'){
-				alert('결재정보가 등록되지 않았습니다. 형상관리시스템담당자에게 연락하여 주시기 바랍니다.');
+				SBUxMethod.openAlert(new Alert('확인', '결재정보가 등록되지 않았습니다. 형상관리시스템담당자에게 연락하여 주시기 바랍니다.', 'info'));
 			} else {
 				confCall('N');
 			}
@@ -817,26 +820,105 @@ function requestCheckOut() {
 	}
 	
 	ajaxReturnStr = ajaxCallWithJson('/webPage/dev/CheckOut', requestInfo, 'json');
-	
-	/*reqSw = true;
-	var etcObj:Object = {};
-	etcObj.UserID = strUserId;
-	etcObj.ReqCD  = strReqCD;
-	etcObj.Sayu	  = sayu_txt.text;
-	etcObj.cm_syscd = syscd_combo.selectedItem.cm_syscd;
-	etcObj.cm_sysgb = syscd_combo.selectedItem.cm_sysgb;
-	if(cboIsrId.enabled && cboIsrId.selectedIndex > 0){
-		etcObj.srid  = cboIsrId.selectedItem.cc_srid;
-		etcObj.cc_reqtitle  = cboIsrId.selectedItem.cc_reqtitle;
-	}else{
-		etcObj.srid = "";
-		etcObj.cc_reqtitle = "";
+	if(ajaxReturnStr !== 'ERR' && ajaxReturnStr !== null) {
+		reqSw = false;
+		/*
+		 * 파일업 팝업 나중에 만들기
+		strAcptNo = event.result as String;
+		reqSw = false;
+		if (upFiles.length > 0){
+			fileUpPop2 = fileUpSender(PopUpManager.createPopUp(this, fileUpSender, true));
+	        PopUpManager.centerPopUp(fileUpPop2);//팝업을 중앙에 위치하도록 함
+	        fileUpPop2._arrUploadFiles = new ArrayCollection(upFiles.source);
+	        fileUpPop2.acptNo = event.result as String;
+	        fileUpPop2.fileGb = "1";
+		    fileUpPop2.parentfuc = fileSenderClose;
+		    fileUpPop2.initCom();
+		}else{
+			fileSenderClose_sub();
+		}
+		 */
+		fileSenderClose(ajaxReturnStr);
+	} else {
+		SBUxMethod.openAlert(new Alert('확인', '체크아웃 실패, 관리자에게 문의하세요', 'info'));
 	}
-//	if (optPos1.selected) etcObj.ckoutpos = "R";
-//	else etcObj.ckoutpos = "L";
-	etcObj.ckoutpos = outpos;
-	Cmr0100.request_Check_Out(list2_grid_dp1.toArray(),etcObj,confirm_dp.toArray());
-	etcObj = null;*/
+	
+}
+
+function fileSenderClose(ajaxReturnStr) {
+	var ajaxResultDataWithSvrFileMake = null;
+	var ajaxResultDataWithGetFileList = null;
+	if ( outpos === 'A' || outpos === 'L' ) {
+		
+		var svrFIleMakeInfo = {
+			ACPTNO		: 	JSON.stringify(ajaxReturnStr),
+			requestType	: 	'SVRFILEMAKE'
+		}
+		
+		ajaxResultData = ajaxCallWithJson('/webPage/dev/CheckOut', svrFIleMakeInfo, 'json');
+		if(ajaxResultData !== 'ERR' && ajaxResultData === '0'){
+			
+			var fileInfo = {
+				ACPTNO		: 	JSON.stringify(ajaxReturnStr),
+				requestType	: 	'GETFILELIST'
+			}
+			ajaxResultDataWithGetFileList = ajaxCallWithJson('/webPage/dev/CheckOut', fileInfo, 'json');
+			if(ajaxResultDataWithGetFileList !== 'ERR' && ajaxResultDataWithGetFileList === '0'){
+				/*
+				 * 파일업다운 팝업 나중에 만들기...
+				 * progFiles.sort = null;
+				progFiles.source = event.result as Array;
+				if (progFiles.length == 0) {
+					ckout_end();
+				} else {
+					if (progFiles.getItemAt(0).cr_rsrcname == "ERROR") {
+						Alert.show("결재처리 중 오류가 발생하였습니다.");
+						ckout_end();
+						return;
+					} else {
+						fileUpDownPop = progFileUpDown_Agent(PopUpManager.createPopUp(this, progFileUpDown_Agent, true));
+			            PopUpManager.centerPopUp(fileUpDownPop);//팝업을 중앙에 위치하도록 함
+		    	        fileUpDownPop.acptNo = strAcptNo;
+		    	        fileUpDownPop.UserId = strUserId;
+		    	        fileUpDownPop.progFile_dp = progFiles;
+		    	        fileUpDownPop.popType = "G";
+		    	        fileUpDownPop.parentFunc = fileDownChk_Close;
+		        	    fileUpDownPop.initApp();
+					}
+				}*/
+			}
+			return;
+		}
+		
+		SBUxMethod.openAlert(new Alert('확인', ajaxResultData +'[조치 후 체크아웃 상세화면에서 재처리하시기 바랍니다.]', 'info'));
+		checkOutEnd();
+		return;
+		
+	} 
+	checkOutEnd();
+	
+}
+
+function checkOutEnd() {
+	
+	SBUxMethod.openAlert(new Alert('확인', '(현재 alert)체크아웃 신청완료! 상세 정보를 확인하시겠습니까? 나중에 체크아웃신청상세 만들어지면 confirm으로 바꾸기...', 'info'));
+	requestGridData = null;
+	requestGrid.refresh();
+	/*	업파일 팝업 만든후 작업...
+	 * 	upFiles = null;
+		upFiles = new ArrayCollection();
+	*/
+	SBUxMethod.attr('select_system', 'readonly', 'false');
+	SBUxMethod.attr('idx_request_btn', 'readonly', 'true');
+	outpos = '';
+	
+	if (searchMOD === 'B') {
+		console.log('B');
+		clickSearchBtn();
+		return;
+	}
+	console.log('T');
+	fileTreeClick();
 }
 
 function checkValidation() {
@@ -845,23 +927,23 @@ function checkValidation() {
 	requestText = $('#idx_request_text').val().length !== 0 ? $('#idx_request_text').val().trim() : null ;
 	
 	if( !$('#select_srid').is('disabled') && $("#select_srid option").index($("#select_srid option:selected")) < 1) {
-		alert('SR-ID를 선택하여 주십시오.');
+		SBUxMethod.openAlert(new Alert('확인', 'SR-ID를 선택하여 주십시오.', 'info'));
 		return;
 	}
 	
 	if(requestText === null || requestText.length === 0) {
-		alert('신청사유를 입력하여 주십시오.');
+		SBUxMethod.openAlert(new Alert('확인', '신청사유를 입력하여 주십시오.', 'info'));
 		$('#idx_request_text').focus();
 		return;
 	}
 	
 	if(requestGridData.length === 0) {
-		alert('신청할 파일을 입력하여 주십시오.');
+		SBUxMethod.openAlert(new Alert('확인', '신청할 파일을 입력하여 주십시오.', 'info'));
 		return;
 	}
 	
 	if (reqSw === true) {
-		Alert.show("현재 처리중입니다. 잠시 기다려 주시기 바랍니다.");
+		SBUxMethod.openAlert(new Alert('확인', '현재 처리중입니다. 잠시 기다려 주시기 바랍니다.', 'info'));
 		return;
 	}
 	

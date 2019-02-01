@@ -1,8 +1,19 @@
+/**
+ * 체크아웃 화면 서블릿 
+ * <pre>
+ * <b>History</b>
+ * 	작성자: 이용문
+ * 	버전 : 1.0
+ *  수정일 : 2019-01-29
+ */
+
 package html.app.dev;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.*;
+import com.google.gson.internal.LinkedTreeMap;
 
 import app.common.PrjInfo;
 import app.common.SysInfo;
@@ -20,6 +32,7 @@ import app.eCmr.Cmr0100;
 import app.eCmr.Cmr0200;
 import app.eCmr.Confirm_select;
 import html.app.common.ParsingCommon;
+import sun.security.jca.GetInstance.Instance;
 
 @WebServlet("/webPage/dev/CheckOut")
 public class CheckOut extends HttpServlet {
@@ -82,6 +95,12 @@ public class CheckOut extends HttpServlet {
 					break;
 				case "REQUESTCHECKOUT":
 					response.getWriter().write( requestCheckOut(request));
+					break;
+				case "SVRFILEMAKE":
+					response.getWriter().write( svrFileMake(request));
+					break;	
+				case "GETFILELIST":
+					response.getWriter().write( getProgFileList(request));
 					break;	
 				default:
 					break;
@@ -93,14 +112,32 @@ public class CheckOut extends HttpServlet {
 		
 	}//end of getSysInfo() method statement
 	
+	private String getProgFileList(HttpServletRequest request) throws SQLException, Exception {
+		String acptNo = ParsingCommon.parsingRequestJsonParamToString(request, "ACPTNO");
+		return gson.toJson( cmr0100.getProgFileList(acptNo, "G"));
+	}
+	
+	private String svrFileMake(HttpServletRequest request) throws SQLException, Exception {
+		String acptNo = ParsingCommon.parsingRequestJsonParamToString(request, "ACPTNO");
+		return gson.toJson( cmr0100.svrFileMake(acptNo));
+	}
+	
 	private String requestCheckOut(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String>	confirmInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "confirmInfoData");
+		HashMap<String, String>	requestMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "requestData");
 		ArrayList<HashMap<String, String>> requestFiles = ParsingCommon.parsingRequestJsonParamToArrayList(request, "requestFiles");
-		ArrayList<HashMap<String, String>> requestConfirmData = ParsingCommon.parsingRequestJsonParamToArrayList(request, "requestConfirmData");
+		ArrayList<HashMap<String, Object>> requestConfirmData = changeLinkedTreeMapToMap(ParsingCommon.parsingRequestJsonParamToArrayListHashMapObject(request, "requestConfirmData"));
+		return gson.toJson( cmr0100.request_Check_Out(requestFiles, requestMap, requestConfirmData) );
+	}
+	
+	private ArrayList<HashMap<String, Object>> changeLinkedTreeMapToMap(ArrayList<HashMap<String, Object>> changeTargetArr) {
 		
+		for(int i=0; i<changeTargetArr.size(); i++) {
+			String jsonStr = changeTargetArr.get(i).get("arysv").toString();
+			ArrayList<HashMap<String, Object>> arrayList = ParsingCommon.parsingJsonToArrayListHashMapObject(jsonStr);
+			changeTargetArr.get(i).put("arysv",arrayList);
+		}
 		
-		
-		return gson.toJson( confirm.Confirm_Info(confirmInfoMap) );
+		return changeTargetArr;
 	}
 	
 	private String getConfirmInfo(HttpServletRequest request) throws SQLException, Exception {
@@ -174,7 +211,6 @@ public class CheckOut extends HttpServlet {
 		}
 		
 	}
-	
 	
 	private String getRsrcPath(HttpServletRequest request) throws SQLException, Exception {
 		HashMap<String, String>				 rsrcPathMap = null;
