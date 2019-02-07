@@ -77,7 +77,7 @@ function encryptPasswdBef() { //변경전 비밀번호 암호화
 	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/PwdChange', tmpData, 'json');
 	
 	if(ajaxReturnData !== 'ERR') {
-		tmp_dp3 = data;
+		tmp_dp3 = ajaxReturnData;
 	}
 }
 
