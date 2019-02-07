@@ -1,4 +1,3 @@
-var menuJson; 
 var userid = window.parent.userId;     
 var cboRequest;
 var cboSyscd;
