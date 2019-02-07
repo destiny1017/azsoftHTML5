@@ -77,7 +77,7 @@
 					<div class="col-xs-12 col-sm-2">
 					</div>
 					<div class="col-xs-12 col-sm-10">
-						<sbux-label id="lb3" name="lb3" uitype="normal" text="8-12자리 이어야 합니다. (분기별 패스워드 변경)" style="color:#bdc0c4"></sbux-label>
+						<sbux-label id="lb3" name="lb3" uitype="normal" text="8-12자리 이어야 합니다. (분기별 패스워드 변경)" style="color:#bdc0c4" ></sbux-label>
 					</div>
 				</div>
 			</div>

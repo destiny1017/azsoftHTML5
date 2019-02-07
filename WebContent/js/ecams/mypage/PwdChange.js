@@ -243,7 +243,6 @@ function Cmd_Click3() {
 			setPassWd();
 		}
 	}
-	
 }
 
 function setPassWd() {
