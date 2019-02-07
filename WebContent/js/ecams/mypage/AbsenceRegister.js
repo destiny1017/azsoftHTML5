@@ -16,8 +16,8 @@ var Sql_tmp_dp1;
 var userid = window.parent.userId;
 
 $(document).ready(function() {
-	console.log('AbsenceRegister.js load');
 	console.log('123');
+	console.log('AbsenceRegister.js load123');
 	console.log("userid:"+userid);
 	createGrid();
 	$('#btnReg').children('span').text($('#rdoOpt0').attr('text'));
