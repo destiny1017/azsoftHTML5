@@ -68,7 +68,6 @@ public class PwdChange extends HttpServlet {
 		} finally {
 			requestType = null;
 		}
-		
 	}
 	
 	private String getUserName(HttpServletRequest request) throws SQLException, Exception {
