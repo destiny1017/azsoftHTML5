@@ -25,36 +25,36 @@
 				<div class="row">
 					<!-- 조회설정 -->
 					<div class="col-xs-12 col-sm-1">
-						<sbux-label id="idxLabel_norm" name="label_norm" uitype="normal" text="요청부서"></sbux-label>
+						<sbux-label id="lblDept1" name="lblDept1" uitype="normal" text="요청부서"></sbux-label>
 					</div>
 					<div class="col-xs-12 col-sm-2">
 						<sbux-select id="cboDept1" name="cboDept1" uitype="single" jsondata-ref = "cboDept1" jsondata-text="cm_deptname" jsondata-value="cm_deptcd"  style="width:100%;"></sbux-select>
 					</div>
 					<div class="col-xs-12 col-sm-1">
-						<sbux-label id="idxLabel_norm2" name="label_norm2" uitype="normal" text="SR상태"></sbux-label>
+						<sbux-label id="lblSta1" name="lblSta1" uitype="normal" text="SR상태"></sbux-label>
 					</div>
 					<div class="col-xs-12 col-sm-2">
 						<sbux-select id="cboSta1" name="cboSta1" uitype="single" jsondata-ref = "cboSta1" jsondata-text="cm_codename" jsondata-value="cm_micode"  style="width:100%;" onchange="fnChange(cboSta1)"></sbux-select>
 					</div>
 					<div class="col-xs-12 col-sm-1">
-						<sbux-label id="idxLabel_norm3" name="label_norm3" uitype="normal" text="SR-ID/SR명/문서번호"></sbux-label>
+						<sbux-label id="lblTit" name="lblTit" uitype="normal" text="SR-ID/SR명/문서번호"></sbux-label>
 					</div>
 					<div class="col-xs-12 col-sm-4">
-						<sbux-input id="input_text" name="input_text" uitype="text" title="SR-ID/SR명/문서번호" placeholder="SR-ID/SR명/문서번호를 입력하세요" onkeyenter="cmdQry_Proc()"></sbux-input>
+						<sbux-input id="txtTit" name="txtTit" uitype="text" title="SR-ID/SR명/문서번호" placeholder="SR-ID/SR명/문서번호를 입력하세요" onkeyenter="cmdQry_Proc()"></sbux-input>
 					</div>
 					<div class="col-xs-12 col-sm-1">
-						<sbux-button id="btn_cmdExl" name="btn_cmdExl" uitype="normal" text="엑셀저장" onclick="doDataToExcel()"></sbux-button>
+						<sbux-button id="btnExl" name="btnExl" uitype="normal" text="엑셀저장" onclick="doDataToExcel()"></sbux-button>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-1">
-						<sbux-label id="idxLabel_norm4" name="label_norm4" uitype="normal" text="등록부서"></sbux-label>
+						<sbux-label id="lblDept2" name="lblDept2" uitype="normal" text="등록부서"></sbux-label>
 					</div>
 					<div class="col-xs-12 col-sm-2">
 						<sbux-select id="cboDept2" name="cboDept2" uitype="single" jsondata-ref = "cboDept2" jsondata-text="cm_deptname" jsondata-value="cm_deptcd" style="width:100%;"></sbux-select>
 					</div>
 					<div class="col-xs-12 col-sm-1">
-						<sbux-label id="idxLabel_norm5" name="label_norm5" uitype="normal" text="개발자상태"></sbux-label>
+						<sbux-label id="lblSta2" name="lblSta2" uitype="normal" text="개발자상태"></sbux-label>
 					</div>
 					<div class="col-xs-12 col-sm-2">
 						<sbux-select id="cboSta2" name="cboSta2" uitype="single" jsondata-ref = "cboSta2" jsondata-text="cm_codename" jsondata-value="cm_micode" style="width:100%;" onchange="fnChange(cboSta2)"></sbux-select>
@@ -66,7 +66,7 @@
 					</div>
 					<div class="col-xs-12 col-sm-1">
 						<div class="row">
-							<sbux-label id="idxLabel_nor12" name="label_norm12" uitype="normal" text="등록일"></sbux-label>
+							<sbux-label id="lblStD" name="lblStD" uitype="normal" text="등록일"></sbux-label>
 						</div>
 					</div>
 					<div class="col-xs-12 col-sm-2">
@@ -74,33 +74,33 @@
 							<sbux-picker id="datEdD" name="datEdD" uitype="date" mode="popup" show-button-bar="false" style="width:100%;"></sbux-picker>
 					</div>
 					<div class="col-xs-12 col-sm-1">
-						<sbux-button id="btn_cmdQry" name="btn_cmdQry" uitype="normal" text="조&nbsp;&nbsp;&nbsp;&nbsp;회" onclick="cmdQry_Proc()"></sbux-button>
+						<sbux-button id="btnCmdQry" name="btnCmdQry" uitype="normal" text="조&nbsp;&nbsp;&nbsp;&nbsp;회" onclick="cmdQry_Proc()"></sbux-button>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-xs-12 col-sm-1 col-sm-offset-1" style="background-color: #FF8000;">
-						<sbux-label id="idxLabel_norm6" name="label_norm6" uitype="normal" text="접수" style="color:#FFFFFF; padding-bottom:5px;"></sbux-label>
+						<sbux-label id="lblCmt1" name="lblCmt1" uitype="normal" text="접수" style="color:#FFFFFF; padding-bottom:5px;"></sbux-label>
 					</div>
 					<div class="col-xs-12 col-sm-1" style="background-color: #145A32;">
-						<sbux-label id="idxLabel_norm7" name="label_norm7" uitype="normal" text="개발" style="color:#FFFFFF; padding-bottom:5px;"></sbux-label>				
+						<sbux-label id=lblCmt2 name=lblCmt2 uitype="normal" text="개발" style="color:#FFFFFF; padding-bottom:5px;"></sbux-label>				
 					</div>
 					<div class="col-xs-12 col-sm-1" style="background-color: #BE81F7;">
-						<sbux-label id="idxLabel_norm8" name="label_norm8" uitype="normal" text="테스트" style="color:#FFFFFF; padding-bottom:5px;"></sbux-label>
+						<sbux-label id="lblCmt3" name="lblCmt3" uitype="normal" text="테스트" style="color:#FFFFFF; padding-bottom:5px;"></sbux-label>
 					</div>
 					<div class="col-xs-12 col-sm-1" style="background-color: #045FB4;">
-						<sbux-label id="idxLabel_norm9" name="label_norm9" uitype="normal" text="적용" style="color:#FFFFFF; padding-bottom:5px;"></sbux-label>
+						<sbux-label id="lblCmt4" name="lblCmt4" uitype="normal" text="적용" style="color:#FFFFFF; padding-bottom:5px;"></sbux-label>
 					</div>
 					<div class="col-xs-12 col-sm-1" style="background-color: #2E2E2E;">
-						<sbux-label id="idxLabel_norm10" name="label_norm10" uitype="normal" text="처리완료" style="color:#FFFFFF; padding-bottom:5px;"></sbux-label>
+						<sbux-label id="lblCmt5" name="lblCmt5" uitype="normal" text="처리완료" style="color:#FFFFFF; padding-bottom:5px;"></sbux-label>
 					</div>
 					<div class="col-xs-12 col-sm-1" style="background-color: #FF0000;">
-						<sbux-label id="idxLabel_nor11" name="label_norm11" uitype="normal" text="반려 또는 취소" style="color:#FFFFFF; padding-bottom:5px;"></sbux-label>
+						<sbux-label id="lblCmt6" name="lblCmt6" uitype="normal" text="반려 또는 취소" style="color:#FFFFFF; padding-bottom:5px;"></sbux-label>
 					</div>
 					<div class="col-xs-12 col-sm-1 col-sm-offset-3">
-						<sbux-label id="idxLabel_nor13" name="label_norm13" uitype="normal" text="총0건"></sbux-label>
+						<sbux-label id="lbTotalCnt" name="lbTotalCnt" uitype="normal" text="총0건"></sbux-label>
 					</div>
 					<div class="col-xs-12 col-sm-1">
-						<sbux-button id="btn_cmdClear" name="btn_cmdClear" uitype="normal" text="초기화"></sbux-button>
+						<sbux-button id="btnCmdClear" name="btnCmdClear" uitype="normal" text="초기화"></sbux-button>
 					</div>
 				</div>
 			</div>

@@ -1,10 +1,10 @@
 var menuJson; 
 var userid = window.parent.userId;     
-var reqcd_combo;
-var syscd_combo;
+var cboRequest;
+var cboSyscd;
 var strReqCD;
 var strTmpDir = "";
-var stepcbo;
+var cboStep;
 var cboGbn;
 var grid_data;
 
@@ -42,12 +42,12 @@ function strReqCD_set(){
 	step_combo_init();
 	if(strReqCD=="04" || strReqCD=="05" || strReqCD == "07" || strReqCD == "03"){
 		cboGbn_set();
-		document.getElementById('idxLabel_norm12').style.visibility = "visible";
+		document.getElementById('lbExGbn').style.visibility = "visible";
 		document.getElementById('cboGbn').style.visibility = "visible";	
 		datagrid.setColHidden(9, false, true);
 		datagrid.setColHidden(10, false, true);
 	}else{
-		document.getElementById('idxLabel_norm12').style.visibility = "hidden";
+		document.getElementById('lbExGbn').style.visibility = "hidden";
 		document.getElementById('cboGbn').style.visibility = "hidden";
 		datagrid.setColHidden(9, true, true);
 		datagrid.setColHidden(10, true, true);
@@ -64,8 +64,8 @@ function userInfo_check(){	// 사용자의 관리자 권한 여부 체크
 	ajaxResultData = ajaxCallWithJson('/webPage/dev/DistributeStatus', tmpData, 'json');
 	
 	if('1' == ajaxResultData[0].cm_admin){
-		SBUxMethod.set('chkbox_norm', 'false');
-		SBUxMethod.attr('input_text2', 'disabled', 'false');
+		SBUxMethod.set('chkSelf', 'false');
+		SBUxMethod.attr('txtUserName', 'disabled', 'false');
 	}
 }
 
@@ -77,9 +77,9 @@ function codeInfo_set(){ // 신청종류
 	
 	ajaxResultData = ajaxCallWithJson('/webPage/dev/DistributeStatus', tmpData, 'json');
 	
-	reqcd_combo = ajaxResultData;
+	cboRequest = ajaxResultData;
 	
-	reqcd_combo = reqcd_combo.filter(function(data) {
+	cboRequest = cboRequest.filter(function(data) {
 		if(strReqCD == "01"){        	   		
 			if(data.cm_micode === "01" || data.cm_micode === "02" || data.cm_micode === "11" || data.cm_micode === "00"){
 				return true;
@@ -93,7 +93,7 @@ function codeInfo_set(){ // 신청종류
  	   	}
  	});
 	
-	SBUxMethod.refresh('reqcd_combo');
+	SBUxMethod.refresh('cboRequest');
 }
 
 function systemPath_set(){
@@ -116,22 +116,22 @@ function getSysInfo(){
 	ajaxResultData = ajaxCallWithJson('/webPage/dev/DistributeStatus', tmpData, 'json');
 	
 	console.log(ajaxResultData);
-	syscd_combo = ajaxResultData;        	        	        	
-	SBUxMethod.refresh('syscd_combo');
+	cboSyscd = ajaxResultData;        	        	        	
+	SBUxMethod.refresh('cboSyscd');
 }
 
 function step_combo_init(){
-	stepcbo = [
+	cboStep = [
 		{ label : "전체", value : "0" },
 		{ label : "미완료", value : "1" },
 		{ label : "반려/회수", value : "3" },
 		{ label : "완료", value : "9" }		
 	];
-	SBUxMethod.refresh('stepcbo');
+	SBUxMethod.refresh('cboStep');
 }
 
 function step_combo_change_resultHandler(args){
-	if(SBUxMethod.get("stepcbo") == "1"){
+	if(SBUxMethod.get("cboStep") == "1"){
 		$('#datStD').attr('disabled', true);
 		$('[name="_datStD_sub"]').attr('disabled', true);
 		$('#datEdD').attr('disabled', true);
@@ -158,19 +158,19 @@ function cmdQry_Proc(){
 	var tmpObj = {};
 	var ajaxResultData = null;
 	
-	tmpObj.syscd = SBUxMethod.get("syscd_combo");
+	tmpObj.syscd = SBUxMethod.get("cboSyscd");
 	tmpObj.jobcd = "0000";
-	if(SBUxMethod.get("input_text3") !== undefined){
-		tmpObj.spms = SBUxMethod.get("input_text3");
+	if(SBUxMethod.get("txtSrIdInput") !== undefined){
+		tmpObj.spms = SBUxMethod.get("txtSrIdInput");
 	} else {
 		tmpObj.spms = "";
 	}
 	
-	tmpObj.stepcd = SBUxMethod.get("stepcbo");
-	tmpObj.reqcd = SBUxMethod.get("reqcd_combo"); 
+	tmpObj.stepcd = SBUxMethod.get("cboStep");
+	tmpObj.reqcd = SBUxMethod.get("cboRequest"); 
 	tmpObj.req = strReqCD;
 	tmpObj.UserID = userid;
-	tmpObj.dategbn = SBUxMethod.get("rdo_norm");
+	tmpObj.dategbn = SBUxMethod.get("rdoDate");
 	
 	var strStD = SBUxMethod.get("datStD");
 	var strEdD = SBUxMethod.get("datEdD");
@@ -191,20 +191,24 @@ function cmdQry_Proc(){
 		tmpObj.gbn = "ALL";
 	}
 	
-	tmpObj.prgname = "";	// 상세조회 버튼 미존재
+	if(SBUxMethod.get("txtProgName") !== undefined){
+		tmpObj.prgname = SBUxMethod.get("txtProgName");	// 상세조회 버튼 미존재
+	} else {
+		tmpObj.userName = "";
+	}
 	
-	if(SBUxMethod.get("chkbox_norm").chkbox_norm === true){
+	
+	if(SBUxMethod.get("chkSelf").chkSelf === true){
 		tmpObj.chkSelf = "true";
 		tmpObj.userName ="";
 	} else {
 		tmpObj.chkSelf = "false";
 		
-		if(SBUxMethod.get("input_text2") !== undefined){
-			tmpObj.userName = SBUxMethod.get("input_text2");
+		if(SBUxMethod.get("txtUserName") !== undefined){
+			tmpObj.userName = SBUxMethod.get("txtUserName");
 		} else {
 			tmpObj.userName = "";
 		}
-		
 	}
 
 	var tmpData = {
@@ -215,7 +219,7 @@ function cmdQry_Proc(){
 	ajaxResultData = ajaxCallWithJson('/webPage/dev/DistributeStatus', tmpData, 'json');
 	
 	var cnt = Object.keys(ajaxResultData).length;			// json 객체 길이 구하기			
-	SBUxMethod.set('idxLabel_norm11', '총'+cnt+'건');		// 총 개수 표현		
+	SBUxMethod.set('lbCnt', '총'+cnt+'건');		// 총 개수 표현		
 	
 	grid_data = ajaxResultData;
 	datagrid.refresh();	
