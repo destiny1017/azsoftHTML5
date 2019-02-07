@@ -8,6 +8,7 @@
  */
 var userId 	= null;
 var userName= null;
+var adminYN = null;
 var request = new Request();
 
 $(document).ready(function() {
@@ -28,7 +29,9 @@ function getSession() {
 	ajaxUserData = ajaxCallWithJson('/webPage/main/eCAMSBaseServlet', sessionInfo, 'json');
 	userName= ajaxUserData.userName;
 	userId 	= ajaxUserData.userId;
+	adminYN = ajaxUserData.adminYN;
 	console.log('userid:'+userId);
 	console.log('userName:'+userName);
+	console.log('adminYN:'+adminYN);
 	menu_set();
 }

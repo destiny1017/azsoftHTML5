@@ -331,6 +331,8 @@ function getFileGridData(getFileData) {
 		
 		if(requestGridData.length > 0 ){
 			fileGridData.forEach( function(fileGridItem, fileGridItemIndex) {
+				//row header 달기
+				fileGridItem.seq = fileGridItemIndex + 1;
 				requestGridData.forEach( function(requestGridItem, requestGridItemIndex) {
 					if(fileGridItem.cr_itemid == requestGridItem.cr_itemid){
 						fileGridItem.selected_flag = '1';
@@ -577,7 +579,7 @@ function checkDuplication(downFileList) {
 		return;
 	}
 	
-	addedFileList 		= requestGridData.concat(downFileList);
+	addedFileList 	= requestGridData.concat(downFileList);
 	requestGridData	= copyReferenceNone(addedFileList);
 	
 	
@@ -585,8 +587,11 @@ function checkDuplication(downFileList) {
 		SBUxMethod.attr('select_system', 'readonly', 'true');
 		//파일비교 버튼 보이게 수정
 		SBUxMethod.attr('idx_request_btn', 'readonly', 'false');
-		$(requestGridData).each(function(i) {
-			var currentItem = requestGridData[i];
+		
+		requestGridData.forEach(function(requestFileGridData, requestFileGridDataIndex) {
+			// grid row header 달기
+			requestFileGridData.seq = requestFileGridDataIndex + 1;
+			var currentItem = requestFileGridData;
 			if( currentItem.cm_info.substring(44,45) == '1') {
 				if( outpos == 'R'){
 					outpos = 'A';
@@ -600,7 +605,7 @@ function checkDuplication(downFileList) {
 					outpos = 'R';
 				}
 			}
-		});
+		})
 	}
 	
 	fileGrid.refresh();
@@ -610,50 +615,51 @@ function checkDuplication(downFileList) {
 
 function createElements() {
 	var SBGridProperties = {};
-	SBGridProperties.parentid = 'fileGrid';  		// [필수] 그리드 영역의 div id 입니다.            
-	SBGridProperties.id = 'fileGrid';          		// [필수] 그리드를 담기위한 객체명과 동일하게 입력합니다.                
-	SBGridProperties.jsonref = 'fileGridData';    	// [필수] 그리드의 데이터를 나타내기 위한 json data 객체명을 입력합니다.
-	
+	SBGridProperties.parentid 	= 'fileGrid';  		// [필수] 그리드 영역의 div id 입니다.            
+	SBGridProperties.id 		= 'fileGrid';       // [필수] 그리드를 담기위한 객체명과 동일하게 입력합니다.                
+	SBGridProperties.jsonref 	= 'fileGridData';   // [필수] 그리드의 데이터를 나타내기 위한 json data 객체명을 입력합니다.
+	SBGridProperties.rowheader 	= 'seq';
 	// 그리드의 여러 속성들을 입력합니다.
-	SBGridProperties.extendlastcol = 'scroll';
-	SBGridProperties.tooltip = true;
-	SBGridProperties.ellipsis = true;
-	SBGridProperties.rowdragmove = true;
+	SBGridProperties.extendlastcol 	= 'scroll';
+	SBGridProperties.tooltip 		= true;
+	SBGridProperties.ellipsis 		= true;
+	SBGridProperties.rowdragmove 	= true;
 	
 	// [필수] 그리드의 컬럼을 입력합니다.  
 	SBGridProperties.columns = [
-		new GridDefaultColumn('프로그램경로', 	'cm_dirpath', 	'500px', 'output'),
-		new GridDefaultColumn('프로그램명', 	'cr_rsrcname', 	'150px', 'output'),
-		new GridDefaultColumn('프로그램종류', 	'jawon', 		'100px', 'output','text-align:center'),
-		new GridDefaultColumn('프로그램설명', 	'cr_story', 	'200px', 'output'),
-		new GridDefaultColumn('상태', 		'codename', 	'80px',  'output','text-align:center'),
-		new GridDefaultColumn('버전', 		'cr_lstver', 	'80px',  'output','text-align:center'),
-		new GridDefaultColumn('수정자', 		'cm_username', 	'90px',  'output'),
-		new GridDefaultColumn('수정일', 		'lastdt', 		'120px', 'output','text-align:center')
+		new GridDefaultColumn('프로그램경로', 	'cm_dirpath', 	'30%', 'output'),
+		new GridDefaultColumn('프로그램명', 	'cr_rsrcname', 	'15%', 'output'),
+		new GridDefaultColumn('프로그램종류', 	'jawon', 		'10%', 'output','text-align:center'),
+		new GridDefaultColumn('프로그램설명', 	'cr_story', 	'20%', 'output'),
+		new GridDefaultColumn('상태', 		'codename', 	'5%',  'output','text-align:center'),
+		new GridDefaultColumn('버전', 		'cr_lstver', 	'5%',  'output','text-align:center'),
+		new GridDefaultColumn('수정자', 		'cm_username', 	'5%',  'output'),
+		new GridDefaultColumn('수정일', 		'lastdt', 		'10%', 'output','text-align:center')
 	];
-	fileGrid = _SBGrid.create(SBGridProperties); 	// 만들어진 SBGridProperties 객체를 파라메터로 전달합니다.
+	fileGrid = _SBGrid.create(SBGridProperties); 
+	
 	
 	var SBGridProperties2 = {};
-	SBGridProperties2.parentid = 'requestGrid';  	// [필수] 그리드 영역의 div id 입니다.            
-	SBGridProperties2.id = 'requestGrid';          	// [필수] 그리드를 담기위한 객체명과 동일하게 입력합니다.                
-	SBGridProperties2.jsonref = 'requestGridData';  // [필수] 그리드의 데이터를 나타내기 위한 json data 객체명을 입력합니다.
-	
+	SBGridProperties2.parentid 	= 'requestGrid';  	// [필수] 그리드 영역의 div id 입니다.            
+	SBGridProperties2.id 		= 'requestGrid';    // [필수] 그리드를 담기위한 객체명과 동일하게 입력합니다.                
+	SBGridProperties2.jsonref 	= 'requestGridData';// [필수] 그리드의 데이터를 나타내기 위한 json data 객체명을 입력합니다.
+	SBGridProperties2.rowheader = 'seq';
 	// 그리드의 여러 속성들을 입력합니다.
 	SBGridProperties2.extendlastcol = 'scroll';
-	SBGridProperties2.tooltip = true;
-	SBGridProperties2.ellipsis = true;
-	SBGridProperties2.rowdragmove = true;
+	SBGridProperties2.tooltip 		= true;
+	SBGridProperties2.ellipsis 		= true;
+	SBGridProperties2.rowdragmove 	= true;
 	
 	SBGridProperties2.columns = [
-		new GridDefaultColumn('프로그램경로', 	'view_dirpath', '500px', 'output'),
-		new GridDefaultColumn('프로그램명', 	'cr_rsrcname', 	'150px', 'output'),
-		new GridDefaultColumn('업무명', 		'jobname', 		'150px', 'output','text-align:center'),
-		new GridDefaultColumn('프로그램종류', 	'jawon', 		'100px', 'output','text-align:center'),
-		new GridDefaultColumn('프로그램설명', 	'cr_story', 	'200px', 'output'),
-		new GridDefaultColumn('신청버전', 		'cr_lstver', 	'80px',  'output','text-align:center'),
-		new GridDefaultColumn('로컬위치', 		'pcdir1', 		'80px',  'output','text-align:center'),
-		new GridDefaultColumn('수정자', 		'cm_username', 	'90px',  'output'),
-		new GridDefaultColumn('수정일', 		'lastdt', 		'120px', 'output','text-align:center')
+		new GridDefaultColumn('프로그램경로', 	'view_dirpath', '30%', 	'output'),
+		new GridDefaultColumn('프로그램명', 	'cr_rsrcname', 	'10%', 	'output'),
+		new GridDefaultColumn('업무명', 		'jobname', 		'5%', 	'output','text-align:center'),
+		new GridDefaultColumn('프로그램종류', 	'jawon', 		'5%', 	'output','text-align:center'),
+		new GridDefaultColumn('프로그램설명', 	'cr_story', 	'20%', 	'output'),
+		new GridDefaultColumn('신청버전', 		'cr_lstver', 	'5%',  	'output','text-align:center'),
+		new GridDefaultColumn('로컬위치', 		'pcdir1', 		'10%',  'output','text-align:center'),
+		new GridDefaultColumn('수정자', 		'cm_username', 	'5%',  	'output'),
+		new GridDefaultColumn('수정일', 		'lastdt', 		'10%', 	'output','text-align:center')
 	];
 	requestGrid = _SBGrid.create(SBGridProperties2); // 만들어진 SBGridProperties 객체를 파라메터로 전달합니다.
 	

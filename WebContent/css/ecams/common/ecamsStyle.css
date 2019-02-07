@@ -559,6 +559,14 @@
 	padding: 0 !important;
 }
 
+.text-center {
+	text-align:center;
+}
+
+.sm-grid-height {
+	height: 200px;
+}
+
 .default-grid-height {
 	height: 300px;
 }

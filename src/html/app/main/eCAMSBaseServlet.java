@@ -68,9 +68,9 @@ public class eCAMSBaseServlet extends HttpServlet {
 		HashMap<String, String> userInfoMap = new HashMap<String, String>();
 		userInfoMap.put("userId", 	loginManager.getUserID(sessionID));
 		userInfoMap.put("userName", loginManager.getUserName(userInfoMap.get("userId")));
+		userInfoMap.put("adminYN",  userinfo.isAdmin(loginManager.getUserID(sessionID)).toString());
 		return gson.toJson(userInfoMap);
 	}
-	
 	
 	private String getMenu(HttpServletRequest request) throws SQLException, Exception {
 		String sysMap = null;

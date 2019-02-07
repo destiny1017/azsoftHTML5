@@ -3,8 +3,8 @@
  * <pre>
  * <b>History</b>
  * 	작성자: 이용문
- * 	버전 : 1.0
- *  수정일 : 2019-01-29
+ * 	버전 : 1.1
+ *  수정일 : 2019-02-07
  */
 var SBUxConfig = {
 	License : "SBUX-G12XD-131XD",				
@@ -137,6 +137,94 @@ function Request(){
         }
         return requestParam;
     };
+}
+
+
+function CodeInfo(MACODE, SelMsg, closeYn) {
+	this.MACODE 	= MACODE;
+	this.SelMsg 	= SelMsg;
+	this.closeYn 	= closeYn;
+};
+
+
+/* 코드정보 가져오기 공통 함수 정의.
+ * 한번에 여러개 혹은 하나의 코드정보를 가져옵니다.
+ * 
+ * EX)
+ * var codeInfos = getCodeInfoCommon( [new CodeInfo('CATTYPE','ALL','N'),		>> CodeInfo 객체를    배열 형태로 파라미터 전달
+										new CodeInfo('QRYGBN','ALL','N')] );
+	
+	cboCatTypeData 	= codeInfos.CATTYPE;	>> 리턴받은 DATA에서 MACODE값으로 해당 값을 불러서 사용하면 됩니다.
+	cboQryGbnData 	= codeInfos.QRYGBN;
+	SBUxMethod.refresh('cboCatType');
+	SBUxMethod.refresh('cboQryGbn');
+ */
+function getCodeInfoCommon(codeInfoArr) {
+	var returnCodeInfo = {};
+	var ajaxReturnData = null;
+	var codeInfo = {};
+	codeInfoArr.forEach(function( codeInfoItem, codeInfoItemIndex) {
+		codeInfo = {
+			codeInfoData: 	JSON.stringify(codeInfoItem),
+			requestType: 	'CODE_INFO'
+		};
+		ajaxReturnData = ajaxCallWithJson('/webPage/common/CommonCodeInfo', codeInfo, 'json');
+		
+		if(ajaxReturnData !== 'ERR') {
+			returnCodeInfo[codeInfoItem.MACODE] = ajaxReturnData;
+		}
+	});
+	return returnCodeInfo;
+}
+
+
+/* 현재 날짜를 기준으로 
+ *  dateSeparator = ['MON' , 'DATE', 'LASTDATE' , 'FIRSTDATE'] 중 하나 선택사용 
+ *  increaseDecreaseNumber = 양수 혹은 음수
+ *  
+ *  EX)
+ *  SBUxMethod.set('datStD',getDate('DATE',-1));  	>> 현재 날짜에서 하루전날짜
+ *  SBUxMethod.set('datStD',getDate('DATE',0));		>> 현재 날짜
+ *  SBUxMethod.set('datStD',getDate('MON',-1));		>> 한달 전
+ *  SBUxMethod.set('datStD',getDate('MON',1)); 		>> 한달 후
+ *  SBUxMethod.set('datStD',getDate('LASTDATE',0));	>> 현재달의 마지막 날짜
+ *  SBUxMethod.set('datStD',getDate('FIRSTDATE',0));>> 현재달의 첫 날짜		 		
+ * 
+ */
+function getDate(dateSeparator, increaseDecreaseNumber) {
+	
+	var calcuDate = new Date( new Date().getFullYear() 
+						, new Date().getMonth().length === 1 ?  '0'+ new Date().getMonth() : new Date().getMonth()
+						, new Date().getDate().length === 1 ? '0'+new Date().getDate() : new Date().getDate() );
+	
+	if(dateSeparator === 'MON'){
+		if(calcuDate.getMonth() === '0' && increaseDecreaseNumber === -1){
+			calcuDate.setFullYear(calcuDate.getFullYear() - 1);
+			calcuDate.setMonth(11);
+		}else if(calcuDate.getMonth() === '11' && increaseDecreaseNumber === 1){
+			calcuDate.setFullYear(calcuDate.getFullYear() + 1);
+            calcuDate.setMonth(0);
+		}else {
+        	calcuDate.setMonth(calcuDate.getMonth() + increaseDecreaseNumber);
+        }
+	}
+	if(dateSeparator === 'DATE') calcuDate.setDate(calcuDate.getDate() + increaseDecreaseNumber);
+	if(dateSeparator === 'LASTDATE') calcuDate.setDate(0);
+	if(dateSeparator === 'FIRSTDATE') calcuDate.setDate(1);
+	
+	return changeDateToYYYYMMDD(calcuDate);
+}
+
+/*
+ * Javascript Date형식을 YYYYMMDD의 String으로 형 변환
+ */
+function changeDateToYYYYMMDD(date){
+	
+	var year 	= date.getFullYear();
+	var month 	= (date.getMonth() + 1) <  10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1);
+	var date 	= date.getDate() <  10 ? '0' + date.getDate() : date.getDate();
+	
+	return year+month+date;
 }
 
 
