@@ -16,7 +16,6 @@ var Sql_tmp_dp1;
 var userid = window.parent.userId;
 
 $(document).ready(function() {
-	console.log('123');
 	console.log('AbsenceRegister.js load123');
 	console.log("userid:"+userid);
 	createGrid();
@@ -279,13 +278,13 @@ function getDaegyulState_resultHandler() {
 	cm_userid = SBUxMethod.get('cboUser');
 	var ajaxReturnData = null;
 	
-	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/AbsenceRegister', tmpData, 'json');
-	
 	var tmpData = {
 			requestType : 'Cmm1100_3',
 			UserId : userid,
 			cm_userid : cm_userid
 	}
+	
+	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/AbsenceRegister', tmpData, 'json');
 	
 	if(ajaxReturnData !== 'ERR') {
 		daegyulState = ajaxReturnData;
