@@ -8,12 +8,12 @@
  *  수정일 : 2019-02-07
  * 
  */
-var UserId = null;
 var strAdmin = "";
 var myGrid1;
 var combo_dp1;
 var strStD = "";
 var strEdD = "";
+var userid = window.parent.userId;
 var dataObj = {
 	memo_id : "",
 	user_name : "",
@@ -23,20 +23,19 @@ var dataObj = {
 
 $(document).ready(function() {
 	createGrid();
-	UserId = "MASTER";
 	SBUxMethod.hide('start_date');
 	SBUxMethod.hide('end_date');
 	date_init();
-	isAdmin_resultHandler();
+	getAdminInfo();
 	combo1_resultHandler();
 
 	console.log($("#Txt_Find"));
-	myGrid1.bind('dblclick', 'myGrid_doubleClick');
+	myGrid1.bind('dblclick', 'doubleClickGrid1');
 })
 
 function createGrid() {
 	var myGrid1Properties = {};
-	myGrid1Properties.parentid = "myGrid1Area";
+	myGrid1Properties.parentid = "divGrid1";
 	myGrid1Properties.id = "myGrid1";
 	myGrid1Properties.jsonref = "grid_dp1";
 	myGrid1Properties.rowheader = [ 'seq' ];
@@ -108,49 +107,43 @@ function date_init() {
 	SBUxMethod.set('end_date', "" + year + month + date);
 }
 
-function isAdmin_resultHandler() {
+function getAdminInfo() {//isAdmin_resultHandler
 	strAdmin = "0";
-	$.ajax({
-		type : "POST",
-		url : "/webPage/mypage/Notice",
-		data : "CLASSNAME=UserInfo&UserId=MASTER",
-		dataType : 'json',
-		async : true,
-		success : function(data) {
-			if (data) {
-				strAdmin = "1";
-				SBUxMethod.attr('Cmd_Ip3', 'disabled', 'false');
-			} else {
-				SBUxMethod.attr('Cmd_Ip3', 'disabled', 'true');
-			}
-
-		},
-		error : function(req, stat, error) {
-			console.log(error);
-			alert(error);
+	var ajaxReturnData = null;
+	
+	var tmpData = {
+			requestType : 'UserInfo',
+			UserId : userid
+	}
+	
+	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', tmpData, 'json');
+	
+	if(ajaxReturnData !== 'ERR') {
+		if (ajaxReturnData) { //관리자여부
+			strAdmin = "1";
+			SBUxMethod.attr('btnReg', 'disabled', 'false');
+		} else {
+			SBUxMethod.attr('btnReg', 'disabled', 'true');
 		}
-	})
-
+	}
 }
 
 function combo1_resultHandler() {
-	$.ajax({
-		type : "POST",
-		url : "/webPage/mypage/Notice",
-		data : "CLASSNAME=CodeInfo&UserId=MASTER",
-		dataType : 'json',
-		async : true,
-		success : function(data) {
-			combo_dp1 = data;
-			SBUxMethod.refresh('Cbo_Find');
-			cbo();
-			grid_resultHandler();
-		},
-		error : function(req, stat, error) {
-			console.log(error);
-			alert(error);
-		}
-	})
+	var ajaxReturnData = null;
+	
+	var tmpData = {
+			requestType : 'CodeInfo',
+			UserId : userid
+	}
+	
+	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', tmpData, 'json');
+	
+	if(ajaxReturnData !== 'ERR') {
+		combo_dp1 = ajaxReturnData;
+		SBUxMethod.refresh('Cbo_Find');
+		cbo();
+		grid_resultHandler();
+	}
 }
 
 function cbo() {
@@ -159,8 +152,7 @@ function cbo() {
 	SBUxMethod.hide('lbl_c');
 	SBUxMethod.show('Txt_Find');
 	SBUxMethod.attr('Txt_Find', 'disabled', 'true');
-	if (SBUxMethod.get('Cbo_Find') == "01"
-			|| SBUxMethod.get('Cbo_Find') == "02") {
+	if (SBUxMethod.get('Cbo_Find') == "01" || SBUxMethod.get('Cbo_Find') == "02") {
 		SBUxMethod.show('Txt_Find');
 		SBUxMethod.attr('Txt_Find', 'disabled', 'false');
 	} else if (SBUxMethod.get('Cbo_Find') == "03") {
@@ -174,24 +166,24 @@ function cbo() {
 function grid_resultHandler() {
 	var CboFind_micode = SBUxMethod.get("Cbo_Find");
 	var TxtFind_text = document.getElementById("Txt_Find").value;
+	var ajaxReturnData = null;
+	
+	var tmpData = {
+			requestType : 'Cmm2100',
+			UserId : userid,
+			CboFind_micode : CboFind_micode,
+			TxtFind_text : TxtFind_text,
+			strStD : $("#strStD").val(),
+			strEdD : $("#strEdD").val()
+	}
+	
+	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', tmpData, 'json');
 
-	$.ajax({
-		type : "POST",
-		url : "/webPage/mypage/Notice",
-		data : "CLASSNAME=Cmm2100&UserId=MASTER&CboFind_micode="
-				+ CboFind_micode + "&TxtFind_text=" + TxtFind_text + "&strStD="
-				+ $("#strStD").val() + "&strEdD=" + $("#strEdD").val(),
-		dataType : 'json',
-		async : true,
-		success : function(data) {
-			grid_dp1 = data;
-			myGrid1.rebuild();
-		},
-		error : function(req, stat, error) {
-			console.log(error);
-			alert(error);
-		}
-	})
+	if(ajaxReturnData !== 'ERR') {
+		console.log('456');
+		grid_dp1 = ajaxReturnData;
+		myGrid1.rebuild();
+	}
 }
 
 function Search_click1() {
@@ -223,23 +215,24 @@ function Search_click() {
 	grid_resultHandler();
 }
 
-function myGrid_doubleClick() {
+function doubleClickGrid1() {//myGrid_doubleClick 여기서부터
 	SBUxMethod.openModal("popWin_Modal");
-	if ($('#Cmd_Ip3').prop("disabled") == false) {
+	if ($('#btnReg').prop("disabled") == false) {
 		dataObj.memo_date = "1"
 	} else {
 		dataObj.memo_date = "0"
 	}
-	var row = myGrid1.getRows();
-	for (var i = 0; i < row - 1; i++) {
-		dataObj.memo_id = dataObj.memo_id + grid_dp1.CM_ACPTNO;
-		dataObj.cm_stdate = myGrid1.getCellData(i, 4);// 팝업시작일
-		dataObj.cm_eddate = myGrid1.getCellData(i, 5);// 팝업마감일
-	}
-	dataObj.memo_id = grid_dp1.CM_ACPTNO;
-	dataObj.user_id = UserId;
-	$("#popWin").parentfun = eCmm2101Close;
-	$("#popWin").dataObj = this.dataObj;
+	
+	var selectedRow = Number(myGrid1.getSelectedRows());
+	
+//	dataObj.memo_id = myGrid1.getRowData(selectedRow, false).CM_ACPTNO;
+//	console.log(dataObj.memo_id);
+//	dataObj.user_id = userid;
+//	dataObj.cm_stdate = myGrid1.getRowData(selectedRow, false).CM_STDATE;
+//	dataObj.cm_eddate = myGrid1.getRowData(selectedRow, false).CM_EDDATE;
+//	$("#popWin").parentfun = eCmm2101Close;
+//	$("#popWin").dataObj = this.dataObj;
+	
 }
 
 function eCmm2101Close() {
@@ -252,34 +245,32 @@ function sysPathButton_Click() {
 }
 
 function DataToExcel_Handler() {
-	$.ajax({
-		type : "POST",
-		url : "/webPage/mypage/Notice",
-		data : "CLASSNAME=SystemPath&UserId=MASTER",
-		dataType : 'json',
-		async : true,
-		success : function(data) {
-			if (date == null) {
-				alert("Excel 저장 실패");
-			} else {
-				var headerDef = new Array();
-				var excelData;
-				var i = 0;
-				var j = 0;
-				var k = 0;
-				var colCnt = 0;
-				var grdList_dp_Len = 0;
-				var col = null;
-				var arrCol = new Array();
+	var ajaxReturnData = null;
+	
+	var tmpData = {
+			requestType : 'SystemPath',
+			UserId : userid
+	}
+	
+	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', tmpData, 'json');
+	
+	if(ajaxReturnData !== 'ERR') {
+		if (ajaxReturnData == null) {
+			alert("Excel 저장 실패");
+		} else {
+			var headerDef = new Array();
+			var excelData;
+			var i = 0;
+			var j = 0;
+			var k = 0;
+			var colCnt = 0;
+			var grdList_dp_Len = 0;
+			var col = null;
+			var arrCol = new Array();
 
-				arrCol = myGrid1.getGridDataAll();
-				colCnt = myGrid1.getCols();
-				grdList_dp_Len = myGrid1.getCols();
-			}
-		},
-		error : function(req, stat, error) {
-			console.log(error);
-			alert(error);
+			arrCol = myGrid1.getGridDataAll();
+			colCnt = myGrid1.getCols();
+			grdList_dp_Len = myGrid1.getCols();
 		}
-	})
+	}
 }
