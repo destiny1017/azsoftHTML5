@@ -1,6 +1,7 @@
 package html.app.mypage;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -8,8 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ecams.service.list.LoginManager;
 import com.google.gson.Gson;
+import app.common.UserInfo;
 
 import html.app.common.ParsingCommon;
 
@@ -20,6 +21,7 @@ public class UserConfig extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 	Gson gson = new Gson();
+	UserInfo userinfo = new UserInfo();
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -38,8 +40,8 @@ public class UserConfig extends HttpServlet {
 			response.setCharacterEncoding("UTF-8");
 			
 			switch (requestType) {
-				case "" :
-					response.getWriter().write("");
+				case "UserInfo" :
+					response.getWriter().write( checkAdmin(request) );
 					break;
 				default:
 					break;
@@ -47,7 +49,15 @@ public class UserConfig extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
+			requestType = null;
 		}
 		
+	}
+
+
+	private String checkAdmin(HttpServletRequest request) throws SQLException, Exception {
+		String userId = null;
+		userId = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		return gson.toJson(userinfo.isAdmin(userId));
 	}
 }
