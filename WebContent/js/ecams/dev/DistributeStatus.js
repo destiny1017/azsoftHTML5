@@ -176,6 +176,8 @@ function cmdQry_Proc(){
 	
 	if(strStD > strEdD){
 		alert("조회기간을 정확하게 선택하여 주십시오.");
+		strStD = "";
+		strEdD = "";
 		return;
 	}  
 	

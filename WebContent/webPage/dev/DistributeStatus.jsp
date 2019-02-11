@@ -5,21 +5,12 @@
 <c:import url="/webPage/common/common.jsp" />
 
 <style>
-	   .sbgrid-form #select_option { width: 98%; height: 100px; text-align: center;border: #757575 solid 2px;background-color: #fafafa; margin: 5px 10px 5px 15px;}
-	   .sbgrid-form #select_option tr td{width: 5%;}
-	   .sbgrid-form #inputData { width: 98%; height: 100%; text-align: center;border: #757575 solid 2px;background-color: #fafafa; margin: 5px 10px 5px 15px;}
-	   .sbgrid-form #inputData tr td{ width: 5%; border: #757575 solid 2px;}
-	   
 	   label{margin-top: 5px;}
-	   button{width:80px;}
-	   
-	  	#sbGridArea{width: 100%; height:500px;}
-	  
-	   .sbgrid-tem-contents{width : 100%; height:100%;}
+	   #sbGridArea{width: 100%; height:500px;}
 	   #titleBar{background-color: #E0F8F7; width:100%; height: 2%;}	   
 </style>
 	<section>
-		<div class="container-fluid" style="border: #757575 solid 2px;  margin: 0px 15px 0px 15px; padding: 5px 0px 5px 0px;  overflow:hidden;">
+		<div class="container-fluid" style="border: #757575 solid 2px;  margin: 0px 15px 0px 15px; padding: 5px 0px 5px 0px;">
 			<div class="row-fluid">
 				<div class="row">
 					<div class="col-xs-12 col-sm-1">
@@ -71,14 +62,14 @@
 						<sbux-checkbox id="chkSelf" name="chkSelf" uitype="normal" text="본인건만" checked></sbux-checkbox>
 					</div>
 					<div class="col-xs-12 col-sm-1">
-						<sbux-picker id="datStD" name="datStD" uitype="date" mode="popup" show-button-bar="false" style="width:100%;"></sbux-picker>
-						<sbux-picker id="datEdD" name="datEdD" uitype="date" mode="popup" show-button-bar="false" style="width:100%;"></sbux-picker>
+						<sbux-picker id="datStD" name="datStD" uitype="date" mode="popup" show-button-bar="false"></sbux-picker>
+						<sbux-picker id="datEdD" name="datEdD" uitype="date" mode="popup" show-button-bar="false"></sbux-picker>
 					</div>
 					<div class="col-xs-12 col-sm-1">
 						<sbux-button id=btnExcel name="btnExcel" uitype="normal" text="엑셀저장"></sbux-button>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row-fulid">
 					<div class="col-xs-12 col-sm-1" style="background-color: #FF0000;">
 						<sbux-label id="lbCnl" name="lbCnl" uitype="normal" text="반려 또는 취소" style="color:#FFFFFF; padding-bottom:5px;"></sbux-label>
 					</div>

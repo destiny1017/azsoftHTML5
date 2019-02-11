@@ -37,7 +37,7 @@ public class ParsingCommon {
 		String jsonData = null;
 		String returnString = null;
 		
-		jsonData 	= req.getParameter(dataTypeParam);
+		jsonData 		= req.getParameter(dataTypeParam);
 		returnString 	= (String) gson.fromJson(jsonData, String.class);
 		return returnString;
 	}

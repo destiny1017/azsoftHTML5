@@ -1,7 +1,13 @@
-var userid = window.parent.userId;     
 var grid_data;
+var cboSyscd;
+var cboSin;
+var cboSta;
+var cboTeam;
+var cboGbn;
+var cboProc;
 
-
+// userId 및 reqcd 가져오기
+var userid = window.parent.userId;
 var request =  new Request();
 strReqCD = request.getParameter('reqcd');
 
@@ -22,11 +28,238 @@ if(mm < 10){
 today = yyyy + '/' + mm + '/' + dd;
 
 $(document).ready(function(){
+	
+	if(strReqCD != null && strReqCD != ""){
+		getUserInfo();
+	}	
 	SBUxMethod.set('datStD', today);
 	SBUxMethod.set('datEdD', today);
 	createGrid();
+	getSysInfo();
+	getCodeInfo();
+	getTeamInfoGrid2();
+	cboGbn_set();
 });
 
+function getUserInfo(){
+	var ajaxResultData = null;
+	var tmpData = {
+			requestType : 'UserInfochk',
+			UserId : userid
+	}	
+	ajaxResultData = ajaxCallWithJson('/webPage/approval/ApprovalStatus', tmpData, 'json');
+	
+	if(ajaxResultData.length > 0){
+		SBUxMethod.set('txtUser', ajaxResultData[0].cm_username);
+	}
+}
+
+function getSysInfo(){
+	var ajaxResultData = null;
+	var tmpData = {
+			requestType : 'SysInfo',
+			UserId : userid
+	}	
+	ajaxResultData = ajaxCallWithJson('/webPage/approval/ApprovalStatus', tmpData, 'json');
+	
+	cboSyscd = ajaxResultData;        	        	        	
+	SBUxMethod.refresh('cboSyscd');
+}
+
+function getCodeInfo(){
+	var ajaxResultData = null;
+	var tmpData = {
+			requestType : 'CodeInfo'
+	}	
+	ajaxResultData = ajaxCallWithJson('/webPage/approval/ApprovalStatus', tmpData, 'json');
+	
+	cboSin = ajaxResultData;
+	cboSta = ajaxResultData;
+	
+	cboSin.push({
+		cm_macode : "REQUEST",
+		cm_micode : "94",
+		cm_codename : "테스트폐기"
+	});
+	
+	cboSin = cboSin.filter(function(data) {
+	   return data.cm_macode === "REQUEST";
+	});
+	
+	cboSta = cboSta.filter(function(data) {
+	   return data.cm_macode === "APPROVAL";
+	});
+	
+	SBUxMethod.refresh('cboSin');
+	SBUxMethod.refresh('cboSta');
+}
+
+function cboSta_change_resultHandler(args){
+	if(SBUxMethod.get("cboSta") == "01"){
+		$('#datStD').attr('disabled', true);
+		$('[name="_datStD_sub"]').attr('disabled', true);
+		$('#datEdD').attr('disabled', true);
+		$('[name="_datEdD_sub"]').attr('disabled', true);
+	} else {
+		$('#datStD').attr('disabled', false);
+		$('[name="_datStD_sub"]').attr('disabled', false);
+		$('#datEdD').attr('disabled', false);
+		$('[name="_datEdD_sub"]').attr('disabled', false);
+	}
+}
+
+function getTeamInfoGrid2(){
+	var ajaxResultData = null;
+	var tmpData = {
+			requestType : 'TeamInfo'
+	}	
+	ajaxResultData = ajaxCallWithJson('/webPage/approval/ApprovalStatus', tmpData, 'json');
+	
+	cboTeam = ajaxResultData;
+	SBUxMethod.refresh('cboTeam');
+}
+
+function cboGbn_set(){
+	cboProc = [
+		{cm_codename : "전체", cm_micode : "0"},
+		{cm_codename : "반려+체크인취소", cm_micode : "3"},
+		{cm_codename : "미완료(에러+진행중)", cm_micode : "1"},
+		{cm_codename : "시스템에러", cm_micode : "2"},
+		{cm_codename : "진행중", cm_micode : "4"},
+		{cm_codename : "처리완료", cm_micode : "9"}
+	]
+	
+	cboGbn = [
+		{cm_codename : "전체", cm_micode : "ALL", cm_macode : "REQPASS"},
+		{cm_codename : "일반적용", cm_micode : "4", cm_macode : "REQPASS"},
+		{cm_codename : "수시적용", cm_micode : "0", cm_macode : "REQPASS"},
+		{cm_codename : "긴급적용", cm_micode : "2", cm_macode : "REQPASS"}
+	]
+	
+	SBUxMethod.refresh('cboProc');
+	SBUxMethod.refresh('cboGbn');
+}
+
+function cmdQry_Proc(){
+	var strSys = "0";
+	var strQry = "0";
+	var strSta = "0";
+	var strStD = "";
+	var strEdD = "";
+	var strTeam = "0";
+	var strGbn = "0";
+	var strProc = "0";
+	var dategbn;
+	var txtUser;
+	var txtSpms;
+	var selectedIndex;
+		
+	if(SBUxMethod.get("cboSta") != "01"){
+		strStD = SBUxMethod.get("datStD");
+		strEdD = SBUxMethod.get("datEdD");
+		
+		if(strStD > strEdD){
+			alert("조회기간을 정확하게 선택하여 주십시오.");
+			strStD = "";
+			strEdD = "";
+			return;
+		}  
+	}
+	
+	selectedIndex = document.getElementById("cboSyscd");
+	
+	if(selectedIndex.selectedIndex > 0){
+		strSys = SBUxMethod.get("cboSyscd");
+		selectedIndex = null;
+	}
+	
+	selectedIndex = document.getElementById("cboGbn");
+	
+	if(selectedIndex.selectedIndex > 0){
+		strGbn = SBUxMethod.get("cboGbn");
+		selectedIndex = null;
+	}
+	
+	selectedIndex = document.getElementById("cboSin");
+	
+	if(selectedIndex.selectedIndex > 0){
+		strQry = SBUxMethod.get("cboSin");
+		selectedIndex = null;
+	}
+	
+	selectedIndex = document.getElementById("cboSta");
+	
+	if(selectedIndex.selectedIndex > 0){
+		strSta = SBUxMethod.get("cboSta");
+		selectedIndex = null;
+	}
+	
+	selectedIndex = document.getElementById("cboTeam");
+	
+	if(selectedIndex.selectedIndex > 0){
+		strTeam = SBUxMethod.get("cboTeam");
+		selectedIndex = null;
+	}
+	
+	selectedIndex = document.getElementById("cboProc");
+	
+	if(selectedIndex.selectedIndex > 0){
+		strProc = SBUxMethod.get("cboProc");
+		selectedIndex = null;
+	}
+	
+	dategbn = SBUxMethod.get("rdoDate");
+	
+	if(SBUxMethod.get("txtUser") !== undefined){
+		txtUser = SBUxMethod.get("txtUser").trim();
+	} else {
+		txtUser = "";
+	}
+	console.log(txtUser);
+	if(SBUxMethod.get("txtSpms") !== undefined){
+		txtSpms = SBUxMethod.get("txtSpms").trim();
+	} else {
+		txtSpms = "";
+	}
+	
+	var ajaxResultData = null;
+	var tmpData = {
+			requestType : 'get_SelectList',
+			strSys		: strSys,
+			strGbn		: strGbn,
+			strQry		: strQry,
+			strTeam		: strTeam,
+			strSta		: strSta,
+			txtUser		: txtUser,
+			strStD		: strStD,
+			strEdD		: strEdD,
+			strUserId   : userid,
+			dategbn		: dategbn,
+			txtSpms		: txtSpms,
+			strProc		: strProc
+	}	
+	console.log(tmpData);
+	
+	ajaxResultData = ajaxCallWithJson('/webPage/approval/ApprovalStatus', tmpData, 'json');
+	
+	console.log(ajaxResultData);
+	
+	grid_data = ajaxResultData;
+	datagrid.refresh();	
+	
+	$(ajaxResultData).each(function(i){
+		if(ajaxResultData[i].errflag != "0"){
+			datagrid.setRowStyle(i+1, 'data', 'color', '#BE81F7');	//시스템처리 중 에러발생
+			datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
+		} else if (ajaxResultData[i].cr_status == '3'){
+			datagrid.setRowStyle(i+1, 'data', 'color', '#FF0000');	//반려 또는 취소
+			datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
+		} else if (ajaxResultData[i].cr_status == '0'){
+			datagrid.setRowStyle(i+1, 'data', 'color', '#0000FF');	// 진행중
+			datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
+		}
+	});
+}
 
 function createGrid(){
 	SBGridProperties = {};
