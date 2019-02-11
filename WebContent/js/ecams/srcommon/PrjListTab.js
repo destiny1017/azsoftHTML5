@@ -19,16 +19,16 @@ var request =  new Request();
 
 $(document).ready(function() {
 	reqCd =  request.getParameter('reqcd');
-	screenInit();
+	screenInitPrj();
 });
 
 
 //초기 화면 셋팅
-function screenInit() {
-	createElements();
+function screenInitPrj() {
+	createElementsPrj();
 	setReqDepartInfo();
 	setDateInit();
-	setCboElement();
+	setCboElementPrj();
 }
 
 function setReqDepartInfo() {
@@ -54,7 +54,7 @@ function setReqDepartInfo() {
 	}
 }
 
-function setCboElement() {
+function setCboElementPrj() {
 	var codeInfos = getCodeInfoCommon( [new CodeInfo('CATTYPE','ALL','N'),
 										new CodeInfo('QRYGBN','ALL','N')] );
 	cboCatTypeData 	= codeInfos.CATTYPE;
@@ -162,7 +162,7 @@ function prjGridClick() {
 	clickedPrjInfo =  JSON.stringify(prjListGrid.getRowData(nRow));
 }
 
-function createElements() {
+function createElementsPrj() {
 	var SBGridProperties 		= {};
 	SBGridProperties.parentid 	= 'prjListGrid';  			// [필수] 그리드 영역의 div id 입니다.            
 	SBGridProperties.id 		= 'prjListGrid';          	// [필수] 그리드를 담기위한 객체명과 동일하게 입력합니다.                
@@ -179,7 +179,7 @@ function createElements() {
 		new GridDefaultColumn('SR-ID', 		'cc_srid', 		'10%', 'output','text-align:center'),
 		new GridDefaultColumn('요청제목', 		'cc_reqtitle', 	'20%', 'output'),
 		new GridDefaultColumn('등록일', 		'createdate', 	'10%', 'output','text-align:center'),
-		new GridDefaultColumn('안료요청일', 	'reqcompdat', 	'10%', 'output','text-align:center'),
+		new GridDefaultColumn('완료요청일', 	'reqcompdat', 	'10%', 'output','text-align:center'),
 		new GridDefaultColumn('요청부서', 		'reqdept', 		'10%', 'output'),
 		new GridDefaultColumn('분류유형', 		'cattype', 		'10%', 'output'),
 		new GridDefaultColumn('변경종류', 		'chgtype', 		'10%', 'output'),

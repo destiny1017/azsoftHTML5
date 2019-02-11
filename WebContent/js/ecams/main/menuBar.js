@@ -18,6 +18,8 @@ function menu_set(){   // 메뉴리스트
 	ajaxMenuData = ajaxCallWithJson('/webPage/main/eCAMSBaseServlet', userInfo, 'json');
 	menuJson = ajaxMenuData;
 	SBUxMethod.refresh('menu_json');
+	
+	SBUxMethod.set('lbLoginUserName', userName+'님 로그인');
 }
 
 function menuBarClick(event) { 
@@ -31,4 +33,21 @@ function menuBarClick(event) {
 		childMenuText = $.trim(event.target.innerText);
 		$('#titleText').html('[' + parentMenuText + ']' + childMenuText);
 	}
+}
+
+function logOut() {
+	if(!confirm('로그아웃 하시겠습니까?')) return;
+	
+	var ajaxLogOutData = null;
+	var userInfo = {
+		requestType : 'LOG_OUT',
+		UserId 		: userId
+	}   
+	ajaxLogOutData = ajaxCallWithJson('/webPage/main/eCAMSBaseServlet', userInfo, 'json');
+	console.log(ajaxLogOutData);
+	if(ajaxLogOutData !== 'ERR' && ajaxLogOutData === 'LOG_OUT') location.replace('../login/ecamsLogin.jsp');
+}
+
+function goHome() {
+	location.reload();
 }

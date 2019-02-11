@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ecams.service.list.LoginManager;
+import com.ecams.service.list.User;
+import com.ecams.service.msg.dao.MsgDAO;
 import com.google.gson.Gson;
 
 import app.common.MenuList;
@@ -27,6 +29,8 @@ public class eCAMSBaseServlet extends HttpServlet {
 	MenuList menuList = new MenuList();
 	UserInfo userinfo = new UserInfo();
 	LoginManager loginManager = LoginManager.getInstance();
+	MsgDAO msgDao = new MsgDAO();
+	User user = new User();
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -51,7 +55,10 @@ public class eCAMSBaseServlet extends HttpServlet {
 					break;	
 				case "GETSESSIONUSERDATA":
 					response.getWriter().write( getSessionUserData(request) );
-					break;		
+					break;
+				case "LOG_OUT":
+					response.getWriter().write( logOut(request) );
+					break;	
 				default : 
 					break;
 			}
@@ -79,8 +86,15 @@ public class eCAMSBaseServlet extends HttpServlet {
 	}
 	
 	private String getUserInfo(HttpServletRequest request) throws SQLException, Exception {
-		String sysMap = null;
-		sysMap = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
-		return gson.toJson(userinfo.isAdmin(sysMap));
+		String userId = null;
+		userId = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		return gson.toJson(userinfo.isAdmin(userId));
+	}
+	
+	private String logOut(HttpServletRequest request) throws SQLException, Exception {
+		String userId = null;
+		userId = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		if(msgDao.updateLogOut(userId) == 1) user.setDelUser(userId);
+		return gson.toJson( "LOG_OUT" );
 	}
 }

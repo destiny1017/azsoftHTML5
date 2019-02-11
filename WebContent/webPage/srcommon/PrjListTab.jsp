@@ -95,9 +95,13 @@
 					</div>
 					<div class="col-sm-4 col-xs-12 no-padding">
 						<sbux-picker 
-							id="datStD" name="datStD" 
-							uitype="date" mode="popup"
-						    init="2018/01/01" date-format="yyyy/mm/dd">
+							id="datStD" 
+							name="datStD" 
+							uitype="date" 
+							mode="popup"
+							style="width:100%;"
+						    init="2018/01/01" 
+						    date-format="yyyy/mm/dd">
 						</sbux-picker>
 					</div>
 					<div class="col-sm-1 col-xs-12 margin-10-top text-center">
@@ -110,14 +114,18 @@
 					</div>
 					<div class="col-sm-4 col-xs-12 no-padding">
 						<sbux-picker 
-							id="datEdD" name="datEdD" 
-							uitype="date" mode="popup"
-						    init="2018/01/01" date-format="yyyy/mm/dd">
+							id="datEdD" 
+							name="datEdD" 
+							uitype="date" 
+							mode="popup"
+							style="width:100%;"
+						    init="2018/01/01" 
+						    date-format="yyyy/mm/dd">
 						</sbux-picker>
 					</div>
 				</div>
 				
-				<div class="col-sm-1 col-xs-12 no-padding">
+				<div class="col-sm-1 col-xs-12">
 					<div class="col-sm-6 col-xs-12 margin-5-top no-padding">
 						<sbux-button 
 							id="btnSearch" 
@@ -141,8 +149,8 @@
 				</div>
 			</div>
 			
-			<div class="row-fluid">
-				<div class="col-sm-12 col-xs-12 no-padding">
+			<div class="row">
+				<div class="col-sm-12 col-xs-12">
 					<div id="prjListGrid" class="sm-grid-height">
 					</div>
 				</div>

@@ -10,12 +10,14 @@ var userId 	= null;
 var userName= null;
 var adminYN = null;
 var request = new Request();
+var sessionID = null;
 
 $(document).ready(function() {
 	screenInit();
 });
 
 function screenInit() {
+	if( sessionID === null ) sessionID = request.getParameter('sessionID');
 	getSession();
 	$('#titleText').html("형상관리 MAIN");
 }
@@ -24,7 +26,7 @@ function getSession() {
 	var ajaxUserData = null;
 	var sessionInfo = {
 		requestType : 'GETSESSIONUSERDATA',
-		sessionID 	: request.getParameter('sessionID')
+		sessionID 	: sessionID
 	}   
 	ajaxUserData = ajaxCallWithJson('/webPage/main/eCAMSBaseServlet', sessionInfo, 'json');
 	userName= ajaxUserData.userName;

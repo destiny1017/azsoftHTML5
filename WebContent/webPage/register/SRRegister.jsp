@@ -6,7 +6,7 @@
 <script type="text/javascript" src="<c:url value="/js/ecams/register/SRRegister.js"/>"></script>
 
 <c:import url="/webPage/srcommon/PrjListTab.jsp" />
-<c:import url="/webPage/srcommon/SRRegisterTab.jsp" />
 
+<c:import url="/webPage/srcommon/SRRegisterTab.jsp" />
 
 
