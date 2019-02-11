@@ -7,8 +7,8 @@
 	.menu{width: 80%; margin: 0 !important;}
 </style>
 
-<sbux-menu 	id="menu_json" 
-<<<<<<< HEAD
+<sbux-menu 	
+		id="menu_json" 
 		name="menu_json"
 		wrap-class="menu" 
 		uitype="normal" 
@@ -22,16 +22,6 @@
         trigger="click"
         onclick="menuBarClick(event)">
 	<brand-item text="eCAMS" image-src="<c:url value="/img/top_log.gif"/>" image-title="로고이미지"></brand-item>
-=======
-			name="menu_json" 
-			uitype="normal" 
-			jsondata-ref="menuJson"
-            css-style="font-size:12px"
-            trigger="click"
-            onclick="menuBarClick(event)">
-<!-- 	<brand-item text="eCAMS"></brand-item> -->
-	<brand-item text="eCAMS"></brand-item>
->>>>>>> refs/remotes/origin/master
 </sbux-menu>
 
 <div class="right-menu-contents">
