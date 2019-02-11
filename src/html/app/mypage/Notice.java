@@ -53,9 +53,9 @@ public class Notice extends HttpServlet {
 				case "CodeInfo" :
 					response.getWriter().write( getCodeInfo(request) );
 					break;
-//				case "Cmm2100" :
-//					response.getWriter().write( getSqlQry(request) );
-//					break;
+				case "Cmm2100" :
+					response.getWriter().write( getSqlQry(request) );
+					break;
 				default:
 					break;
 			}
@@ -77,7 +77,16 @@ public class Notice extends HttpServlet {
 		return gson.toJson(codeinfo.getCodeInfo("FIND","","N"));
 	}
 	
-	/*private String getSqlQry(HttpServletRequest request) throws SQLException, Exception {
-	}*/
+	private String getSqlQry(HttpServletRequest request) throws SQLException, Exception {
+		String cboFindMicode = null;
+		cboFindMicode = ParsingCommon.parsingRequestJsonParamToString(request, "CboFind_micode");
+		String txtFindText = null;
+		txtFindText = ParsingCommon.parsingRequestJsonParamToString(request, "TxtFind_text");
+		String dateStD = null;
+		dateStD = ParsingCommon.parsingRequestJsonParamToString(request, "strStD");
+		String dateEdD = null;
+		dateEdD = ParsingCommon.parsingRequestJsonParamToString(request, "strEdD");
+		return gson.toJson(cmm2100.get_sql_Qry(cboFindMicode, txtFindText, "", ""));
+	}
 	
 }

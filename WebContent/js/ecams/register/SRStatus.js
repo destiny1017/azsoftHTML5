@@ -169,8 +169,8 @@ function cmdQry_Proc(){	// 조회
 		tmpObj.reqsta2 = SBUxMethod.get("cboSta2");
 	}
 	
-	if(SBUxMethod.get("input_text") != undefined && SBUxMethod.get("input_text").length > 0){
-		tmpObj.reqtit = SBUxMethod.get("input_text");
+	if(SBUxMethod.get("txtTit") != undefined && SBUxMethod.get("txtTit").length > 0){
+		tmpObj.reqtit = SBUxMethod.get("txtTit");
 	}
 	
 	if(JSON.stringify(SBUxMethod.get('rdo_norm')) == '"T"'){
@@ -191,7 +191,7 @@ function cmdQry_Proc(){	// 조회
 	ajaxResultData = ajaxCallWithJson('/webPage/regist/SRStatus', tmpData, 'json');
 	
 	var cnt = Object.keys(ajaxResultData).length;				// json 객체 길이 구하기			
-	SBUxMethod.set('label_norm13', '총'+cnt+'건');	// 총 개수 표현		
+	SBUxMethod.set('lbTotalCnt', '총'+cnt+'건');	// 총 개수 표현		
 	
 	grid_data = ajaxResultData;
 	//datagrid.rebuild(); 		// rebuild 없어도 나오긴 함 검색버튼 두번 누르면    	
