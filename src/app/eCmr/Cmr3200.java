@@ -19,10 +19,8 @@ import com.ecams.common.dbconn.ConnectionContext;
 import com.ecams.common.dbconn.ConnectionResource;
 import com.ecams.common.logger.EcamsLogger;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 //import app.common.LoggableStatement;
-import app.common.LoggableStatement;
 import app.common.SystemPath;
 import app.common.UserInfo;
 
@@ -209,18 +207,10 @@ public class Cmr3200{
 			}
 			strQuery.append("order by a.cr_acptdate desc \n");
 
-			
-			
-            Date start = new Date();
-            ecamsLogger.error("Start Query: " + start);
-            
-            
-            
-//			pstmt = conn.prepareStatement(strQuery.toString());
-			pstmt = new LoggableStatement(conn,strQuery.toString());
+			pstmt = conn.prepareStatement(strQuery.toString());
+//			pstmt = new LoggableStatement(conn,strQuery.toString());
             Cnt = 0;
-            pstmt.setQueryTimeout(1);
-            
+
 			if (((pStateCd == null || pStateCd == "")&&!pStartDt.equals(""))
 				|| pStateCd.equals("3")
 				|| pStateCd.equals("9")) {
@@ -255,15 +245,9 @@ public class Cmr3200{
 				pstmt.setString(++Cnt, "%"+spms+"%");
 				pstmt.setString(++Cnt, "%"+spms+"%");
 			}
-			ecamsLogger.error(((LoggableStatement)pstmt).getQueryString());
+//			ecamsLogger.error(((LoggableStatement)pstmt).getQueryString());
             rs = pstmt.executeQuery();
 
-
-            Date end = new Date();
-            ecamsLogger.error("End Query: " + end);
-            long diff = end.getTime() - start.getTime();
-            ecamsLogger.error("Query time in ms: " + diff);
-            
 			while (rs.next()){
 
 				ConfName = "";
@@ -604,11 +588,15 @@ public class Cmr3200{
 
         		rst.put("colorsw",  ColorSw);
         		rst.put("test",  "");
-        		if (pStateCd.equals("2")){//시스템에러만 조회
-        			if (ColorSw.equals("5")) rtList.add(rst);
-        		} else if (pStateCd.equals("4")){//진행중건만 조회
-        			if (!ColorSw.equals("5")) rtList.add(rst);
-        		} else{
+        		if(pStateCd != null && pStateCd != "") {
+        			if (pStateCd.equals("2")){//시스템에러만 조회
+        				if (ColorSw.equals("5")) rtList.add(rst);
+        			} else if (pStateCd.equals("4")){//진행중건만 조회
+        				if (!ColorSw.equals("5")) rtList.add(rst);
+        			} else {
+        				rtList.add(rst);
+        			}
+        		} else {
         			rtList.add(rst);
         		}
         		rst = null;

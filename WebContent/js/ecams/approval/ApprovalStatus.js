@@ -28,7 +28,6 @@ if(mm < 10){
 today = yyyy + '/' + mm + '/' + dd;
 
 $(document).ready(function(){
-	
 	if(strReqCD != null && strReqCD != ""){
 		getUserInfo();
 	}	
@@ -48,7 +47,7 @@ function getUserInfo(){
 			UserId : userid
 	}	
 	ajaxResultData = ajaxCallWithJson('/webPage/approval/ApprovalStatus', tmpData, 'json');
-	
+	console.log(ajaxResultData);
 	if(ajaxResultData.length > 0){
 		SBUxMethod.set('txtUser', ajaxResultData[0].cm_username);
 	}
@@ -215,7 +214,7 @@ function cmdQry_Proc(){
 	} else {
 		txtUser = "";
 	}
-	console.log(txtUser);
+	
 	if(SBUxMethod.get("txtSpms") !== undefined){
 		txtSpms = SBUxMethod.get("txtSpms").trim();
 	} else {
@@ -238,11 +237,11 @@ function cmdQry_Proc(){
 			txtSpms		: txtSpms,
 			strProc		: strProc
 	}	
-	console.log(tmpData);
 	
 	ajaxResultData = ajaxCallWithJson('/webPage/approval/ApprovalStatus', tmpData, 'json');
 	
-	console.log(ajaxResultData);
+	var cnt = Object.keys(ajaxResultData).length;				// json 객체 길이 구하기			
+	SBUxMethod.set('lbTotalCnt', '총'+cnt+'건');	// 총 개수 표현		
 	
 	grid_data = ajaxResultData;
 	datagrid.refresh();	
