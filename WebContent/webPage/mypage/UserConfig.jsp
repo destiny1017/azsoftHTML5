@@ -5,7 +5,8 @@
 <c:import url="/webPage/common/common.jsp" />
 
 <style>
-	#divGrid1 {width:100%; height:23%}
+	#divGrid1 {width:100%; height:50%}
+	#divBtn {float:right}
 </style>
 
 <section>
@@ -14,22 +15,41 @@
 		</sbux-tabs>
 		<div class="tab-content">
 			<div id="tab1">
-				<div id="pan1">
-					<sbux-label id="sysname" name="sysname" uitype="normal" text="시스템명"></sbux-label>
-					<sbux-select id="Cbo_SysCd" name="Cbo_SysCd" uitype="single" jsondata-ref="combo_dp1" jsondata-text="cm_sysmsg" jsondata-value="cm_micode" onchange="Cbo_SysCd_Click()"></sbux-select>
-					<sbux-button id="btnDir" name="btnDir" uitype="normal" text="디렉토리찾기" onclick="Cmd_Dir_Click()"></sbux-button>
+				<div class="row">
+					<div class="col-xs-12 col-sm-2">
+						<sbux-label id="sysname" name="sysname" uitype="normal" text="시스템명"></sbux-label>
+						<sbux-select id="selSysname" name="selSysname" uitype="single" jsondata-ref="selSysnameDp" jsondata-text="cm_sysmsg" jsondata-value="cm_syscd" onchange="Cbo_SysCd_Click()"></sbux-select>
+<!-- 					Cbo_SysCd -->
+					</div>
+					<div class="col-xs-12 col-sm-1">
+						<sbux-button id="btnDir" name="btnDir" uitype="normal" text="디렉토리찾기" onclick="Cmd_Dir_Click()"></sbux-button>
 <!-- 					Cmd_Dir -->
-					<sbux-label id="lbDir" name="lbDir" uitype="normal" text="개발 Home Directory"></sbux-label>
-					<sbux-input id="txtDir" name="txtDir" uitype="text"></sbux-input>
+					</div>
+					<div class="col-xs-12 col-sm-9">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-9">
+						<sbux-label id="lbDir" name="lbDir" uitype="normal" text="개발 Home Directory"></sbux-label>
+						<sbux-input id="txtDir" name="txtDir" uitype="text" style="width:800px"></sbux-input>
 <!-- 					Lbl_Dir -->
-					<sbux-button id="btnReg" name="btnReg" uitype="normal" text="등 록" onclick="Cmd_Ip_Click(1)"></sbux-button>
+					</div>
+					<div class="col-xs-12 col-sm-2">
+					</div>
+					<div class="col-xs-12 col-sm-1">
+						<sbux-button id="btnReg" name="btnReg" uitype="normal" text="등 록" onclick="Cmd_Ip_Click(1)"></sbux-button>
 <!-- 					Cmd_Ip1 -->
-					<sbux-label id="lbConfig" name="lbConfig" uitype="normal" text="등록된 개발환경 목록"></sbux-label>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 col-sm-1">
+						<sbux-label id="lbConfig" name="lbConfig" uitype="normal" text="등록된 개발환경 목록"></sbux-label>
+					</div>
 				</div>
 				<div id="divGrid1"></div>
 				<div id="divBtn">
-					<sbux-button id="btnRem" name="btnRem" uitype="normal" text="삭제" onclick="Cmd_Ip_Click(2)"></sbux-button>
 					<sbux-button id="btnRef" name="btnRef" uitype="normal" text="조회" onclick="Cmd_Ip_Click(0)"></sbux-button>
+					<sbux-button id="btnRem" name="btnRem" uitype="normal" text="삭제" onclick="Cmd_Ip_Click(2)"></sbux-button>
 				</div>
 			</div>
 		</div>
