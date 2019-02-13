@@ -38,13 +38,11 @@
       		<sbux-picker id="end_date" name="end_date" uitype="date" mode="popup" date-format="yyyy/mm/dd"></sbux-picker>
       		<sbux-input id="Txt_Find" name="Txt_Find" uitype="text" onkeyenter="Search_click1()" disabled></sbux-input>
       		<sbux-button id="Search_Data" name="Search_Data" uitype="normal" text="조  회" onclick="Search_click()"></sbux-button>
-      		<sbux-modal id="popWin_Modal" name="popWin_Modal" uitype="middle" header-title="공지사항 등록" body-html-id="popupBody">
-      			<div id="popupBody">
-					<sbux-label id="lbSub" name="lbSub" uitype="normal" text="제목"></sbux-label>
-					<sbux-input id="txtTitle" name="txtTitle" uitype="text"></sbux-input>
-				</div>
-   				<IFRAME id="popWin" src="PopNotice.jsp" width="564" height="480"></IFRAME>
+      		<sbux-modal id="modalPopWin" name="modalPopWin" uitype="middle" header-title="공지사항 등록" body-html-id="popupBody">
    			</sbux-modal>
+   			<div id="popupBody">
+				<IFRAME id="popWin" src="<c:url value="/webPage/modal/PopNotice.jsp"/>" width="564" height="480"></IFRAME>
+			</div>
 		</div>
 	</div>
 </section>

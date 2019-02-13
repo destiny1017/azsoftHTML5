@@ -235,8 +235,8 @@ function doubleClickGrid1() {//myGrid_doubleClick 여기서부터
 	
 }
 
-function eCmm2101Close() {
-	SBUxMethod.closeModal("popWin_Modal");
+function popNoticeClose() {
+	SBUxMethod.closeModal("modalPopWin");
 	Search_click();
 }
 
