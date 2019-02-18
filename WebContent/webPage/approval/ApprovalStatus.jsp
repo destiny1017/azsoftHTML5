@@ -93,7 +93,7 @@
 					<sbux-label id="lbIng" name="lbIng" uitype="normal" text="진행중" style="color:#FFFFFF; padding-bottom:5px;"></sbux-label>
 				</div>
 				<div class="col-xs-12 col-sm-1 col-sm-offset-6">
-					<sbux-label id="lbCnt" name="lbCnt" uitype="normal" text="총0건"></sbux-label>
+					<sbux-label id="lbTotalCnt" name="lbTotalCnt" uitype="normal" text="총0건"></sbux-label>
 				</div>
 				<div class="col-xs-12 col-sm-1">
 					<sbux-button id="btnClear" name="btnClear" uitype="normal" text="초기화"></sbux-button>
