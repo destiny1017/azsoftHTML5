@@ -56,6 +56,9 @@ public class Notice extends HttpServlet {
 				case "Cmm2100" :
 					response.getWriter().write( getSqlQry(request) );
 					break;
+				case "SystemPath" :
+					response.getWriter().write( getSysPass(request) );
+					break;
 				default:
 					break;
 			}
@@ -86,7 +89,11 @@ public class Notice extends HttpServlet {
 		dateStD = ParsingCommon.parsingRequestJsonParamToString(request, "strStD");
 		String dateEdD = null;
 		dateEdD = ParsingCommon.parsingRequestJsonParamToString(request, "strEdD");
-		return gson.toJson(cmm2100.get_sql_Qry(cboFindMicode, txtFindText, "", ""));
+		return gson.toJson(cmm2100.get_sql_Qry(cboFindMicode, txtFindText, dateStD, dateEdD));
+	}
+	
+	private String getSysPass(HttpServletRequest request) throws SQLException, Exception {
+		return gson.toJson(systempath.getTmpDir("99"));
 	}
 	
 }
