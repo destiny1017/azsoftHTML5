@@ -143,6 +143,17 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
+
+.border-style-pull {
+	width: 100%;
+	display:inline-block;
+	margin: 1px,1px,1px,1px;
+	background-color: #EFF2FB;
+	border-radius: 5px; 
+	border:1px solid #888888;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
 .margin-3-top {
 	margin-top: 3px;
 }
@@ -446,6 +457,14 @@
 	width: 80%;
 }
 
+.width-79 {
+	width: 79%;
+}
+
+.width-78 {
+	width: 78%;
+}
+
 .width-70 {
 	width: 70%;
 }
@@ -582,6 +601,21 @@
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
+.file-tree-organization {
+	padding: 0 !important;
+	height: 290px;
+	width: 95%;
+	overflow: scroll;
+	background-color: white;
+	margin-top: 10px;
+	margin-left: 20px;
+	margin-right: 20px;
+	margin-bottom: 5px;
+	border-radius: 5px; 
+	border: 1px solid #888888;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
 .right-div {
 	float: left; 
 	height: 300px; 
@@ -633,3 +667,4 @@
 .sm-font {
 	font-size: 12px;
 }
+

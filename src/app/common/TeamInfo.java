@@ -432,8 +432,108 @@ public class TeamInfo{
 		}
 	}//end of getTeamInfoTreeCheckBox() method statement
 	
+	public ArrayList<HashMap<String, String>> getTeamInfoTree_new(boolean subSw) throws SQLException, Exception {
+		Connection        conn        = null;
+		PreparedStatement pstmt       = null;
+		ResultSet         rs          = null;
+		PreparedStatement pstmt2      = null;
+		ResultSet         rs2         = null;
+		StringBuffer      strQuery    = new StringBuffer();
+		
+		HashMap<String, String> teamInfoMap 			= null;
+		ArrayList<HashMap<String, String>> teamInfoArr 	= new ArrayList<HashMap<String, String>>();
+		
+		ConnectionContext connectionContext = new ConnectionResource();
+		
+		try {
+			
+			conn = connectionContext.getConnection();
+			
+			strQuery.append("SELECT CM_DEPTCD AS id,                         		\n");
+			strQuery.append("		NVL(CM_UPDEPTCD,'-1') AS pid, 					\n");
+			strQuery.append("		CM_DEPTNAME AS text                             \n");
+			strQuery.append("  FROM cmm0100                                     	\n");
+			strQuery.append(" WHERE CM_USEYN = 'Y'                              	\n");
+			strQuery.append(" START WITH cm_updeptcd IS NULL                    	\n");
+			strQuery.append(" CONNECT BY PRIOR cm_deptcd = CM_UPDEPTCD          	\n");
+			
+            pstmt = conn.prepareStatement(strQuery.toString());	
+            rs = pstmt.executeQuery();
+            
+            while (rs.next()){
+            	teamInfoMap = new HashMap<String, String>();
+            	teamInfoMap.put("id", rs.getString("id"));
+            	teamInfoMap.put("pid", rs.getString("pid"));
+            	teamInfoMap.put("text", rs.getString("text"));
+            	teamInfoMap.put("division", "depart");
+            	teamInfoMap.put("imagesrc"			, "/img/folderDefaultClosed.gif");
+				if (subSw) {
+					strQuery.setLength(0);
+					strQuery.append("select b.cm_codename,a.cm_username,a.cm_userid \n");
+					strQuery.append("  from cmm0020 b,cmm0040 a          \n");
+					strQuery.append(" where a.cm_project=?               \n");
+					strQuery.append("   and a.cm_active='1'              \n");
+					strQuery.append("   and b.cm_macode='POSITION'       \n");
+					strQuery.append("   and b.cm_micode=a.cm_position    \n");
+					pstmt2 = conn.prepareStatement(strQuery.toString());	
+					pstmt2.setString(1,rs.getString("id"));
+		            rs2 = pstmt2.executeQuery(); 
+		            while (rs2.next()) {
+		            	teamInfoArr.add(teamInfoMap);
+		            	teamInfoMap = new HashMap<String, String>();
+		            	
+		            	teamInfoMap.put("id", rs2.getString("cm_userid"));
+		            	teamInfoMap.put("pid", rs.getString("id"));
+		            	teamInfoMap.put("text", "["+rs2.getString("cm_codename")+"]"+rs2.getString("cm_username"));
+		            	teamInfoMap.put("division", "user");
+		            	teamInfoMap.put("imagesrc"			, "/img/person.png");
+		            }
+		            rs2.close();
+		            pstmt2.close();
+				}
+				teamInfoArr.add(teamInfoMap);
+			}//end of while-loop statement
+            rs.close();
+            pstmt.close();
+            conn.close();
 
-	public Document getTeamInfoTree_new(boolean subSw) throws SQLException, Exception {
+			rs = null;
+			pstmt = null;
+			rs2 = null;
+			pstmt2 = null;
+			conn = null;
+			
+			return teamInfoArr;
+		} catch (SQLException sqlexception) {
+			sqlexception.printStackTrace();
+			ecamsLogger.error("## TeamInfo.getTeamInfoTree_new() SQLException START ##");
+			ecamsLogger.error("## Error DESC : ", sqlexception);	
+			ecamsLogger.error("## TeamInfo.getTeamInfoTree_new() SQLException END ##");
+			throw sqlexception;
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			ecamsLogger.error("## TeamInfo.getTeamInfoTree_new() Exception START ##");				
+			ecamsLogger.error("## Error DESC : ", exception);	
+			ecamsLogger.error("## TeamInfo.getTeamInfoTree_new() Exception END ##");
+			throw exception;
+		}finally{
+			if (strQuery != null) 	strQuery = null;
+			if (rs != null)     try{rs.close();}catch (Exception ex){ex.printStackTrace();}
+			if (pstmt != null)  try{pstmt.close();}catch (Exception ex2){ex2.printStackTrace();}
+			if (rs2 != null)     try{rs2.close();}catch (Exception ex){ex.printStackTrace();}
+			if (pstmt2 != null)  try{pstmt2.close();}catch (Exception ex2){ex2.printStackTrace();}
+			if (conn != null){
+				try{
+					ConnectionResource.release(conn);
+				}catch(Exception ex3){
+					ecamsLogger.error("## TeamInfo.getTeamInfoTree_new() connection release exception ##");
+					ex3.printStackTrace();
+				}
+			}
+		}
+	}//end of getTeamInfoTree_new() method statement
+
+	/*public Document getTeamInfoTree_new(boolean subSw) throws SQLException, Exception {
 		Connection        conn        = null;
 		PreparedStatement pstmt       = null;
 		ResultSet         rs          = null;
@@ -532,6 +632,7 @@ public class TeamInfo{
 			}
 		}
 	}//end of getTeamInfoTree_new() method statement
+*/	
 	///////////////////////////////////////////////////////////////////////
 	// 조직도 트리의 노드 클릭시 부서에 포함된 사원조회 쿼리 
 	// UserName,DeptCd,DeptName

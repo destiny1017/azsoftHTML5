@@ -198,13 +198,13 @@
 	<div class="container-fluid">
 		<div class="row-fulid" >
 			<div class="col-xs-12 col-md-3 file-tree" >
-				  <sbux-tree 
-					  	id="idxFileTree" 
-					  	name="fileTree" 
-					  	uitype="normal" 
-					  	jsondata-ref="treeJsonData" 
-					  	empty-message="시스템에 등록된 프로그램종류가 없습니다."
-					  	onclick="fileTreeClick()">
+				<sbux-tree 
+				  	id="idxFileTree" 
+				  	name="fileTree" 
+				  	uitype="normal" 
+				  	jsondata-ref="treeJsonData" 
+				  	empty-message="시스템에 등록된 프로그램종류가 없습니다."
+				  	onclick="fileTreeClick()">
 				</sbux-tree>
 			</div>
 			

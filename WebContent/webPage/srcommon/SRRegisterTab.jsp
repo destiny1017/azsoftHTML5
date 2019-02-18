@@ -8,7 +8,6 @@
 <section>
 	<div class="container-fluid">
 		<div class="border-style-black">
-		
 			<div class="row">
 				<div class="col-sm-6 col-xs-12">
 					<div class="col-sm-1 col-xs-12 text-right no-padding margin-5-top"> 
@@ -22,24 +21,26 @@
 					<div class="col-sm-3 col-xs-12 no-padding margin-3-top">
 						<sbux-input 
 							id="txtSRID" 
+							model-name="txtSRID"
 							name="cc_srid"
 							class="width-100" 
 							uitype="text"
 							grid-id="prjListGrid" 
 							sbux-popover="<font color='blue' style='font-weight:bold;'>SR번호입력</font>를 입력"
 							sbux-popover-placement="bottom" 
-							sbux-popover-html="true">
+							sbux-popover-html="true"
+							onclick="test()">
 						</sbux-input>
 					</div>
 					<div class="col-sm-2 col-xs-12 no-padding margin-5-top">
 						<sbux-checkbox 
-							id="chkbox_subnode" 
-							name="chkbox_subnode"
+							id="chkNew" 
+							name="chkNew"
 							uitype="normal" 
 							text="신규등록"
 							class="sm-font"
-							checked="checked" 
-							style="color:blue;">
+							style="color:blue;"
+							onclick="clickChkNew()">
 						</sbux-checkbox>
 					</div>
 					
@@ -75,6 +76,7 @@
 					<div class="col-sm-11 col-xs-12 no-padding margin-3-top">
 						<sbux-input 
 							id="txtRegDate" 
+							model-name="txtRegDate"
 							name="createdate"
 							uitype="text"
 							grid-id="prjListGrid"
@@ -118,6 +120,7 @@
 					<div class="col-sm-5 col-xs-12 text-right no-padding margin-5-top"> 
 						<sbux-input 
 							id="txtDept" 
+							model-name="txtDept"
 							name="reqdept"
 							uitype="text"
 							grid-id="prjListGrid"
@@ -140,6 +143,7 @@
 					<div class="col-sm-11 col-xs-12 no-padding">
 						<sbux-picker 
 							id="datReqComDate" 
+							model-name="datReqComDate"
 							name="reqcompdat"
 							grid-id="prjListGrid" 
 							uitype="date" 
@@ -165,6 +169,7 @@
 					<div class="col-sm-11 col-xs-12 no-padding">
 						<sbux-input 
 							id="txtReqSubject" 
+							model-name="txtReqSubject"
 							name="cc_reqtitle"
 							grid-id="prjListGrid" 
 							uitype="text"
@@ -235,22 +240,23 @@
 							uitype="text"
 							sbux-popover="<font color='blue' style='font-weight:bold;'>더블클릭</font>하여 사용자 검색"
 							sbux-popover-placement="bottom" 
-							sbux-popover-html="true">
+							sbux-popover-html="true"
+							ondblclick="findPesonOrDepart('1')">
 						</sbux-input>
 					</div>
 					
 					<div class="col-sm-8 col-xs-12 no-padding margin-3-top">
 						<sbux-select 
-							id="selDevUser" 
-							name="selDevUser"
+							id="cboDevUser" 
+							name="cboDevUser"
 							class="combo-height width-100"  
 							uitype="single" 
-						  	model-name="selDevUser"
-		                  	jsondata-text = "cm_codename"
-		                  	jsondata-value = "cm_micode"
+						  	model-name="cboDevUser"
+		                  	jsondata-text = "cm_idname"
+		                  	jsondata-value = "cm_userid"
 		                  	scroll-style="min-height: 120px;"
 		                  	required 
-		                  	jsondata-ref="cboPrgData"
+		                  	jsondata-ref="cboDevUserData"
 		                >
 		                </sbux-select>
 					</div>
@@ -389,8 +395,20 @@
 		                  	scroll-style="min-height: 120px;"
 		                  	required 
 		                  	jsondata-ref="cboReqSecuData"
+		                  	onchange = "changeCboReqSecu(cboReqSecu)"
 		                >
 		                </sbux-select>
+		                
+		                <sbux-input 
+							id="txtReqSecu" 
+							model-name="txtReqSecu"
+							name="txtReqSecu"
+							class="width-100"
+							uitype="text"
+							sbux-popover="<font color='blue' style='font-weight:bold;'>보안요구사항</font>을 직접 입력"
+							sbux-popover-placement="top" 
+							sbux-popover-html="true">
+						</sbux-input>
 					</div>
 				</div>
 			</div>
@@ -434,5 +452,28 @@
 		</div>
 	</div>
 </section>
+
+
+<sbux-modal id="modalOrganization" 
+			name="modalOrganization" 
+			uitype="middle" 
+			header-title="조직도" 
+			body-html-id="modalBody" 
+			footer-is-close-button="false">
+</sbux-modal>
+
+<div id="modalBody">
+	<iframe id="modalOrganizationBody"
+			name="modalOrganizationBody" 
+			src="<c:url value="/webPage/modal/TreeOrganization.jsp"/>" 
+			width="100%" 
+			height="380px" 
+			frameborder="0" 
+			border="0" 
+			scrolling="no" 
+			marginheight="0" 
+			marginwidth="0">
+	</iframe>
+</div>
 
 <script type="text/javascript" src="<c:url value="/js/ecams/srcommon/SRRegisterTab.js"/>"></script>

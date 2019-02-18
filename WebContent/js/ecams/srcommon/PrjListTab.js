@@ -25,7 +25,7 @@ $(document).ready(function() {
 
 //초기 화면 셋팅
 function screenInitPrj() {
-	createElementsPrj();
+	//createElementsPrj();	grid 라이센스 활성화되면 풀기
 	setReqDepartInfo();
 	setDateInit();
 	setCboElementPrj();
@@ -84,8 +84,7 @@ function changeQryGbnCbo(selectedQryGbn) {
 }
 
 function getPrjList() {
-	//하위탭 만든후 풀기..
-	//this.parentDocument.subScreenInit(); 하위 탭 초기화
+	SRRegisterTabInit('NEW');
 	
 	if($("#cboQryGbn option").index($("#cboQryGbn option:selected")) < 0 ) return;
 	
