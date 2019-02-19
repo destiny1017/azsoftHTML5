@@ -35,7 +35,7 @@
 					<sbux-label id="lbScope" name="lbScope" uitype="normal" text="범위"></sbux-label>
 				</div>
 				<div class="col-xs-12 col-sm-1">
-					<sbux-select id="cbo_Option" name="cbo_Option" uitype="single" jsondata-ref = "cbo_Option" jsondata-text="" jsondata-value=""  style="width:100%;"></sbux-select>				
+					<sbux-select id="cbo_Option" name="cbo_Option" uitype="single" jsondata-ref = "cbo_Option" jsondata-text="cm_codename" jsondata-value="cm_micode"  style="width:100%;"></sbux-select>				
 				</div>
 				<div class="col-xs-12 col-sm-1 col-sm-offset-2">
 					<sbux-button id=btnExcel name="btnExcel" uitype="normal" text="엑셀저장"></sbux-button>
@@ -57,7 +57,10 @@
 				<div class="col-xs-12 col-sm-1">
 					<sbux-checkbox id="chkDetail" name="chkDetail" uitype="normal" text="세부항목포함" checked></sbux-checkbox>			
 				</div>
-				<div class="col-xs-12 col-sm-1 col-sm-offset-3">
+				<div class="col-xs-12 col-sm-1 col-sm-offset-2">
+					<sbux-label id="lbTotalCnt" name="lbTotalCnt" uitype="normal" text="총0건"></sbux-label>
+				</div>
+				<div class="col-xs-12 col-sm-1">
 					<sbux-button id="btnCmdQry" name="btnCmdQry" uitype="normal" text="조&nbsp;&nbsp;&nbsp;&nbsp;회" onclick="cmdQry_Proc()"></sbux-button>
 				</div>
 			</div>

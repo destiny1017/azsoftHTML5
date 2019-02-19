@@ -2,6 +2,7 @@ package html.app.approval;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -101,19 +102,11 @@ public class RequestStatus extends HttpServlet {
 	}
 	
 	private String get_SelectList(HttpServletRequest request) throws SQLException, Exception {
-		String strSys = ParsingCommon.parsingRequestJsonParamToString(request, "strSys");
-		String strQry = ParsingCommon.parsingRequestJsonParamToString(request, "strQry");
-		String strTeam = ParsingCommon.parsingRequestJsonParamToString(request, "strTeam");
-		String strSta = ParsingCommon.parsingRequestJsonParamToString(request, "strSta");
-		String txtUser = ParsingCommon.parsingRequestJsonParamToString(request, "txtUser");
-		String strStD = ParsingCommon.parsingRequestJsonParamToString(request, "strStD");
-		String strEdD = ParsingCommon.parsingRequestJsonParamToString(request, "strEdD");
-		String strUserId = ParsingCommon.parsingRequestJsonParamToString(request, "strUserId");
-		String cboGbn = ParsingCommon.parsingRequestJsonParamToString(request, "cboGbn");
-		String strJob = ParsingCommon.parsingRequestJsonParamToString(request, "strJob");
-		String dategbn = ParsingCommon.parsingRequestJsonParamToString(request, "dategbn");
-		String txtSpms = ParsingCommon.parsingRequestJsonParamToString(request, "txtSpms");
-
-		return gson.toJson( cmr3200.get_SelectList(strSys,strQry,strTeam,strSta,txtUser,strStD,strEdD,strUserId,cboGbn,strJob,dategbn,txtSpms) );
+		HashMap<String, String>	prjDataInfoMap = null;
+		prjDataInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "prjData");
+		return gson.toJson( cmr3200.get_SelectList(prjDataInfoMap.get("strSys"),prjDataInfoMap.get("strQry"),prjDataInfoMap.get("strTeam"),
+												   prjDataInfoMap.get("strSta"),prjDataInfoMap.get("txtUser"),prjDataInfoMap.get("strStD"),
+												   prjDataInfoMap.get("strEdD"),prjDataInfoMap.get("strUserId"),prjDataInfoMap.get("cboGbn"),
+												   prjDataInfoMap.get("strJob"),prjDataInfoMap.get("dategbn"),prjDataInfoMap.get("txtSpms")) );
 	}
 }

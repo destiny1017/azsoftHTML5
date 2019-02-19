@@ -11,28 +11,15 @@ var userid = window.parent.userId;
 var request =  new Request();
 strReqCD = request.getParameter('reqcd');
 
-var today = new Date();
-var dd = today.getDate();
-var mm = today.getMonth() + 1;
-var yyyy = today.getFullYear();
 
 var SBGridProperties = {};
-
-if(dd < 10){
-	dd = '0' + dd;
-}
-if(mm < 10){
-	mm = '0' + mm;
-}
-
-today = yyyy + '/' + mm + '/' + dd;
 
 $(document).ready(function(){
 	if(strReqCD != null && strReqCD != ""){
 		getUserInfo();
 	}	
-	SBUxMethod.set('datStD', today);
-	SBUxMethod.set('datEdD', today);
+	SBUxMethod.set('datStD', getDate('DATE',0));
+	SBUxMethod.set('datEdD', getDate('DATE',0));
 	createGrid();
 	getSysInfo();
 	getCodeInfo();
@@ -140,17 +127,9 @@ function cboGbn_set(){
 }
 
 function cmdQry_Proc(){
-	var strSys = "0";
-	var strQry = "0";
-	var strSta = "0";
+	var tmpObj = {};
 	var strStD = "";
 	var strEdD = "";
-	var strTeam = "0";
-	var strGbn = "0";
-	var strProc = "0";
-	var dategbn;
-	var txtUser;
-	var txtSpms;
 	var selectedIndex;
 		
 	if(SBUxMethod.get("cboSta") != "01"){
@@ -162,80 +141,87 @@ function cmdQry_Proc(){
 			strStD = "";
 			strEdD = "";
 			return;
-		}  
+		}  		
 	}
+	
+	tmpObj.strStD = strStD;
+	tmpObj.strEdD = strEdD;
 	
 	selectedIndex = document.getElementById("cboSyscd");
 	
 	if(selectedIndex.selectedIndex > 0){
-		strSys = SBUxMethod.get("cboSyscd");
+		tmpObj.strSys = SBUxMethod.get("cboSyscd");
 		selectedIndex = null;
-	}
+	} else {
+		tmpObj.strSys = "0";
+	} 
 	
 	selectedIndex = document.getElementById("cboGbn");
 	
 	if(selectedIndex.selectedIndex > 0){
-		strGbn = SBUxMethod.get("cboGbn");
+		tmpObj.strGbn = SBUxMethod.get("cboGbn");
 		selectedIndex = null;
+	} else {
+		tmpObj.strGbn = "0";
 	}
 	
 	selectedIndex = document.getElementById("cboSin");
 	
 	if(selectedIndex.selectedIndex > 0){
-		strQry = SBUxMethod.get("cboSin");
+		tmpObj.strQry = SBUxMethod.get("cboSin");
 		selectedIndex = null;
+	} else {
+		tmpObj.strQry = "0";
 	}
 	
 	selectedIndex = document.getElementById("cboSta");
 	
 	if(selectedIndex.selectedIndex > 0){
-		strSta = SBUxMethod.get("cboSta");
+		tmpObj.strSta = SBUxMethod.get("cboSta");
 		selectedIndex = null;
+	} else {
+		tmpObj.strSta = "0";
 	}
 	
 	selectedIndex = document.getElementById("cboTeam");
 	
 	if(selectedIndex.selectedIndex > 0){
-		strTeam = SBUxMethod.get("cboTeam");
+		tmpObj.strTeam = SBUxMethod.get("cboTeam");
 		selectedIndex = null;
+	} else {
+		tmpObj.strTeam = "0";
 	}
 	
 	selectedIndex = document.getElementById("cboProc");
 	
 	if(selectedIndex.selectedIndex > 0){
-		strProc = SBUxMethod.get("cboProc");
+		tmpObj.strProc = SBUxMethod.get("cboProc");
 		selectedIndex = null;
+	} else {
+		tmpObj.strProc = "0";
 	}
 	
-	dategbn = SBUxMethod.get("rdoDate");
+	
+	tmpObj.dategbn = SBUxMethod.get("rdoDate");
 	
 	if(SBUxMethod.get("txtUser") !== undefined){
-		txtUser = SBUxMethod.get("txtUser").trim();
+		tmpObj.txtUser = SBUxMethod.get("txtUser").trim();
 	} else {
-		txtUser = "";
+		tmpObj.txtUser = "";
 	}
 	
 	if(SBUxMethod.get("txtSpms") !== undefined){
-		txtSpms = SBUxMethod.get("txtSpms").trim();
+		tmpObj.txtSpms = SBUxMethod.get("txtSpms").trim();
 	} else {
-		txtSpms = "";
+		tmpObj.txtSpms = "";
 	}
+	
+	tmpObj.strUserId = userid;
 	
 	var ajaxResultData = null;
 	var tmpData = {
 			requestType : 'get_SelectList',
-			strSys		: strSys,
-			strGbn		: strGbn,
-			strQry		: strQry,
-			strTeam		: strTeam,
-			strSta		: strSta,
-			txtUser		: txtUser,
-			strStD		: strStD,
-			strEdD		: strEdD,
-			strUserId   : userid,
-			dategbn		: dategbn,
-			txtSpms		: txtSpms,
-			strProc		: strProc
+			prjData: JSON.stringify(tmpObj)
 	}	
 	
 	ajaxResultData = ajaxCallWithJson('/webPage/approval/ApprovalStatus', tmpData, 'json');

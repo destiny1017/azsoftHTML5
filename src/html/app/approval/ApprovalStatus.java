@@ -95,19 +95,14 @@ public class ApprovalStatus extends HttpServlet {
 	}
 	
 	private String get_SelectList(HttpServletRequest request) throws SQLException, Exception {
-		String strSys = ParsingCommon.parsingRequestJsonParamToString(request, "strSys");
-		String strGbn = ParsingCommon.parsingRequestJsonParamToString(request, "strGbn");
-		String strQry = ParsingCommon.parsingRequestJsonParamToString(request, "strQry");
-		String strTeam = ParsingCommon.parsingRequestJsonParamToString(request, "strTeam");
-		String strSta = ParsingCommon.parsingRequestJsonParamToString(request, "strSta");
-		String txtUser = ParsingCommon.parsingRequestJsonParamToString(request, "txtUser");
-		String strStD = ParsingCommon.parsingRequestJsonParamToString(request, "strStD");
-		String strEdD = ParsingCommon.parsingRequestJsonParamToString(request, "strEdD");
-		String strUserId = ParsingCommon.parsingRequestJsonParamToString(request, "strUserId");
-		String dategbn = ParsingCommon.parsingRequestJsonParamToString(request, "dategbn");
-		String txtSpms = ParsingCommon.parsingRequestJsonParamToString(request, "txtSpms");
-		String strProc = ParsingCommon.parsingRequestJsonParamToString(request, "strProc");
+		HashMap<String, String>	prjDataInfoMap = null;
+		prjDataInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "prjData");
 		
-		return gson.toJson( cmr3100.get_SelectList(strSys,strGbn,strQry,strTeam,strSta,txtUser,strStD,strEdD,strUserId,dategbn,txtSpms,strProc) );
+		return gson.toJson( cmr3100.get_SelectList(prjDataInfoMap.get("strSys"),prjDataInfoMap.get("strGbn"),
+												   prjDataInfoMap.get("strQry"),prjDataInfoMap.get("strTeam"),
+												   prjDataInfoMap.get("strSta"),prjDataInfoMap.get("txtUser"),
+												   prjDataInfoMap.get("strStD"),prjDataInfoMap.get("strEdD"),
+												   prjDataInfoMap.get("strUserId"),prjDataInfoMap.get("dategbn"),
+												   prjDataInfoMap.get("txtSpms"),prjDataInfoMap.get("strProc")) );
 	}
 }

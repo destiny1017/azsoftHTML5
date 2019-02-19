@@ -9,10 +9,6 @@ var cboDept2;
 var cboSta1;
 var cboSta2;
 
-var today = new Date();
-var dd = today.getDate();
-var mm = today.getMonth() + 1;
-var yyyy = today.getFullYear();
 
 var SBGridProperties = {};
 
@@ -21,14 +17,6 @@ var request =  new Request();
 var strReqCD = "";
 strReqCD = request.getParameter('reqcd');
 
-if(dd < 10){
-	dd = '0' + dd;
-}
-if(mm < 10){
-	mm = '0' + mm;
-}
-
-today = yyyy + '/' + mm + '/' + dd;
 
 $(document).ready(function(){
 	if(strReqCD == "" || strReqCD == null){
@@ -39,8 +27,8 @@ $(document).ready(function(){
 		
 	}
 	
-	SBUxMethod.set('datStD', today);
-	SBUxMethod.set('datEdD', today);
+	SBUxMethod.set('datStD', getDate('DATE',0));
+	SBUxMethod.set('datEdD', getDate('DATE',0));
 	dept_set();
 	dept_set2();
 	codeinfo_set();
