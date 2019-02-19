@@ -19,7 +19,7 @@
 			<sbux-button id="btnReg" name="btnReg" uitype="normal" text="공지사항등록" onclick="new_Click()" disabled></sbux-button>
 <!-- 			Cmd_Ip3 -->
       		<sbux-button id="sysPath" name="sysPath" uitype="normal" text="Excel저장" onclick="sysPathButton_Click()"></sbux-button>
-      		<sbux-label id="lbCnt" name="lbCnt" uitype="normal" text="총{myGrid1.getRows();}건"></sbux-label>
+      		<sbux-label id="lbCnt" class="margin-40-right margin-5-top" name="lbCnt" uitype="normal" text="총 0건" style="float:right"></sbux-label>
 		</div>
 	</div>
 </section>
