@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ecams.service.list.LoginManager;
 import com.google.gson.Gson;
 import app.common.CodeInfo;
 import app.common.SysInfo;
@@ -85,8 +84,9 @@ public class UserInfo extends HttpServlet {
 	
 	private String getUserInfo(HttpServletRequest request) throws SQLException, Exception {
 		String userId = null;
-		userId = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
-		
-		return gson.toJson(cmm0400.getUserInfo(userId,"CD"));
+		userId = ParsingCommon.parsingRequestJsonParamToString(request, "userId");
+		String userName = null;
+		userName = ParsingCommon.parsingRequestJsonParamToString(request, "userName");
+		return gson.toJson(cmm0400.getUserInfo(userId,userName));
 	}
 }

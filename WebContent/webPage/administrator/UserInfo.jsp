@@ -66,6 +66,7 @@
 							class="combo-height width-100" uitype="single"
 							jsondata-text="cm_codename" jsondata-ref="selPosData">
 						</sbux-select>
+<!-- 						Cbo_Pos -->
 					</div>
 				</div>
 				<div class="col-md-1">
@@ -146,6 +147,8 @@
 						<sbux-input id="txtGroup" name="txtGroup" class="width-100"
 							uitype="text" datastore-id="idxData1"
 							onkeyenter="clickSearchBtn()"> </sbux-input>
+						<sbux-label id="lbGroup1" class="width-100" text=""
+							uitype="normal"> </sbux-label>
 					</div>
 				</div>
 				<div class="col-md-1"></div>
@@ -195,6 +198,8 @@
 						<sbux-input id="txtOrg" name="txtOrg" class="width-100"
 							uitype="text" datastore-id="idxData1"
 							onkeyenter="clickSearchBtn()"> </sbux-input>
+						<sbux-label id="lbOrg1" class="width-100" text=""
+							uitype="normal"> </sbux-label>
 					</div>
 				</div>
 				<div class="col-md-1">
@@ -354,7 +359,7 @@
 		</div>
 	</div>
 </section>
-<sbux-modal id="modalPwd" name="modalPwd" uitype="small" header-title="[비밀번호초기화]" body-html-id="pwdBody">
+<sbux-modal id="modalPwd" name="modalPwd" uitype="small" header-title="[비밀번호초기화]" body-html-id="pwdBody" footer-is-close-button="false">
 </sbux-modal>
 <div id="pwdBody">
 	<IFRAME id="popPwd" src="<c:url value="/webPage/modal/PopUserInfoPwd.jsp"/>" width="100%" height="250px"></IFRAME>
