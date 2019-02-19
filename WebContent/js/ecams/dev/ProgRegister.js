@@ -74,6 +74,7 @@ function setRsrcCbo(){
 function setJobCbo(){
 	var RsrcData = new Object();
 	RsrcData.UserId = userId;
+	RsrcData.SysCd = '';
 	RsrcData.SelMsg = 'SEL';
 	RsrcData.SecuYn = 'N';
 	RsrcData.CloseYn = 'N';
