@@ -74,12 +74,12 @@
 			<div class="col-xs-3 col-xs-offset-9">
 				<div class="col-xs-6 no-padding">
 					<sbux-button 
-						id="btnUpdate"
-						name="btnUpdate"
+						id="btnApply"
+						name="btnApply"
 						uitype="normal"
 						class="width-95 float-right"
 						text="적용"
-		             	onclick="updateTree()">
+		             	onclick="apllyTreeInfo">
 	             	</sbux-button>
 				</div>
 				<div class="col-xs-6 no-padding">
@@ -97,5 +97,5 @@
 	</div>
 	
 </section>
-
+<c:import url="/js/ecams/common/commonscript.jsp" />
 <script type="text/javascript" src="<c:url value="/js/ecams/modal/TreeOrganization.js"/>"></script>

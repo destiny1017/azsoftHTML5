@@ -58,7 +58,7 @@ public class eCAMSBaseServlet extends HttpServlet {
 					break;
 				case "LOG_OUT":
 					response.getWriter().write( logOut(request) );
-					break;	
+					break;
 				default : 
 					break;
 			}

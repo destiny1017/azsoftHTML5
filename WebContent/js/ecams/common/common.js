@@ -1,28 +1,11 @@
 /**
  * eCAMS 공통 기능 정의
-
  * <pre>
  * <b>History</b>
- * 	작성자: 이용문 + 허정규
+ * 	작성자: 이용문 + 정선희
  * 	버전 : 1.1
  *  수정일 : 2019-02-07
  */
-var SBUxConfig = {
-	License : "SBUX-G12XD-131XD",				
-	Path : "/lib/sbux",
-	Locale : "ko",
-	SupportVersion : "2.5",
-	DeveloperTipType : "console",
-	Theme : "default",
-	DefaultSetFile : "SBUxDefault.js",
-	SBGrid : {
-		Theme : 'default',
-		DefaultSetFile : "SBGridDefault.js",
-		Version2_5 : true
-	}
-};
-var SBpath = "/";
-
 /*
  * SBUxAlert에 필요한 Option객체를 미리 정의해놨음.
  * js 파일에서 사용시  

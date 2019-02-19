@@ -286,5 +286,5 @@
 		</div>
 	</div>
 </section>
-
+<c:import url="/js/ecams/common/commonscript.jsp" />
 <script type="text/javascript" src="<c:url value="/js/ecams/dev/CheckOut.js"/>"></script>
