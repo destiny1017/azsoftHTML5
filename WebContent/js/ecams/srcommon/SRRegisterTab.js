@@ -26,6 +26,7 @@ var cboDevUserData;
 var insertSrIdSw = false;
 var inProgressSw = false;
 var strIsrId = '';
+var strDept = '';
 
 var treeOranizationSubSw = false;
 
@@ -253,4 +254,42 @@ function findPesonOrDepart(findDivision) {
 	var modalIframe = document.getElementById("modalOrganizationBody");
 	modalIframe.contentWindow.modalOrganizationInit(treeOranizationSubSw);
 
+}
+
+function closeModal(flag) {
+	var modalIframe = document.getElementById("modalOrganizationBody").contentWindow;
+	SBUxMethod.closeModal('modalOrganization');
+	
+	if(flag) {
+		if(treeOranizationSubSw) {
+			cboDevUserData = null;
+			var cboDevUserDataArray = [];
+			var cboDevUserDataObject= {};
+			cboDevUserDataObject.cm_userid = '0000';
+			cboDevUserDataObject.cm_username = modalIframe.selectedData.username;
+			cboDevUserDataObject.cm_idname = '선택하세요';
+			cboDevUserDataObject.cm_deptcd = modalIframe.selectedData.cm_deptcd;
+			cboDevUserDataObject.cm_deptname = '';
+			cboDevUserDataArray.push(cboDevUserDataObject);
+			
+			cboDevUserDataObject= {};
+			cboDevUserDataObject.cm_userid 	 = modalIframe.selectedData.id;
+			cboDevUserDataObject.cm_username = modalIframe.selectedData.username;
+			cboDevUserDataObject.cm_idname = modalIframe.selectedData.username+'['+modalIframe.selectedData.id+']';
+			cboDevUserDataObject.cm_deptcd 	 = modalIframe.selectedData.deptcd;
+			cboDevUserDataObject.cm_deptname = modalIframe.selectedData.deptname;
+			cboDevUserDataArray.push(cboDevUserDataObject);
+			
+			cboDevUserData = cboDevUserDataArray;
+			SBUxMethod.refresh('cboDevUser');
+			if(cboDevUserData.length === 2) $("#cboDevUser option:eq(1)").attr("selected","selected");
+			
+			SBUxMethod.set('txtDevUser',modalIframe.selectedData.username);
+			
+			//개발자 추가버튼 클릭해주기!!!
+		} else {
+			SBUxMethod.set('txtDept',modalIframe.selectedData.text);
+			strDept = modalIframe.selectedData.id;
+		}
+	}
 }

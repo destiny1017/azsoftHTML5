@@ -62,7 +62,39 @@ var loginSubmitAction = function(e) {
 	*/    
     if ( authCode === '0' || authCode === '3' || authCode === '9') {
     	sessionID = setSessionLoginUser(userId);
-    	if( sessionID !== null && sessionID !== undefined ) location.replace('../main/eCAMSBase.jsp?sessionID='+sessionID);
+    	if( sessionID !== null && sessionID !== undefined ) {
+    		
+    		//location.replace('../main/eCAMSBase.jsp?sessionID='+sessionID);
+    		
+    		/*var url = '../main/eCAMSBase.jsp?sessionID='+sessionID;
+    		var form = $('<form action="' + url + '" method="post">' +
+    		'</form>');
+    		$('body').append(form);
+    		form.submit();*/
+    		
+    	    var form = document.createElement("form");
+            var parm = new Array();
+            var input = new Array();
+
+            form.action = '../main/eCAMSBase.jsp';
+            form.method = "post";
+
+            parm.push( ['sessionID', sessionID] );
+
+            for (var i = 0; i < parm.length; i++) {
+                input[i] = document.createElement("input");
+                input[i].setAttribute("type", "hidden");
+                input[i].setAttribute('name', parm[i][0]);
+                input[i].setAttribute("value", parm[i][1]);
+                form.appendChild(input[i]);
+            }
+            
+            document.body.appendChild(form);
+            form.submit();
+    	}
+    	
+    	
+    	
     }
     
     

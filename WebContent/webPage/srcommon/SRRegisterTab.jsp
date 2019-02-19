@@ -452,7 +452,8 @@
 		</div>
 	</div>
 </section>
-
+<c:import url="/js/ecams/common/commonscript.jsp" />
+<script type="text/javascript" src="<c:url value="/js/ecams/srcommon/SRRegisterTab.js"/>"></script>
 
 <sbux-modal id="modalOrganization" 
 			name="modalOrganization" 
@@ -476,4 +477,4 @@
 	</iframe>
 </div>
 
-<script type="text/javascript" src="<c:url value="/js/ecams/srcommon/SRRegisterTab.js"/>"></script>
+

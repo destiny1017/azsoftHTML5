@@ -485,8 +485,11 @@ public class TeamInfo{
 		            	teamInfoMap.put("id", rs2.getString("cm_userid"));
 		            	teamInfoMap.put("pid", rs.getString("id"));
 		            	teamInfoMap.put("text", "["+rs2.getString("cm_codename")+"]"+rs2.getString("cm_username"));
+		            	teamInfoMap.put("username", rs2.getString("cm_username"));
 		            	teamInfoMap.put("division", "user");
 		            	teamInfoMap.put("imagesrc"			, "/img/person.png");
+		            	teamInfoMap.put("deptname"			, rs.getString("text"));
+		            	teamInfoMap.put("deptcd"			, rs.getString("id"));
 		            }
 		            rs2.close();
 		            pstmt2.close();

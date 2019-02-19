@@ -71,7 +71,7 @@
 		</div>
 	</section>
 	
-	
+	<c:import url="/js/ecams/common/commonscript.jsp" />
 	<script type="text/javascript" src="<c:url value="/js/ecams/login/login.js"/>"></script>
 </body>
 </html>
