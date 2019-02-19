@@ -17,32 +17,13 @@ var cboGbn;
 // 그리드 변수
 var grid_data;
 
-// 달력 초기화 시작
-var today = new Date();
-var dd = today.getDate();
-var mm = today.getMonth() + 1;
-var yyyy = today.getFullYear();
-
-var SBGridProperties = {};
-
-if(dd < 10){
-	dd = '0' + dd;
-}
-if(mm < 10){
-	mm = '0' + mm;
-}
-
-today = yyyy + '/' + mm + '/' + dd;
-// 달력 초기화 종료
-
-
 $(document).ready(function(){
 	if(strReqCD != null && strReqCD != ""){
 		if(strReqCD.length > 2) strReqCD.substring(0, 2);
 		else strReqCD = "";
 	}
-	SBUxMethod.set('datStD', today);
-	SBUxMethod.set('datEdD', today);
+	SBUxMethod.set('datStD', getDate('DATE',0));
+	SBUxMethod.set('datEdD', getDate('DATE',0));
 	
 	getUserInfo();
 	cboGbn_set();
@@ -173,17 +154,10 @@ function cboGbn_set(){
 }
 
 function cmdQry_Proc(){
+	var tmpObj = {};
 	var selectedIndex;
-	var strSys = "";
-	var strJob = "";
-	var strQry = "";
-	var strSta = "";
 	var strStD = "";
 	var strEdD = "";
-	var strTeam = "";
-	var txtUser = "";
-	var dategbn = "";
-	var txtSpms = "";
 	
 	strStD = SBUxMethod.get("datStD");
 	strEdD = SBUxMethod.get("datEdD");
@@ -195,59 +169,54 @@ function cmdQry_Proc(){
 		return;
 	}  
 	
+	tmpObj.strStD = strStD;
+	tmpObj.strEdD = strEdD;
+	
 	selectedIndex = document.getElementById("cboSysCd");
 	if(selectedIndex.selectedIndex > 0){
-		strSys = SBUxMethod.get("cboSysCd");
+		tmpObj.strSys = SBUxMethod.get("cboSysCd");
 		selectedIndex = null;
 	}
 	
 	selectedIndex = document.getElementById("cboSin");
 	if(selectedIndex.selectedIndex > 0){
-		strQry = SBUxMethod.get("cboSin");
+		tmpObj.strQry = SBUxMethod.get("cboSin");
 		selectedIndex = null;
 	}
 	
 	selectedIndex = document.getElementById("cboSta");
 	if(selectedIndex.selectedIndex > 0){
-		strSta = SBUxMethod.get("cboSta");
+		tmpObj.strSta = SBUxMethod.get("cboSta");
 		selectedIndex = null;
 	}
 	
 	selectedIndex = document.getElementById("cboDept");
 	if(selectedIndex.selectedIndex > 0){
-		strTeam = SBUxMethod.get("cboDept");
+		tmpObj.strTeam = SBUxMethod.get("cboDept");
 		selectedIndex = null;
 	}
 	
-	dategbn = SBUxMethod.get("rdoDate");
+	tmpObj.dategbn = SBUxMethod.get("rdoDate");
 	
 	if(SBUxMethod.get("txtUser") !== undefined){
-		txtUser = SBUxMethod.get("txtUser").trim();
+		tmpObj.txtUser = SBUxMethod.get("txtUser").trim();
 	} else {
-		txtUser = "";
+		tmpObj.txtUser = "";
 	}
 	
 	if(SBUxMethod.get("txtSpms") !== undefined){
-		txtSpms = SBUxMethod.get("txtSpms").trim();
+		tmpObj.txtSpms = SBUxMethod.get("txtSpms").trim();
 	} else {
-		txtSpms = "";
+		tmpObj.txtSpms = "";
 	}
+	
+	tmpObj.strUserId = userid;
+	tmpObj.cboGbn = SBUxMethod.get("cboGbn");
 	
 	var ajaxResultData = null;
 	var tmpData = {
 			requestType : 'get_SelectList',
-			strSys		: strSys,
-			strQry		: strQry,
-			strTeam		: strTeam,
-			strSta		: strSta,
-			txtUser		: txtUser,
-			strStD		: strStD,
-			strEdD		: strEdD,
-			strUserId   : userid,
-			cboGbn		: SBUxMethod.get("cboGbn"),
-			strJob		: strJob,
-			dategbn		: dategbn,
-			txtSpms		: txtSpms
+			prjData: JSON.stringify(tmpObj)
 	}	
 	
 	

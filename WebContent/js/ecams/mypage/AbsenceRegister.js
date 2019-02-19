@@ -79,8 +79,7 @@ function Cbo_User_resultHandler() {
 			if (comboDp1.length > 1) {
 				for (var i = 0; comboDp1.length > i; i++) {
 					if (comboDp1[i].cm_userid == userid) {
-						//$("#Cbo_User option:eq("+i+")").attr("selected","selected");
-						comboDp1[i].selected = "selected";
+						$("#cboUser option:eq("+i+")").prop("selected",true);
 						SBUxMethod.refresh('cboUser'); //부재자
 						Cbo_User_Click();
 						break;
@@ -125,7 +124,7 @@ function Cbo_User_Click_resultHandler() {
 	if(ajaxReturnData !== 'ERR') {
 		Sql_tmp_dp1 = ajaxReturnData;
 		SBUxMethod.refresh('cboDaeSign');
-		Sql_tmp_dp1[0].selected = "selected";
+		$("#cboDaeSign option:eq(0)").prop("selected", true);
 		SBUxMethod.refresh('cboDaeSign');
 		selectedIndex = $("#cboDaeSign option").index(
 				$("#cboDaeSign option:selected"));
@@ -180,7 +179,7 @@ function Search_click1() {
 
 	for (i = 0; comboDp1.length > i; i++) {
 		if (comboDp1[i].cm_username == document.getElementById("txtUser").value) {
-			comboDp1[i].selected = "selected";
+			$("#cboUser option:eq("+i+")").prop("selected", true);
 			SBUxMethod.refresh('cboUser');
 			Cbo_User_Click();
 			break;
@@ -192,7 +191,7 @@ function Search_click2() {
 	var i = 0;
 	for (i = 0; Sql_tmp_dp1.length > i; i++) {
 		if (Sql_tmp_dp1[i].cm_username == document.getElementById("txtName").value) {
-			Sql_tmp_dp1[i].selected = "selected";
+			$("#cboDaeSign option:eq("+i+")").prop("selected", true);
 			SBUxMethod.refresh('cboDaeSign');
 			DaeSign_username_Set();
 			break;
@@ -230,7 +229,7 @@ function select_resultHandler() {
 				tmpObj = Sql_tmp_dp1[i];
 
 				if (tmpObj.cm_userid == daegyulObj.cm_daegyul) {
-					Sql_tmp_dp1[i].selected = "selected";
+					$("#cboDaeSign option:eq("+i+")").prop("selected", true);
 					SBUxMethod.refresh('cboDaeSign');
 					var selectedIndex = $("#cboDaeSign option").index(
 							$("#cboDaeSign option:selected"));
@@ -243,7 +242,7 @@ function select_resultHandler() {
 				tmpObj = comboDp3[j];
 
 				if (tmpObj.cm_codename == daegyulObj.cm_daegmsg) {
-					comboDp3[i].selected = "selected";
+					$("#cboSayu option:eq("+i+")").prop("selected", true);
 					SBUxMethod.refresh('cboSayu');
 					var selectedIndex = $("#cboSayu option").index(
 							$("#cboSayu option:selected"));

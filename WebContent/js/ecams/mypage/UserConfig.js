@@ -23,17 +23,17 @@ var Register1;
 var Temp_dp;
 var userid = window.parent.userId;
 
-$(document).ready(function() {
+$(document).ready(function() { //완료
 	createGrid();
 	if(userid == "" || userid == null){
 		alert("로그인 후 사용하시기 바랍니다.");
 		return;
 	}
 	
-	SBUxMethod.attr('btnDir', 'disabled', 'true');
+	SBUxMethod.hide('btnDir');
 	SBUxMethod.attr('btnReg', 'disabled', 'true');
 	getAdminInfo();
-	getGrid1();
+	getGrid1();//Sql_Qry
 	myGrid1.bind('click', 'setButton');
 })
 
@@ -66,7 +66,7 @@ function createGrid(){
 	myGrid1.rebuild();
 }
 
-function getAdminInfo() {
+function getAdminInfo() { //isAdmin_Handler
 	var ajaxReturnData = null;
 	
 	var tmpData = {
@@ -83,7 +83,7 @@ function getAdminInfo() {
 	}
 }
 
-function getSelSysname(secuYn) {
+function getSelSysname(secuYn) { //Cbo_Syscd_resultHandler
 	var ajaxReturnData = null;
 	
 	var tmpData = {
@@ -101,7 +101,7 @@ function getSelSysname(secuYn) {
 			for(var i=0; selSysnameDp.length>i; i++){
 				if(selSysnameDp[i].cm_syscd == sysCd) {
 					$("#selSysname option:eq("+i+")").prop("selected", true);
-					changeSelSysname();
+					changeSelSysname();//Cbo_SysCd_Click
 					break;
 				}
 			}
@@ -115,12 +115,12 @@ function getSelSysname(secuYn) {
 }
 
 function changeSelSysname() { //Cbo_SysCd_Click
-	SBUxMethod.attr('btnDir', 'disabled', 'true');
+	SBUxMethod.hide('btnDir');
 	SBUxMethod.attr('btnReg', 'disabled', 'true');
 	$("#txtDir").val("");
 	var selectedIndex = $("#selSysname option").index($("#selSysname option:selected"));
 	if(selectedIndex < 1) return;
-	SBUxMethod.attr('btnDir', 'disabled', 'false');
+	SBUxMethod.show('btnDir');
 	SBUxMethod.attr('btnReg', 'disabled', 'false');
 	
 	if(typeof gridDp1 != "undefined"){
@@ -158,19 +158,19 @@ function getGrid1Data() { //getSql_Qry_Handler
 function changeGrid1() { //Lv_File0_click
 	if(myGrid1.getSelectedRows() < 0) return;
 	$("#txtDir").val("");
-	SBUxMethod.attr('btnDir', 'disabled', 'true');
+	SBUxMethod.hide('btnDir');
 	for(var i=0; selSysnameDp.length > i; i++){
 		if(selSysnameDp(i).cm_syscd == myGrid1.getRowData(selectedRow, false).cd_syscd){
 			$("#selSysname option:eq("+i+")").prop("selected", true);
 			$("#txtDir").val(myGrid1.getRowData(selectedRow, false).cd_devhome);
-			SBUxMethod.attr('btnDir', 'disabled', 'false');
+			SBUxMethod.show('btnDir');
 			break;
 		}
 	}
 }
 
-function setButton() {
-	SBUxMethod.attr('btnDir', 'disabled', 'false');
+function setButton() { //button_enabled 완료
+	SBUxMethod.show('btnDir');
 	SBUxMethod.attr('btnReg', 'disabled', 'false');
 }
 

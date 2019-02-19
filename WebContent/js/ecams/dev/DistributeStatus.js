@@ -10,25 +10,12 @@ var grid_data;
 var request =  new Request();
 strReqCD = request.getParameter('reqcd');
 
-var today = new Date();
-var dd = today.getDate();
-var mm = today.getMonth() + 1;
-var yyyy = today.getFullYear();
-
 var SBGridProperties = {};
 
-if(dd < 10){
-	dd = '0' + dd;
-}
-if(mm < 10){
-	mm = '0' + mm;
-}
-
-today = yyyy + '/' + mm + '/' + dd;
 
 $(document).ready(function(){
-	SBUxMethod.set('datStD', today);
-	SBUxMethod.set('datEdD', today);
+	SBUxMethod.set('datStD', getDate('DATE',0));
+	SBUxMethod.set('datEdD', getDate('DATE',0));
 	createGrid();
 	strReqCD_set();
 	userInfo_check();
