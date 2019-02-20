@@ -13,9 +13,10 @@ var selPosData;
 var selDutyData;
 var listDutyData;
 var listJobData;
+var rgtDeptData;
 
-$(document).ready(function() { //완료
-	if(userid == "" || userid == null) {
+$(document).ready(function() { // 완료
+	if (userid == "" || userid == null) {
 		alert("로그인 후 사용하시기 바랍니다.");
 		return;
 	}
@@ -25,241 +26,246 @@ $(document).ready(function() { //완료
 	SBUxMethod.hide('lbOrg1');
 })
 
-//function createUserGrid() {
+// function createUserGrid() {
+// var userGridProperties = {};
+// userGridProperties.parentid = "divUserList";
+// userGridProperties.id = "userGrid";
+// userGridProperties.jsonref = "userListData";
+// userGridProperties.columns = [ {
+// caption : [ '사번' ],
+// ref : 'cm_userid',
+// width : '16%',
+// style : 'text-align:left',
+// type : 'output'
+// }, {
+// caption : [ '성명' ],
+// ref : 'cm_username',
+// width : '14%',
+// style : 'text-align:center',
+// type : 'output'
+// }, {
+// caption : [ '부서' ],
+// ref : 'deptname1',
+// width : '70%',
+// style : 'text-align:center',
+// type : 'output'
+// } ];
+// userGridProperties.allowuserresize = true;
+// userGridProperties.width = "100%";
+// userGridProperties.height = "100%";
+// userGrid = _SBGrid.create(userGridProperties);
+// userGrid.rebuild();
+// }
+
+//function createJobGrid() {
 //	var userGridProperties = {};
-//	userGridProperties.parentid = "divUserList";
-//	userGridProperties.id = "userGrid";
-//	userGridProperties.jsonref = "userListData";
-//	userGridProperties.columns = [ {
-//		caption : [ '사번' ],
-//		ref : 'cm_userid',
+//	jobGridProperties.parentid = "divJobCharged";
+//	jobGridProperties.id = "jobGrid"; //Lv_File1
+//	jobGridProperties.jsonref = "jobListData";
+//	jobGridProperties.columns = [ {
+//		caption : [ '시스템' ],
+//		ref : 'jobgrp',
 //		width : '16%',
 //		style : 'text-align:left',
 //		type : 'output'
 //	}, {
-//		caption : [ '성명' ],
-//		ref : 'cm_username',
+//		caption : [ '업무명(업무코드)' ],
+//		ref : 'job',
 //		width : '14%',
 //		style : 'text-align:center',
 //		type : 'output'
-//	}, {
-//		caption : [ '부서' ],
-//		ref : 'deptname1',
-//		width : '70%',
-//		style : 'text-align:center',
-//		type : 'output'
 //	} ];
-//	userGridProperties.allowuserresize = true;
-//	userGridProperties.width = "100%";
-//	userGridProperties.height = "100%";
-//	userGrid = _SBGrid.create(userGridProperties);
-//	userGrid.rebuild();
+//	jobGridProperties.allowuserresize = true;
+//	jobGridProperties.width = "100%";
+//	jobGridProperties.height = "100%";
+//	jobGrid = _SBGrid.create(jobGridProperties);
+//	jobGrid.rebuild();
 //}
-
-function createJobGrid() {
-	var userGridProperties = {};
-	jobGridProperties.parentid = "divJobCharged";
-	jobGridProperties.id = "jobGrid";
-	jobGridProperties.jsonref = "jobListData";
-	jobGridProperties.columns = [ {
-		caption : [ '시스템' ],
-		ref : 'jobgrp',
-		width : '16%',
-		style : 'text-align:left',
-		type : 'output'
-	}, {
-		caption : [ '업무명(업무코드)' ],
-		ref : 'job',
-		width : '14%',
-		style : 'text-align:center',
-		type : 'output'
-	} ];
-	jobGridProperties.allowuserresize = true;
-	jobGridProperties.width = "100%";
-	jobGridProperties.height = "100%";
-	jobGrid = _SBGrid.create(jobGridProperties);
-	jobGrid.rebuild();
-}
 
 function getCodeInfo() {
 	var ajaxReturnData = null;
-	
+
 	var tmpData = {
-			requestType : 'CodeInfo',
-			UserId : userid
+		requestType : 'CodeInfo',
+		UserId : userid
 	}
-	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo', tmpData, 'json');
-	
-	if(ajaxReturnData !== 'ERR') {
-		
+	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo',
+			tmpData, 'json');
+
+	if (ajaxReturnData !== 'ERR') {
+
 		selPosData = ajaxReturnData;
-		selPosData = selPosData.filter(function(ajaxReturnData){
+		selPosData = selPosData.filter(function(ajaxReturnData) {
 			return ajaxReturnData.cm_macode === "POSITION";
 		});
 		SBUxMethod.refresh('selPos');
-		
+
 		selDutyData = ajaxReturnData;
-		selDutyData = selDutyData.filter(function(ajaxReturnData){
+		selDutyData = selDutyData.filter(function(ajaxReturnData) {
 			return ajaxReturnData.cm_macode === "DUTY";
 		});
 		SBUxMethod.refresh('selDuty');
-		
+
 		listDutyData = ajaxReturnData;
-		listDutyData = listDutyData.filter(function(ajaxReturnData){
-			return ajaxReturnData.cm_macode === "RGTCD" && ajaxReturnData.cm_micode !== "00";
+		listDutyData = listDutyData.filter(function(ajaxReturnData) {
+			return ajaxReturnData.cm_macode === "RGTCD"
+					&& ajaxReturnData.cm_micode !== "00";
 		});
 		SBUxMethod.refresh('listDuty');
-		
+
 	}
 }
 
-function getSysInfo() { //완료 getSysInfo_Handler
+function getSysInfo() { // 완료 getSysInfo_Handler
 	var ajaxReturnData = null;
-	
+
 	var tmpData = {
-			requestType : 'SysInfo',
-			UserId : userid
+		requestType : 'SysInfo',
+		UserId : userid
 	}
-	
-	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo', tmpData, 'json');
-	
-	if(ajaxReturnData !== 'ERR') {
+
+	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo',
+			tmpData, 'json');
+
+	if (ajaxReturnData !== 'ERR') {
 		selSystemData = ajaxReturnData;
 		SBUxMethod.refresh('selSystem');
 	}
 }
 
-function getJobInfo() { //getJobInfo_Handler
-	$('#chkNotice').attr("checked",false);
+function getJobInfo() { // getJobInfo_Handler
+	$('#chkNotice').attr("checked", false);
 	var cm_syscd = SBUxMethod.get('selSystem');
 	var ajaxReturnData = null;
-	
+
 	var tmpData = {
-			requestType : 'SysInfo_1',
-			UserId : userid,
-			sysCd : cm_syscd
+		requestType : 'SysInfo_1',
+		UserId : userid,
+		sysCd : cm_syscd
 	}
-	
-	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo', tmpData, 'json');
-	
-	if(ajaxReturnData !== 'ERR') {
-		selSystemData = ajaxReturnData;
-		SBUxMethod.refresh('selSystem');
-		selSystemData = selSystemData.filter(function(ajaxReturnData){
-			return selSystemData.cm_jobcd != "";
+
+	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo',
+			tmpData, 'json');
+
+	if (ajaxReturnData !== 'ERR') {
+		$("#chkAll").attr("checked", false);
+		listJobData = ajaxReturnData;
+		listJobData = listJobData.filter(function(data) {
+			return data.cm_jobcd != "";
 		});
-		console.log(selSystemData);
-		SBUxMethod.refresh('selSystem');
+		console.log(listJobData);
+		SBUxMethod.refresh('listJob');
 	}
-	listJobData;
-	cm_syscd = "";
 }
 
-function clickUserList() { //userList_ITEM_CLICK
-	//var selectedIndex =userGrid.getRow();
-	//reset(userGrid.getRowData(selectedIndex, false).cm_userid,""); //Sql_Qry
+function clickUserList() { // userList_ITEM_CLICK
+	// var selectedIndex =userGrid.getRow();
+	// reset(userGrid.getRowData(selectedIndex, false).cm_userid,""); //Sql_Qry
 }
 
-function getUserInfo(userId, userName) { //getUserInfo_Handler
+function getUserInfo(userId, userName) { // getUserInfo_Handler
 	var ajaxReturnData = null;
-	
+
 	var tmpData = {
-			requestType : 'Cmm0400',
-			userId : userId,
-			userName : userName
+		requestType : 'Cmm0400',
+		userId : userId,
+		userName : userName
 	}
 	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo', tmpData, 'json');
-	if(ajaxReturnData !== 'ERR') {
+	if (ajaxReturnData !== 'ERR') {
 		userListData = ajaxReturnData;
-		if(userListData(0).ID == "ERROR"){
+		if (userListData[0].ID == "ERROR") {
 			alert("등록되지 않은 사용자입니다.");
 			return;
 		}
-		if(userListData.length > 1){
-			userGrid.bind('click', 'clickUserGrid');
+		if (userListData.length > 1) {
+			//userGrid.bind('click', 'clickUserGrid');
 		} else {
-			userGrid.bind('click');
-			userListData = null;
+			//userGrid.unbind('click');
 		}
-		$("#txtId").val(userListData(0).cm_userid);
-		$("#txtName").val(userListData(0).cm_username);
-		$("#txtPhone").val(userListData(0).cm_telno1);
-		$("#txtPhone2").val(userListData(0).cm_telno2);
-		$("#txtLastIn").val(userListData(0).cm_logindt);
-		$("#txtPass").val(userListData(0).cm_ercount);
-		$("#txtEmail").val(userListData(0).cm_email);
-		
+		$("#txtId").val(userListData[0].cm_userid);
+		$("#txtName").val(userListData[0].cm_username);
+		$("#txtPhone").val(userListData[0].cm_telno1);
+		$("#txtPhone2").val(userListData[0].cm_telno2);
+		$("#txtLastIn").val(userListData[0].cm_logindt);
+		$("#txtPass").val(userListData[0].cm_ercount);
+		$("#txtEmail").val(userListData[0].cm_email);
+
 		var i;
 		var dataLen = selPosData.length;
-		for(i=0; i < dataLen; i++){
-			if(selPosData(i).cm_micode == userListData(0).cm_position){
-				$("#selPos option:eq("+i+")").prop("selected", true);
+		for (i = 0; i < dataLen; i++) {
+			if (selPosData[i].cm_micode == userListData[0].cm_position) {
+				$("#selPos option:eq(" + i + ")").prop("selected", true);
 				break;
 			}
 		}
+		
 		dataLen = selDutyData.length;
-		for(i=0; i<dataLen; i++){
-			if(selDutyData(i).cm_micode == userListData(0).cm_duty){
-				$("#selDuty option:eq("+i+")").prop("selected", true);
+		for (i = 0; i < dataLen; i++) {
+			if (selDutyData[i].cm_micode == userListData[0].cm_duty) {
+				$("#selDuty option:eq(" + i + ")").prop("selected", true);
 				break;
 			}
 		}
-		$("#txtGroup").val(userListData(0).deptname1);
-		document.getElementById("lbGroup1").innerText = userListData(0).cm_project;
-		$("#txtOrg").val(userListData(0).deptname2);
-		document.getElementById("lbOrg1").innerText = userListData(0).cm_project2;
-		
-		if(userListData(0).cm_manid == "Y"){
-			$('#rdoOpt0').attr("checked",true);
+		$("#txtGroup").val(userListData[0].deptname1);
+		document.getElementById("lbGroup1").innerText = userListData[0].cm_project;
+		$("#txtOrg").val(userListData[0].deptname2);
+		document.getElementById("lbOrg1").innerText = userListData[0].cm_project2;
+
+		if (userListData[0].cm_manid == "Y") {
+			$('#rdoOpt0').attr("checked", true);
 		} else {
-			$('#rdoOpt1').attr("checked",true);
+			$('#rdoOpt1').attr("checked", true);
 		}
-		
-		if(userListData(0).cm_admin == "1"){
-			$('#chkSysAdmin').attr("checked",true);
+
+		if (userListData[0].cm_admin == "1") {
+			$('#chkSysAdmin').attr("checked", true);
 		} else {
-			$('#chkSysAdmin').attr("checked",false);
+			$('#chkSysAdmin').attr("checked", false);
 		}
-		
-		if(userListData(0).cm_handrun == "Y"){
-			$('#chkAsynchro').attr("checked",true);
+
+		if (userListData[0].cm_handrun == "Y") {
+			$('#chkAsynchro').attr("checked", true);
 		} else {
-			$('#chkAsynchro').attr("checked",false);
+			$('#chkAsynchro').attr("checked", false);
 		}
-		
-		$("#txtIp").val(userListData(0).cm_ipaddress);
-		$("#txtDaeGyul").val(userListData(0).Txt_DaeGyul);
-		$("#txtTerm").val(userListData(0).Txt_BlankTerm);
-		$("#txtSayu").val(userListData(0).Txt_BlankSayu);
-		
-		if(userListData(0).cm_active == "1"){
-			$('#rdoAct0').attr("checked",true);
+
+		$("#txtIp").val(userListData[0].cm_ipaddress);
+		$("#txtDaeGyul").val(userListData[0].Txt_DaeGyul);
+		$("#txtTerm").val(userListData[0].Txt_BlankTerm);
+		$("#txtSayu").val(userListData[0].Txt_BlankSayu);
+
+		if (userListData[0].cm_active == "1") {
+			$('#rdoAct0').attr("checked", true);
 		} else {
-			$('#rdoAct1').attr("checked",true);
+			$('#rdoAct1').attr("checked", true);
 		}
-		
-		
+
+		getListDuty();
 	}
-	
 }
 
-function setUserPwd() { //setUserJumin
+function setUserPwd() { // setUserJumin
 	SBUxMethod.openModal("modalPwd");
-	
+
 	var modalData = {};
 	modalData.userId = document.getElementById("txtId").value;
 	var modalIframe = document.getElementById("popPwd");
 	console.log(modalIframe);
-	modalIframe.contentWindow.pwdTabInit(modalData);//모달의함수 불러오기
+	modalIframe.contentWindow.pwdTabInit(modalData);// 모달의함수 불러오기
+}
+
+function getUserDutyInfo() {//AllRGTCDSearch
+	SBUxMethod.openModal("modalDuty");
 }
 
 function setModalPwdclose() {
 	SBUxMethod.closeModal("modalPwd");
 }
 
-function fnKeyEnter(userId, userName) {//Sql_Qry
+function fnKeyEnter(userId, userName) {// Sql_Qry
 	if(userId == "" && userName == "") return;
-	
+
 	$("#txtIp").val("");
 	$("#txtPhone").val("");
 	$("#txtPhone2").val("");
@@ -268,24 +274,91 @@ function fnKeyEnter(userId, userName) {//Sql_Qry
 	$("#txtSayu").val("");
 	$("#txtLastIn ").val("");
 	$("#txtPass").val("");
-	$('#chkAsynchro').attr("checked",false);
-	
+	$('#chkAsynchro').attr("checked", false);
+
 	$("#txtGroup").val("");
 	$("#selPos option:eq(0)").prop("selected", true);
 	$("#selDuty option:eq(0)").prop("selected", true);
 	$("#rdoOpt0").attr("checked", false);
 	$("#rdoOpt1").attr("checked", false);
-	$('#chkSysAdmin').attr("checked",false);
-	$('#chkAll').attr("checked",false);
-	
+	$('#chkSysAdmin').attr("checked", false);
+	$('#chkAll').attr("checked", false);
+
 	var listDutyLen = listDutyData.length;
-	for(var i=0; i<listDutyLen; i++){
-		listDutyData(i).selected = "";
+	for (var i = 0; i < listDutyLen; i++) {
+		listDutyData[i].selected = "";
 	}
-	
+
 	SBUxMethod.refresh('listDuty');
 	jobListData = null;
 	listJobData = null;
 	$("#selSystem option:eq(0)").prop("selected", true);
 	getUserInfo(userId, userName);
+}
+
+function getListDuty() {// getUserRGTCD_Handler
+
+	var ajaxReturnData = null;
+
+	var tmpData = {
+		requestType : 'Cmm0400_1',
+		txtUserId : document.getElementById("txtId").value
+	}
+
+	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo', tmpData, 'json');
+
+	if (ajaxReturnData !== 'ERR') {
+		listDutyData = ajaxReturnData;
+		getjobListData();//getUserJobList_Handler
+		getUserRgtDept();//getUserRgtDept_Handler
+	}
+}
+
+function getjobListData(){//getUserJobList_Handler
+	var ajaxReturnData = null;
+
+	var tmpData = {
+		requestType : 'Cmm0400_2',
+		txtUserId : document.getElementById("txtId").value
+	}
+
+	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo',
+			tmpData, 'json');
+
+	if (ajaxReturnData !== 'ERR') {
+		jobListData = ajaxReturnData;
+		listJobData = null;
+		if(selSystemData.length > 0) $("#selSystem option:eq(0)").prop("selected", true);
+	}
+}
+
+function getUserRgtDept(){//getUserRgtDept_Handler
+	var ajaxReturnData = null;
+
+	var tmpData = {
+		requestType : 'Cmm0400_3',
+		txtUserId : document.getElementById("txtId").value
+	}
+
+	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo',
+			tmpData, 'json');
+
+	if (ajaxReturnData !== 'ERR') {
+		rgtDeptData = ajaxReturnData;
+	}
+}
+
+function checkAll(){//All_Select
+	var listJobLen = listJobData.length;
+	console.log(listJobData);
+	for(var i = 0; i<listJobLen; i++){
+		var checkYn = $('#chkAll').prop("checked");
+		if(checkYn){
+			listJobData[i].selected = "selected";
+		} else {
+			listJobData[i].selected = "";
+		}
+		
+	}
+	SBUxMethod.refresh('listJob');
 }

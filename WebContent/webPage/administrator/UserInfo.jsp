@@ -28,39 +28,39 @@
 	<div class="container-fluid">
 		<div class="border-style-black">
 			<div class="row-fluid">
-				<div class="col-md-1">
+				<div class="col-xs-12 col-sm-1">
 					<div class="margin-15-left margin-15-top">
 						<sbux-label id="idx_lbl_system" class="width-100" text="사원번호"
 							uitype="normal"> </sbux-label>
 					</div>
 				</div>
-				<div class="col-md-2">
+				<div class="col-xs-12 col-sm-2">
 					<div class="margin-5-top">
 						<sbux-input id="txtId" name="txtId" class="width-100"
 							uitype="text" datastore-id="idxData1" onkeyenter="fnKeyEnter(txtId,'')"> </sbux-input>
 <!-- 						Txt_UserId -->
 					</div>
 				</div>
-				<div class="col-md-1">
+				<div class="col-xs-12 col-sm-1">
 					<div class="margin-15-left margin-15-top">
 						<sbux-label id="idx_lbl_srid" class="width-100" text="성명"
 							uitype="normal"> </sbux-label>
 					</div>
 				</div>
-				<div class="col-md-2">
+				<div class="col-xs-12 col-sm-2">
 					<div class="margin-5-top">
 						<sbux-input id="txtName" name="txtName" class="width-100"
 							uitype="text" datastore-id="idxData1"
-							onkeyenter="clickSearchBtn()"> </sbux-input>
+							onkeyenter="fnKeyEnter('',txtName)"> </sbux-input>
 					</div>
 				</div>
-				<div class="col-md-1">
+				<div class="col-xs-12 col-sm-1">
 					<div class="margin-15-left margin-15-top">
 						<sbux-label id="lbPos" class="width-100" text="직급" uitype="normal">
 						</sbux-label>
 					</div>
 				</div>
-				<div class="col-md-2">
+				<div class="col-xs-12 col-sm-2">
 					<div class="margin-5-top">
 						<sbux-select id="selPos" name="selPos"
 							class="combo-height width-100" uitype="single"
@@ -69,13 +69,13 @@
 <!-- 						Cbo_Pos -->
 					</div>
 				</div>
-				<div class="col-md-1">
+				<div class="col-xs-12 col-sm-1">
 					<div class="margin-15-left margin-15-top">
 						<sbux-label id="lbDuty" class="width-100" text="직위"
 							uitype="normal"> </sbux-label>
 					</div>
 				</div>
-				<div class="col-md-2">
+				<div class="col-xs-12 col-sm-2">
 					<div class="margin-5-top">
 						<sbux-select id="selDuty" name="selDuty"
 							class="combo-height width-100" uitype="single"
@@ -87,8 +87,8 @@
 			</div>
 
 			<div class="row-fluid">
-				<div class="col-md-1"></div>
-				<div class="col-md-2">
+				<div class="col-xs-12 col-sm-1"> </div>
+				<div class="col-xs-12 col-sm-2">
 					<div class="margin-15-top">
 						<sbux-radio id="rdoOpt0" name="radiogroup" uitype="normal"
 							text="직원" value="reg"
@@ -100,33 +100,33 @@
 						</sbux-radio>
 					</div>
 				</div>
-				<div class="col-md-1"></div>
-				<div class="col-md-2">
+				<div class="col-xs-12 col-sm-1"> </div>
+				<div class="col-xs-12 col-sm-2">
 					<div class="margin-15-top">
 						<sbux-checkbox id="chkSysAdmin" name="chkSysAdmin" uitype="normal"
 							text="시스템관리자" onclick="Chk_NotiYN_Click()"></sbux-checkbox>
 					</div>
 				</div>
-				<div class="col-md-1">
+				<div class="col-xs-12 col-sm-1">
 					<div class="margin-15-left margin-15-top">
 						<sbux-label id="lbIp" class="width-100" text="IP Address"
 							uitype="normal"> </sbux-label>
 					</div>
 				</div>
-				<div class="col-md-2">
+				<div class="col-xs-12 col-sm-2">
 					<div class="margin-5-top">
 						<sbux-input id="txtIp" name="txtIp" class="width-100"
 							uitype="text" datastore-id="idxData1"
 							onkeyenter="clickSearchBtn()"> </sbux-input>
 					</div>
 				</div>
-				<div class="col-md-1">
+				<div class="col-xs-12 col-sm-1">
 					<div class="margin-15-left margin-15-top">
 						<sbux-label id="lbEmail" class="width-100" text="E-mail"
 							uitype="normal"> </sbux-label>
 					</div>
 				</div>
-				<div class="col-md-2">
+				<div class="col-xs-12 col-sm-2">
 					<div class="margin-5-top">
 						<sbux-input id="txtEmail" name="txtEmail" class="width-100"
 							uitype="text" datastore-id="idxData1"
@@ -291,9 +291,9 @@
 					jsondata-value="cm_syscd" onchange="getJobInfo()"></sbux-select>
 				<!-- 			Cbo_SysCd -->
 			</div>
-			<div class="width-100">
+			<div class="width-100 margin-10-bottom">
 				<sbux-label id="lbJob" text="업무" uitype="normal" style="width:50%"> </sbux-label>
-				<sbux-checkbox id="chkAll" name="chkAll" uitype="normal" text="전체선택" style="width:50%"></sbux-checkbox>
+				<sbux-checkbox id="chkAll" name="chkAll" uitype="normal" text="전체선택" onclick="checkAll()" style="width:50%"></sbux-checkbox>
 			</div>
 			<sbux-select id="listJob" name="listJob" uitype="checkbox"
 				jsondata-ref="listJobData" jsondata-text="cm_jobname"
@@ -338,7 +338,7 @@
 	<div class="row-fluid margin-20-top margin-15-right">
 		<div id="divBtn" style="float: right">
 			<sbux-button id="btnDutyInfo" name="btnDutyInfo" uitype="normal"
-				text="사용자직무조회" onclick="new_Click()"></sbux-button>
+				text="사용자직무조회" onclick="getUserDutyInfo()"></sbux-button>
 			<sbux-button id="btnUserBat" name="btnUserBat" uitype="normal"
 				text="사용자일괄등록" onclick="new_Click()"></sbux-button>
 			<sbux-button id="btnGroupReg" name="btnGroupReg" uitype="normal"
@@ -365,5 +365,11 @@
 	<IFRAME id="popPwd" src="<c:url value="/webPage/modal/PopUserInfoPwd.jsp"/>" width="100%" height="250px"></IFRAME>
 </div>
 
-<script type="text/javascript"
-	src="<c:url value="/js/ecams/administrator/UserInfo.js"/>"></script>
+<sbux-modal id="modalDuty" name="modalDuty" uitype="middle" header-title="사용자직무조회" body-html-id="dutyBody" footer-is-close-button="false">
+</sbux-modal>
+<div id="dutyBody">
+	<IFRAME id="popDuty" src="<c:url value="/webPage/modal/PopUserDutyInfo.jsp"/>" width="100%" height="250px"></IFRAME>
+</div>
+
+<c:import url="/js/ecams/common/commonscript.jsp" />
+<script type="text/javascript"	src="<c:url value="/js/ecams/administrator/UserInfo.js"/>"></script>

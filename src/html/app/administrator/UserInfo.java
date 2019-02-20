@@ -56,6 +56,15 @@ public class UserInfo extends HttpServlet {
 				case "Cmm0400" :
 					response.getWriter().write( getUserInfo(request) );
 					break;
+				case "Cmm0400_1" :
+					response.getWriter().write( getListDuty(request) );
+					break;
+				case "Cmm0400_2" :
+					response.getWriter().write( getjobList(request) );
+					break;
+				case "Cmm0400_3" :
+					response.getWriter().write( getUserRgtDept(request) );
+					break;
 				default:
 					break;
 			}
@@ -87,6 +96,25 @@ public class UserInfo extends HttpServlet {
 		userId = ParsingCommon.parsingRequestJsonParamToString(request, "userId");
 		String userName = null;
 		userName = ParsingCommon.parsingRequestJsonParamToString(request, "userName");
+		System.out.println("Ω√¿€"+userId+","+userName);
 		return gson.toJson(cmm0400.getUserInfo(userId,userName));
+	}
+	
+	private String getListDuty(HttpServletRequest request) throws SQLException, Exception {
+		String txtUserId = null;
+		txtUserId = ParsingCommon.parsingRequestJsonParamToString(request, "txtUserId");
+		return gson.toJson(cmm0400.getUserRGTCD(txtUserId));
+	}
+	
+	private String getjobList(HttpServletRequest request) throws SQLException, Exception {
+		String txtUserId = null;
+		txtUserId = ParsingCommon.parsingRequestJsonParamToString(request, "txtUserId");
+		return gson.toJson(cmm0400.getUserJobList("USER", txtUserId));
+	}
+	
+	private String getUserRgtDept(HttpServletRequest request) throws SQLException, Exception {
+		String txtUserId = null;
+		txtUserId = ParsingCommon.parsingRequestJsonParamToString(request, "txtUserId");
+		return gson.toJson(cmm0400.getUserRgtDept(txtUserId));
 	}
 }
