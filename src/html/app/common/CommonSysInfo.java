@@ -65,25 +65,25 @@ public class CommonSysInfo extends HttpServlet {
 	
 	
 	private String getSysInfo(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> getSysInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "sysData");
+		HashMap<String, String> DataMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "Data");
 		return gson.toJson( sysInfo.getSysInfo(
-								getSysInfoMap.get("UserId"), 
+								DataMap.get("UserId"), 
 								"", 
-								getSysInfoMap.get("SelMsg"), 
-								getSysInfoMap.get("CloseYn"), 
-								getSysInfoMap.get("ReqCd")
+								DataMap.get("SelMsg"), 
+								DataMap.get("CloseYn"), 
+								DataMap.get("ReqCd")
 							));
 	}
 
 	private String getJobInfo(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> getJobInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "jobData");
+		HashMap<String, String> DataMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "Data");
 		return gson.toJson( sysInfo.getJobInfo(
-								getJobInfoMap.get("UserId"), 
-								getJobInfoMap.get("SysCd"), 
-								getJobInfoMap.get("SecuYn"), 
-								getJobInfoMap.get("CloseYn"), 
-								getJobInfoMap.get("SelMsg"),
-								getJobInfoMap.get("sortCd")
+								DataMap.get("UserId"), 
+								DataMap.get("SysCd"), 
+								DataMap.get("SecuYn"), 
+								DataMap.get("CloseYn"), 
+								DataMap.get("SelMsg"),
+								DataMap.get("sortCd")
 							));
 	}
 	

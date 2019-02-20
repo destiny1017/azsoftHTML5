@@ -16,7 +16,7 @@
 <section>
 	<div class="container-fluid">
 		<div class="border-style-black">
-			<div class="row-fluid">
+			<div class="row">
 				<div class="col-xs-12 col-sm-1"> 
 					<div class="margin-15-top">
 						<sbux-label id="idx_lbl_sys" class="width-100" text="*시스템" uitype="normal"></sbux-label>
@@ -39,7 +39,7 @@
 					<div class="margin-5-top">
 						<sbux-select id="select_rsrc" name="select_rsrc" class="combo-height width-100" uitype="single" model-name="select_rsrc"
 		                  	jsondata-text = "cm_codename" jsondata-value = "cm_micode" scroll-style="min-height: 120px;"
-		                  	required jsondata-ref="cboRsrcData" onchange="changeRsrcdCombo()"></sbux-select>
+		                  	required jsondata-ref="selectedRsrcData" onchange="changeRsrcdCombo()"></sbux-select>
 					</div>
 				</div>
 				<div class="col-xs-12 col-sm-2 padding-1-left-web">
@@ -58,12 +58,12 @@
 						<sbux-select 
 							id="select_job" name="select_job" class="combo-height width-100" uitype="single" model-name="select_job" 
 							jsondata-text  = "cm_jobname" jsondata-value = "cm_jobcd" scroll-style="min-height: 200px;"
-		                  	required  jsondata-ref="cboJobData"></sbux-select>
+		                  	required  jsondata-ref="selectedJobData" onchange="setDir()"></sbux-select>
 					</div>
 				</div>
 			</div>
 			
-			<div class="row-fluid">
+			<div class="row">
 				<div class="col-xs-12 col-sm-1"> 
 					<div class="margin-10-top" >
 						<sbux-label id="idx_lbl_prgName_text" class="width-100" text="*프로그램명" uitype="normal"></sbux-label>
@@ -81,7 +81,7 @@
 				</div>
 			</div>
 			
-			<div class="row-fluid">
+			<div class="row">
 				<div class="col-xs-12 col-sm-1"> 
 					<div class="margin-10-top" >
 						<sbux-label id="idx_lbl_prgStory_text" class="width-100" text="*프로그램설명" uitype="normal"></sbux-label>
@@ -94,21 +94,23 @@
 						</sbux-input>
 					</div>
 				</div>
-				<div class="col-xs-12 col-sm-1 padding-1-right-web">
-					<div class="margin-5-top">
-						<sbux-button id="idx_register_btn" name="idx_register_btn" class="width-100" uitype="normal" text="등록" onclick="clickSearchBtn()">
-						</sbux-button>
+				<div id="btnGroup1">
+					<div class="col-xs-12 col-sm-1 padding-1-right-web">
+						<div class="margin-5-top">
+							<sbux-button id="idx_register_btn" name="idx_register_btn" class="width-100" uitype="normal" text="등록" onclick="clickSearchBtn()">
+							</sbux-button>
+						</div>
 					</div>
-				</div>
-				<div class="col-xs-12 col-sm-2 padding-1-left-web">
-					<div class="margin-5-top">
-						<sbux-button id="idx_devRegister_btn" name="idx_devRegister_btn" class="width-100" uitype="normal" text="개발영역연결등록" onclick="clickSearchBtn()">
-						</sbux-button>
+					<div class="col-xs-12 col-sm-2 padding-1-left-web">
+						<div class="margin-5-top">
+							<sbux-button id="idx_devRegister_btn" name="idx_devRegister_btn" class="width-100" uitype="normal" text="개발영역연결등록" onclick="clickSearchBtn()">
+							</sbux-button>
+						</div>
 					</div>
 				</div>
 			</div>
 			
-			<div class="row-fluid">
+			<div class="row">
 				<div class="col-xs-12 col-sm-1"> 
 					<div class="margin-10-top" >
 						<sbux-label id="idx_lbl_dirpath_text" class="width-100" text="*프로그램경로" uitype="normal"></sbux-label>
@@ -116,22 +118,25 @@
 				</div>
 				<div class="col-xs-12 col-sm-8">
 					<div class="margin-5-top">
-						<sbux-input id="idx_dirpath_text" name="idx_dirpath_text" class="width-100" uitype="text" datastore-id="idxData1" 
-							sbux-popover="<font color='blue' style='font-weight:bold;'>프로그램경로</font>를 입력" sbux-popover-placement="bottom" sbux-popover-html="true">
-						</sbux-input>
+						<sbux-select 
+							id="select_dir" name="select_dir" class="combo-height width-100" uitype="single" model-name="select_dir" 
+							jsondata-text  = "cm_dirpath" jsondata-value = "cm_dsncd"	scroll-style="min-height: 200px;"
+							required jsondata-ref="selectedDirData"></sbux-select>
 					</div>
 					</div>
 				<div class="col-xs-12 col-sm-1">
 				</div>
-				<div class="col-xs-12 col-sm-2 padding-1-left-web">
-					<div class="margin-5-top">
-						<sbux-button id="idx_loaclRegister_btn" name="idx_localRegister_btn" class="width-100" uitype="normal" text="로컬영역연결등록" onclick="clickSearchBtn()">
-						</sbux-button>
+				<div id="btnGroup2">
+					<div class="col-xs-12 col-sm-2 padding-1-left-web">
+						<div class="margin-5-top">
+							<sbux-button id="idx_loaclRegister_btn" name="idx_localRegister_btn" class="width-100" uitype="normal" text="로컬영역연결등록" onclick="clickSearchBtn()">
+							</sbux-button>
+						</div>
 					</div>
 				</div>
 			</div>
 						
-			<div class="row-fluid">
+			<div class="row">
 				<div class="col-xs-12 col-sm-1"> 
 					<div class="margin-10-top" >
 						<sbux-label id="idx_lbl_srid_text" class="width-100" text="*SR-ID" uitype="normal"></sbux-label>
@@ -139,12 +144,14 @@
 				</div>
 				<div class="col-xs-12 col-sm-8">
 					<div class="margin-5-top">
-						<sbux-input id="idx_srid_text" name="idx_srid_text" class="width-100" uitype="text" datastore-id="idxData1" 
-							sbux-popover="<font color='blue' style='font-weight:bold;'>SR-ID</font>를 입력" sbux-popover-placement="bottom" sbux-popover-html="true">
-						</sbux-input>
+						<sbux-select 
+							id="select_srid" name="select_srid" class="combo-height width-100" uitype="single" model-name="select_srid" 
+							jsondata-text  = "srid" jsondata-value = "cc_srid"	scroll-style="min-height: 200px;"
+							required jsondata-ref="selectedSrIdData"></sbux-select>
 					</div>
 				</div>
 				
+				<div id="btnArea"></div>
 				<div class="col-xs-12 col-sm-1 padding-1-right-web">
 					<div class="margin-5-top">
 						<sbux-button id="idx_reset_btn" name="idx_reset_btn" class="width-100" uitype="normal" text="초기화" onclick="clickResetBtn()">
@@ -165,11 +172,20 @@
 				</div>
 			</div>
 			
-			<div class="col-xs-12 col-sm-12"> 
-				<div class="margin-5-top" >
-				<sbux-label id="idx_lbl_etc_text" text="주)" uitype="normal" style="vertical-align:top"></sbux-label>
-					<sbux-label id="idx_lbl_etc1_text" class="width-92 white-space-none" text="1. 프로그램명은 소스파일 기준으로 확장자까지 입력하여 주시기 바랍니다." uitype="normal" style="width:92%"></sbux-label>
-					<sbux-label id="idx_lbl_etc2_text" class="width-99 padding-20-left white-space-none" text="2. 시스템/프로그램종류/프로그램명을 검색조건으로 사용합니다.(조회)" uitype="normal"></sbux-label>
+			<div class="row">
+				<div class="col-xs-12 col-sm-8"> 
+					<div class="margin-5-top" >
+						<sbux-label id="idx_lbl_etc_text" text="주)" uitype="normal" style="vertical-align:top; padding-left:15px;"></sbux-label>
+						<sbux-label id="idx_lbl_etc1_text" class="width-92 white-space-none" text="1. 프로그램명은 소스파일 기준으로 확장자까지 입력하여 주시기 바랍니다." uitype="normal" style="width:87%"></sbux-label>
+						<sbux-label id="idx_lbl_etc2_text" class="width-99 padding-35-left white-space-none" text="2. 시스템/프로그램종류/프로그램명을 검색조건으로 사용합니다.(조회)" uitype="normal"></sbux-label>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-1" style="text-align:right"> 
+					<div class="margin-5-top" >
+						<sbux-label id="idx_lbl_total_text" text="총:" uitype="normal" style="vertical-align:top"></sbux-label>
+						<sbux-label id="idx_lbl_total1_text" text="0" uitype="normal"></sbux-label>
+						<sbux-label id="idx_lbl_total2_text" text="건" uitype="normal"></sbux-label>
+					</div>
 				</div>
 			</div>
 			
@@ -188,5 +204,5 @@
 </section>
 
 
-
+<c:import url="/js/ecams/common/commonscript.jsp" />
 <script type="text/javascript" src="<c:url value="/js/ecams/dev/ProgRegister.js"/>"></script>
