@@ -76,7 +76,7 @@ public class CommonSysInfo extends HttpServlet {
 	}
 
 	private String getJobInfo(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> getJobInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "JobData");
+		HashMap<String, String> getJobInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "jobData");
 		return gson.toJson( sysInfo.getJobInfo(
 								getJobInfoMap.get("UserId"), 
 								getJobInfoMap.get("SysCd"), 
