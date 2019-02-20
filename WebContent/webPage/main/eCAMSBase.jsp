@@ -15,9 +15,7 @@
     <div class="color-line">
     </div>
     <div id="logo" class="light-version">
-        <span>
-            eCAMS LOGO
-        </span>
+    	<img src="<c:url value="/img/top_log.gif"/>" alt="logo" onclick="goHome()">
     </div>
     <nav role="navigation">
         <div class="header-link hide-menu"><i class="fa fa-bars"></i></div>
@@ -167,7 +165,7 @@
                     </a>
                 </li>
                 <li class="dropdown">
-                    <a href="login.html">
+                    <a href="#" onclick="logOut()">
                         <i class="pe-7s-upload pe-rotate-90"></i>
                     </a>
                 </li>
@@ -185,7 +183,7 @@
             </a>
 
             <div class="stats-label text-color">
-                <span class="font-extra-bold font-uppercase">접속자이름여기에</span>
+                <span class="font-extra-bold font-uppercase" id="loginUserName">접속자이름여기에</span>
 
                 <div class="dropdown">
                     <a class="dropdown-toggle" href="#" data-toggle="dropdown">

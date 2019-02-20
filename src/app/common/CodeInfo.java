@@ -189,7 +189,150 @@ public class CodeInfo{
 
 
 	}//end of getCodeInfo() method statement
+	
+	
+	public HashMap<String, ArrayList<HashMap<String, String>>> getCodeInfoWithArray(ArrayList<HashMap<String, String>> codeInfoArr) throws SQLException, Exception {
+		Connection        conn        = null;
+		PreparedStatement pstmt       = null;
+		ResultSet         rs          = null;
+		StringBuffer      strQuery    = new StringBuffer();
+		Object[]		  rtObj		  = null;
+		ArrayList<HashMap<String, String>>  rtList = new ArrayList<HashMap<String, String>>();
+		HashMap<String, String>			    rst	   = null;
+		String            strSelMsg   = "";
+		HashMap<String, ArrayList<HashMap<String, String>>> returnCodeInfoArrayMap = new HashMap<String, ArrayList<HashMap<String, String>>>();
+		ConnectionContext connectionContext = new ConnectionResource();
 
+		try {
+			conn = connectionContext.getConnection();
+			
+			
+			for(HashMap<String, String> codeInfoMap: codeInfoArr) {
+				//if(codeInfoMap.get("SelMsg").equals(anObject))
+				if(codeInfoMap.containsKey("SelMsg")) {
+					if (codeInfoMap.get("SelMsg").toUpperCase().equals("ALL")){
+						strSelMsg = "전체";
+					}
+					else if(codeInfoMap.get("SelMsg").toUpperCase().equals("SEL")){
+						strSelMsg = "선택하세요";
+					}
+					else{
+						strSelMsg   = "";
+					}
+				}
+				strQuery.setLength(0);
+				strQuery.append("select decode(cm_micode,'****',1,2) flag, cm_macode,cm_micode,cm_codename from cmm0020 where 	\n");
+				strQuery.append("cm_macode = ? 																					\n");
+				
+				if (!codeInfoMap.containsKey("SelMsg")) {
+		           strQuery.append("and cm_micode<>'****' \n");
+				}
+				
+				if(codeInfoMap.containsKey("closeYn")) {
+					if (codeInfoMap.get("closeYn").toUpperCase().equals("N") || codeInfoMap.get("closeYn").toUpperCase().equals("0")){
+			        	strQuery.append("and cm_closedt is null \n");
+			        }
+				}else {
+					strQuery.append("and cm_closedt is null \n");
+				}
+		        
+		        strQuery.append("order by cm_macode,flag, cm_micode \n");
+
+	            //pstmt = conn.prepareStatement(strQuery.toString());
+		        pstmt =  new LoggableStatement(conn, strQuery.toString());
+
+				pstmt.setString(1, codeInfoMap.get("MACODE"));
+				
+	            ecamsLogger.error(((LoggableStatement)pstmt).getQueryString());
+
+	            rs = pstmt.executeQuery();
+	            rtList = new ArrayList<>();
+				while (rs.next()){
+					if (rs.getString("cm_micode").equals("****")) {
+						if (strSelMsg != "" && !strSelMsg.equals("") && strSelMsg.length() > 0) {
+							rst = new HashMap<String, String>();
+							rst.put("ID", "0");
+							rst.put("cm_codename", strSelMsg);
+							rst.put("cm_micode", "00");
+							rst.put("cm_macode", rs.getString("cm_macode"));
+							
+							rst.put("id", "00");
+							rst.put("value", "00");
+							rst.put("pid", "0");
+							rst.put("text", strSelMsg);
+							rst.put("order", Integer.toString(rs.getRow()));
+							rst.put("link", "");
+							
+							rtList.add(rst);
+							rst = null;
+						}
+					} else {
+
+						rst = new HashMap<String, String>();
+						rst.put("ID", Integer.toString(rs.getRow()));
+						rst.put("cm_codename", rs.getString("cm_codename"));
+						rst.put("cm_micode", rs.getString("cm_micode"));
+						rst.put("cm_macode", rs.getString("cm_macode"));
+						
+						
+						rst.put("id", rs.getString("cm_micode"));
+						rst.put("value", rs.getString("cm_micode"));
+						rst.put("pid", "0");
+						rst.put("text", rs.getString("cm_codename"));
+						rst.put("order", Integer.toString(rs.getRow()));
+						rst.put("link", "");
+						
+						rtList.add(rst);
+						rst = null;
+					}
+				}//end of while-loop statement
+				
+				returnCodeInfoArrayMap.put(rtList.get(0).get("cm_macode"), rtList);
+			}
+			
+			
+			rs.close();
+			pstmt.close();
+			conn.close();
+
+			rs = null;
+			pstmt = null;
+			conn = null;
+
+			rtList = null;
+
+			return returnCodeInfoArrayMap;
+
+		} catch (SQLException sqlexception) {
+			sqlexception.printStackTrace();
+			ecamsLogger.error("## CodeInfo.getCodeInfo() SQLException START ##");
+			ecamsLogger.error("## Error DESC : ", sqlexception);
+			ecamsLogger.error("## CodeInfo.getCodeInfo() SQLException END ##");
+			throw sqlexception;
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			ecamsLogger.error("## CodeInfo.getCodeInfo() Exception START ##");
+			ecamsLogger.error("## Error DESC : ", exception);
+			ecamsLogger.error("## CodeInfo.getCodeInfo() Exception END ##");
+			throw exception;
+		}finally{
+			if (strQuery != null) 	strQuery = null;
+			if (rtObj != null)	rtObj = null;
+			if (rs != null)     try{rs.close();}catch (Exception ex){ex.printStackTrace();}
+			if (pstmt != null)  try{pstmt.close();}catch (Exception ex2){ex2.printStackTrace();}
+			if (conn != null){
+				try{
+					ConnectionResource.release(conn);
+				}catch(Exception ex3){
+					ecamsLogger.error("## CodeInfo.getCodeInfo() connection release exception ##");
+					ex3.printStackTrace();
+				}
+			}
+		}
+
+
+	}//end of getCodeInfo() method statement
+	
 	public Object[] getCodeInfo_Sort(String MACODE,String SelMsg,String closeYn,int sortCd) throws SQLException, Exception {
 		Connection        conn        = null;
 		PreparedStatement pstmt       = null;

@@ -2,7 +2,7 @@
  * eCAMS 공통 기능 정의
  * <pre>
  * <b>History</b>
- * 	작성자: 이용문 + 정선희
+ * 	작성자: 이용문
  * 	버전 : 1.1
  *  수정일 : 2019-02-07
  */
@@ -147,18 +147,17 @@ function getCodeInfoCommon(codeInfoArr) {
 	var returnCodeInfo = {};
 	var ajaxReturnData = null;
 	var codeInfo = {};
-	codeInfoArr.forEach(function( codeInfoItem, codeInfoItemIndex) {
-		codeInfo = {
-			codeInfoData: 	JSON.stringify(codeInfoItem),
-			requestType: 	'CODE_INFO'
-		};
-		ajaxReturnData = ajaxCallWithJson('/webPage/common/CommonCodeInfo', codeInfo, 'json');
-		
-		if(ajaxReturnData !== 'ERR') {
-			returnCodeInfo[codeInfoItem.MACODE] = ajaxReturnData;
-		}
-	});
-	return returnCodeInfo;
+	var divisionMacode = '';
+	codeInfo = {
+		codeInfoData: 	JSON.stringify(codeInfoArr),
+		requestType: 	'CODE_INFO'
+	};
+	ajaxReturnData = ajaxCallWithJson('/webPage/common/CommonCodeInfo', codeInfo, 'json');
+	if(ajaxReturnData !== 'ERR') {
+		return ajaxReturnData;
+	} else {
+		return null;
+	}
 }
 
 

@@ -19,8 +19,12 @@ $(document).ready(function() {
 
 function screenInit() {
 	if( sessionID === null ) sessionID =$('#txtSessionID').val();
+	console.log(sessionID);
+	if( sessionID === null || sessionID === '') {
+		window.location.replace('/webPage/login/ecamsLogin.jsp');
+		return;
+	}
 	getSession();
-	
 }
 
 function getSession() {
@@ -36,7 +40,9 @@ function getSession() {
 	console.log('userid:'+userId);
 	console.log('userName:'+userName);
 	console.log('adminYN:'+adminYN);
-	//menu_set();
+	
+	$('#loginUserName').html(userName);
+	
 	meneSet();
 }
 
@@ -95,4 +101,12 @@ function clickSideMenu(event) {
 		$('#ecamsTitleText').html('['+parentMenuName+'] '+event.target.innerText);
 	}
 	
+}
+
+function goHome() {
+	location.reload();
+}
+
+function logOut() {
+	window.location.replace('/webPage/login/ecamsLogin.jsp');
 }

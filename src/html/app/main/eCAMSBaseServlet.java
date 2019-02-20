@@ -46,7 +46,7 @@ public class eCAMSBaseServlet extends HttpServlet {
 			response.setContentType("text/plain");
 			response.setCharacterEncoding("UTF-8");
 			
-			switch (requestType) {
+			switch (requestType) { 
 				case "MenuList":
 					response.getWriter().write( getMenu(request) );
 					break;

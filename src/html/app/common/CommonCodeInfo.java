@@ -10,6 +10,7 @@
 package html.app.common;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.servlet.ServletException;
@@ -60,17 +61,9 @@ public class CommonCodeInfo extends HttpServlet {
 		
 	}//end of getSysInfo() method statement
 	
-	
 	private String getCodeInfo(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> getCodeInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "codeInfoData");
-		return gson.toJson( codeInfo.getCodeInfo(
-								getCodeInfoMap.get("MACODE"), 
-								getCodeInfoMap.get("SelMsg"), 
-								getCodeInfoMap.get("closeYn")
-							));
+		ArrayList<HashMap<String, String>> codeInfoArr = ParsingCommon.parsingRequestJsonParamToArrayList(request, "codeInfoData");
+		return gson.toJson( codeInfo.getCodeInfoWithArray( codeInfoArr ));
 	}
-	
-	
-	
 
 }
