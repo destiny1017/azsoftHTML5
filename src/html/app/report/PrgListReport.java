@@ -2,6 +2,7 @@ package html.app.report;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,6 +15,7 @@ import com.google.gson.Gson;
 
 import app.common.SysInfo;
 import app.common.UserInfo;
+import app.eCmd.Cmd3100;
 import html.app.common.ParsingCommon;
 
 @WebServlet("/webPage/report/PrgListReport")
@@ -22,6 +24,8 @@ public class PrgListReport extends HttpServlet {
 	Gson gson = new Gson();
 	UserInfo userinfo = new UserInfo();
 	SysInfo sysinfo = new SysInfo();
+	Cmd3100 cmd3100 = new Cmd3100();
+	
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -49,6 +53,15 @@ public class PrgListReport extends HttpServlet {
 				case "getSysInfo2" :
 					response.getWriter().write( getSysInfo(request) );
 					break;
+				case "getJogun" :
+					response.getWriter().write( getJogun(request) );
+					break;
+				case "getCode" :
+					response.getWriter().write( getCode(request) );
+					break;
+				case "getSql_Qry" :
+					response.getWriter().write( getSql_Qry(request) );
+					break;
 				default:
 					break;
 			}
@@ -71,5 +84,25 @@ public class PrgListReport extends HttpServlet {
 		user = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
 		tmp = ParsingCommon.parsingRequestJsonParamToString(request, "tmp");
 		return gson.toJson(sysinfo.getSysInfo(user,tmp,"","N","04"));
+	}
+	
+	private String getJogun(HttpServletRequest request) throws SQLException, Exception {
+		String cnt = null;
+		cnt = ParsingCommon.parsingRequestJsonParamToString(request, "cnt");
+		return gson.toJson(cmd3100.getJogun(Integer.parseInt(cnt)));
+	}
+	
+	private String getCode(HttpServletRequest request) throws SQLException, Exception {
+		String cnt = null;
+		String L_SysCd = null;
+		L_SysCd = ParsingCommon.parsingRequestJsonParamToString(request, "L_SysCd");
+		cnt = ParsingCommon.parsingRequestJsonParamToString(request, "cnt");
+		return gson.toJson(cmd3100.getCode(L_SysCd, Integer.parseInt(cnt)));
+	}
+	
+	private String getSql_Qry(HttpServletRequest request) throws SQLException, Exception {
+		HashMap<String, String>	DataInfoMap = null;
+		DataInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "prjData");
+		return gson.toJson( cmd3100.getSql_Qry(DataInfoMap) );
 	}
 }

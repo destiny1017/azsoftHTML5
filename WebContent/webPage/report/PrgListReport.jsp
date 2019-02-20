@@ -23,13 +23,13 @@
 					<sbux-label id="lbSelect1" name="lbSelect1" uitype="normal" text="조건선택1"></sbux-label>
 				</div>
 				<div class="col-xs-12 col-sm-1">
-					<sbux-select id="cbo_Cond10" name="cbo_Cond10" uitype="single" jsondata-ref = "cbo_Cond10" jsondata-text="" jsondata-value=""  style="width:100%;"></sbux-select>				
+					<sbux-select id="cbo_Cond10" name="cbo_Cond10" uitype="single" jsondata-ref = "cbo_Cond10" jsondata-text="cm_codename" jsondata-value="cm_micode"  style="width:100%;" onchange="setJogunOne(cbo_Cond10)"></sbux-select>				
 				</div>
 				<div class="col-xs-12 col-sm-1">
 					<sbux-label id="lbSelect2" name="lbSelect2" uitype="normal" text="조건선택2"></sbux-label>
 				</div>
 				<div class="col-xs-12 col-sm-1">
-					<sbux-select id="cbo_Cond11" name="cbo_Cond11" uitype="single" jsondata-ref = "cbo_Cond11" jsondata-text="" jsondata-value=""  style="width:100%;"></sbux-select>				
+					<sbux-select id="cbo_Cond11" name="cbo_Cond11" uitype="single" jsondata-ref = "cbo_Cond11" jsondata-text="cm_codename" jsondata-value="cm_micode"  style="width:100%;" onchange="setJogunTwo(cbo_Cond11)"></sbux-select>				
 				</div>
 				<div class="col-xs-12 col-sm-1">
 					<sbux-label id="lbScope" name="lbScope" uitype="normal" text="범위"></sbux-label>
@@ -43,13 +43,13 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-12 col-sm-1 col-sm-offset-3">
-					<sbux-label id="lbl_Cond0" name="lbl_Cond0" uitype="normal" text="임시"></sbux-label>
+					<sbux-label id="lbl_Cond0" name="lbl_Cond0" uitype="normal"></sbux-label>
 				</div>
 				<div class="col-xs-12 col-sm-1">
-					<sbux-select id="cbo_Cond2" name="cbo_Cond2" uitype="single" jsondata-ref = "cbo_Cond2" jsondata-text="" jsondata-value=""  style="width:100%;"></sbux-select>				
+					<sbux-select id="cbo_Cond2" name="cbo_Cond2" uitype="single" jsondata-ref = "cbo_Cond2" jsondata-text="cm_codename" jsondata-value="cm_micode"  style="width:100%;"></sbux-select>				
 				</div>
 				<div class="col-xs-12 col-sm-1">
-					<sbux-label id="lbl_Cond1" name="lbl_Cond1" uitype="normal" text="임시2"></sbux-label>
+					<sbux-label id="lbl_Cond1" name="lbl_Cond1" uitype="normal"></sbux-label>
 				</div>
 				<div class="col-xs-12 col-sm-1">
 					<sbux-input id="txt_Cond" name="txt_Cond" uitype="text" title="입력" onkeyenter="cmdQry_Proc()"></sbux-input>				
@@ -73,5 +73,5 @@
 		<div id="sbGridArea"></div>
 	</div>
 </section>	
-
+<c:import url="/js/ecams/common/commonscript.jsp" />
 <script type="text/javascript" src="<c:url value="/js/ecams/report/PrgListReport.js"/>"></script>

@@ -5,6 +5,7 @@ strReqCD = request.getParameter('reqcd');
 
 // 변수
 var SecuYn;
+var L_SysCd = "";
 
 //그리드 변수
 var grid_data;
@@ -12,12 +13,17 @@ var grid_data;
 // 콤보박스 변수
 var cbo_Option;
 var cboSysCd;
+var cbo_Cond10;
+var cbo_Cond2;
+var cbo_Cond11;
+
 
 
 $(document).ready(function(){
-	createGrid();
 	cboOption_set();
 	isAdmin();
+	getJogun(2);
+	createGrid();
 });
 
 function cboOption_set(){
@@ -63,15 +69,13 @@ function isAdmin(){
 		}
 		ajaxResultData = ajaxCallWithJson('/webPage/report/PrgListReport', tmpData, 'json');
 	}
-	
 	getSysInfo_resultHandler(ajaxResultData);
 }
 
 function getSysInfo_resultHandler(resultData){
 	var count = 0;
-	var L_SysCd = "";
 	var ajaxResultData = null;
-	
+	var selectedIndex;
 	cboSysCd = resultData;
 	
 	cboSysCd = cboSysCd.filter(function(data) {
@@ -80,7 +84,142 @@ function getSysInfo_resultHandler(resultData){
 	
 	SBUxMethod.refresh('cboSysCd');
 	
-	// eCmd3100 Cmd3100.getJogun(1); line 154
+	getJogun(1);
+}
+
+function getJogun(vari){
+	var ajaxResultData = null;
+	var selectedIndex;
+	var tmpData = {
+			requestType : 'getJogun',
+			cnt : vari
+	}	
+	ajaxResultData = ajaxCallWithJson('/webPage/report/PrgListReport', tmpData, 'json');
+	
+	if(ajaxResultData[0].Index === "1"){
+		console.log("1");
+		cbo_Cond10 = ajaxResultData;
+		SBUxMethod.refresh('cbo_Cond10');
+		if(cbo_Cond10.length > 1){
+			$("#cbo_Cond10 option:eq(2)").prop("selected", true);
+			setJogunOne(0);
+		}
+	} else {
+		cbo_Cond11 = ajaxResultData;
+		SBUxMethod.refresh('cbo_Cond11');
+		selectedIndex = document.getElementById("cbo_Cond11");
+		SBUxMethod.set('lbl_Cond1',  ajaxResultData[selectedIndex.selectedIndex].cm_codename);
+	}
+}
+
+function setJogunOne(index){
+	var selectedIndex;
+	if(cboSysCd.length > 0) L_SysCd = SBUxMethod.get("cboSysCd");
+	else L_SysCd = "";
+	
+	setJogunTwo(index);
+	
+	cbo_Cond2 = null;
+	selectedIndex = document.getElementById("cbo_Cond10");
+	if(selectedIndex.selectedIndex < 1){
+		SBUxMethod.hide('lbl_Cond0');
+		SBUxMethod.attr('cbo_Cond2', 'readonly', 'true');
+	} else {
+		if (L_SysCd == ""){
+		}else{
+			SBUxMethod.show('lbl_Cond0');
+			SBUxMethod.attr('cbo_Cond2', 'readonly', 'false');
+			var cnt = selectedIndex.selectedIndex;
+			SBUxMethod.set('lbl_Cond0', cbo_Cond10[cnt].cm_codename);
+			getCode(cnt);
+		}
+	}
+}
+
+function setJogunTwo(index){
+	var selectedIndex;
+	SBUxMethod.set('txt_Cond', "");
+	selectedIndex = document.getElementById("cbo_Cond11");	
+	if(selectedIndex.selectedIndex < 1){
+		SBUxMethod.hide('lbl_Cond1');
+		SBUxMethod.attr('txt_Cond', 'readonly', 'true');
+		SBUxMethod.set('txt_Cond', "");
+	} else {
+		SBUxMethod.show('lbl_Cond1');
+		SBUxMethod.set('lbl_Cond1', cbo_Cond11[selectedIndex.selectedIndex].cm_codename);			
+		SBUxMethod.attr('txt_Cond', 'readonly', 'false');
+	}
+}
+
+function getCode(cnt){
+	var ajaxResultData = null;
+	var selectedIndex;
+	var tmpData = {
+			requestType : 'getCode',
+			L_SysCd : L_SysCd,
+			cnt		: cnt
+	}	
+	ajaxResultData = ajaxCallWithJson('/webPage/report/PrgListReport', tmpData, 'json');
+	
+	cbo_Cond2 = ajaxResultData;
+	SBUxMethod.refresh('cbo_Cond2');
+	selectedIndex = document.getElementById("cbo_Cond10");
+	if(selectedIndex.selectedIndex == "2" && cbo_Cond2.length > 2){
+		$("#cbo_Cond2 option:eq(3)").prop("selected", true);
+	}
+	
+	Sql_Qry();
+}
+
+function Sql_Qry(){
+	var tmpObj = {};
+	var selectedIndex;
+	var L_JobCd = ""; // 개발당시 nice데모에서는 값을 공백으로 보내줌
+	
+	tmpObj.UserId = userid;
+	tmpObj.SecuYn = SecuYn;
+	tmpObj.L_SysCd = L_SysCd;
+	tmpObj.L_JobCd = L_JobCd;
+	
+	selectedIndex = document.getElementById("cbo_Cond10");	
+	tmpObj.Cbo_Cond10_code = selectedIndex.selectedIndex;
+	selectedIndex = null;
+	
+	selectedIndex = document.getElementById("cbo_Cond11");	
+	tmpObj.Cbo_Cond11_code = selectedIndex.selectedIndex;
+	selectedIndex = null;
+	
+	selectedIndex = document.getElementById("cbo_Cond2");
+	if(cbo_Cond2.length > 0 && selectedIndex.selectedIndex > 0) tmpObj.Cbo_Cond2_code = SBUxMethod.get("cbo_Cond2");
+	else tmpObj.Cbo_Cond2_code = "";
+	
+	if(SBUxMethod.get("txt_Cond") !== undefined){
+		tmpObj.Txt_Cond = SBUxMethod.get("txt_Cond");
+	} else {
+		tmpObj.Txt_Cond = "";
+	}
+	
+	tmpObj.Cbo_Option = SBUxMethod.get("cbo_Option");
+	tmpObj.Chk_Aply = SBUxMethod.get('chkDetail').chkDetail;
+	
+	var ajaxResultData = null;
+	var tmpData = {
+			requestType : 'getSql_Qry',
+			prjData: JSON.stringify(tmpObj)
+	}	
+	
+	
+	ajaxResultData = ajaxCallWithJson('/webPage/report/PrgListReport', tmpData, 'json');
+	
+	console.log(ajaxResultData);
+	
+	if(Object.keys(ajaxResultData).length > 0){
+		var cnt = Object.keys(ajaxResultData).length;				// json 객체 길이 구하기			
+		SBUxMethod.set('lbTotalCnt', '총'+cnt+'건');	// 총 개수 표현		
+	}
+
+	grid_data = ajaxResultData;
+	datagrid.refresh();
 }
 
 // 그리드 생성 함수

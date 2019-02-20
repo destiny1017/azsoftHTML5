@@ -11,6 +11,7 @@ var userName= null;
 var adminYN = null;
 var request = new Request();
 var sessionID = null;
+var iframeHeight = 0;
 
 $(document).ready(function() {
 	screenInit();
@@ -101,6 +102,13 @@ function clickSideMenu(event) {
 		$('#ecamsTitleText').html('['+parentMenuName+'] '+event.target.innerText);
 	}
 	
+// ifrmae contents의 height에 맞게 height 값 추가
+	$("#iFrm").on("load resize",function(){
+		$("#iFrm").css("height","");
+		if(iframeHeight != $("#iFrm").contents().height() + 20){
+			iframeHeight = resizeIframe($("#iFrm"));
+		}
+	})
 }
 
 function goHome() {
@@ -110,3 +118,11 @@ function goHome() {
 function logOut() {
 	window.location.replace('/webPage/login/ecamsLogin.jsp');
 }
+
+	
+
+function resizeIframe(iframe) {
+    var addHeight = 20;
+    iframe.css("height",iframe.contents().height() + addHeight + "px");
+    return iframe.contents().height() + addHeight;
+  }
