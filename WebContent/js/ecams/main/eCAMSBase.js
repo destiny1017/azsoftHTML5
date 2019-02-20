@@ -11,6 +11,7 @@ var userName= null;
 var adminYN = null;
 var request = new Request();
 var sessionID = null;
+var iframeHeight = 0;
 
 $(document).ready(function() {
 	screenInit();
@@ -87,12 +88,25 @@ function clickSideMenu(event) {
 	if( pathName.indexOf('doneMove') < 0) {
 		//IFRAME 지워준후 다시그리기
 		$('#eCAMSFrame').empty();
-		$iFrm = $('<IFRAME id="iFrm" frameBorder="0" name="iFrm" scrolling="no" src="'+event.target.href+'" style=" width:100%; height: 92vh"></IFRAME>');
+		$iFrm = $('<IFRAME id="iFrm" frameBorder="0" name="iFrm" scrolling="no" src="'+event.target.href+'" style=" width:100%; min-height: 92vh"></IFRAME>');
 		$iFrm.appendTo('#eCAMSFrame');
 		
 		//상위 TITLE TEXT SET
 		parentMenuName = $(event.target).closest('ul').closest('li').children('a')[0].innerText;
 		$('#ecamsTitleText').html('['+parentMenuName+'] '+event.target.innerText);
 	}
-	
+
+	// ifrmae contents의 height에 맞게 height 값 추가
+	$("#iFrm").on("load resize",function(){
+		$("#iFrm").css("height","");
+		if(iframeHeight != $("#iFrm").contents().height() + 20){
+			iframeHeight = resizeIframe($("#iFrm"));
+		}
+	})
 }
+
+function resizeIframe(iframe) {
+    var addHeight = 20;
+    iframe.css("height",iframe.contents().height() + addHeight + "px");
+    return iframe.contents().height() + addHeight;
+  }
