@@ -30,6 +30,12 @@ $(document).ready(function() {
 			$("#btnGroup2").appendTo($(".row").eq(3));
 		}
 	});
+	
+
+	$('#select_system').dropdown({
+	    allowAdditions: true,
+	    maxSelections: 3
+	});
 });
 
 function screenInit() {
@@ -57,7 +63,15 @@ function setSysCbo(){ //시스템
 		return n.cm_sysinfo.substring(0,1) !== "1" && n.cm_sysinfo.length > 1;
 	});
 	
-	SBUxMethod.refresh('select_system');
+	
+	$("#select_system").empty();
+	
+	$.each(selectedSysData,function(key,value) {
+		var option = $("<option value="+value.cm_syscd+">"+value.cm_sysmsg+"</option>");
+	    $('#select_system').append(option);
+	});
+	
+	//SBUxMethod.refresh('select_system');
 
 	setRsrcCbo(); //프로그램 종류 가져오기
 	setJobCbo(); //업무 가져오기

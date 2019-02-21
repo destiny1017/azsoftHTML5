@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:import url="/webPage/common/common.jsp" />
+<link rel="stylesheet" type="text/css" href="<c:url value="/js/ecams/dev/semantic.min.css"/>">
 <style>
 .white-space-none { white-space:pre-wrap !important;}
 
@@ -24,10 +25,13 @@
 				</div>
 				<div class="col-xs-12 col-sm-3">
 					<div class="margin-5-top">
+						<select id='select_system' name='select_system'></select>
+						<!-- 
 						<sbux-select 
 							id="select_system" name="select_system" class="combo-height width-100" uitype="single" model-name="select_system" 
 							jsondata-text  = "cm_sysmsg" jsondata-value = "cm_syscd"	scroll-style="min-height: 200px;"
 							required jsondata-ref="selectedSysData" onchange="changeSysCombo()"></sbux-select>
+						 -->
 					</div>
 				</div>
 				<div class="col-xs-12 col-sm-1">
@@ -206,3 +210,4 @@
 
 <c:import url="/js/ecams/common/commonscript.jsp" />
 <script type="text/javascript" src="<c:url value="/js/ecams/dev/ProgRegister.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/js/ecams/dev/semantic.min.js"/>"></script>
