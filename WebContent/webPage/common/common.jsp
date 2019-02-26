@@ -43,7 +43,11 @@ var SBpath = "/";
 <link rel="stylesheet" href="<c:url value="/fonts/pe-icon-7-stroke/css/helper.css"/>" />
 <link rel="stylesheet" href="<c:url value="/styles/style.css"/>">
 
+<!-- openGrid -->
+<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/ax5ui/ax5ui-grid/master/dist/ax5grid.css" />
 
+<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5core/master/dist/ax5core.min.js"></script>
+<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5ui-grid/master/dist/ax5grid.min.js"></script>
 
 <!-- eCAMS js, css -->
 <link rel="stylesheet" href="<c:url value="/css/ecams/common/ecamsStyle.css" />">
