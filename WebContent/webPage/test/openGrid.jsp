@@ -3,15 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/webPage/common/common.jsp" />
 <c:import url="/js/ecams/common/commonscript.jsp" />
-<link rel="stylesheet" type="text/css" href="<c:url value="/styles/ax5select.css"/>">
-<link rel="stylesheet" type="text/css" href="<c:url value="/styles/ax5picker.css"/>">
-<link rel="stylesheet" type="text/css" href="<c:url value="/styles/ax5calendar.css"/>">
-<script type="text/javascript" src="<c:url value="/scripts/ax5calendar.min.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/scripts/ax5formatter.min.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/scripts/ax5picker.min.js"/>"></script>
-
-<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/ax5ui/ax5ui-select/master/dist/ax5select.css" />
-<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5ui-select/master/dist/ax5select.min.js"></script>
 <style>
 select,input[type="text"] {
 	width: 100% !important;
@@ -40,7 +31,7 @@ div[class^="row"] {
 						<label  id="lbDept" name="lbDept" >신청부서</label>
 					</div>
 					<div class="form-group col-sm-10 no-padding">
-						 <div data-ax5select="cboDept" data-ax5select-config="{}" style="width:100%;"></div>
+						 <div data-ax5select="cboDept" data-ax5select-config="{size:'sm',theme:'primary'}" style="width:100%;"></div>
 					</div>
 				</div>
 				
@@ -49,7 +40,7 @@ div[class^="row"] {
 						<label  id="lbSysCd" name="lbSysCd">시스템</label>
 					</div>
 					<div class="form-group col-sm-10 no-padding">
-						 <div data-ax5select="cboSysCd" data-ax5select-config="{}" style="width:100%;"></div>
+						 <div data-ax5select="cboSysCd" data-ax5select-config="{size:'sm',theme:'primary'}" style="width:100%;"></div>
 					</div>
 				</div>
 				<div class="col-sm-2">
@@ -57,7 +48,7 @@ div[class^="row"] {
 						<label  id="lbgbn" name="lbgbn">처리구분</label>
 					</div>
 					<div class="form-group col-sm-8 no-padding">
-						<div data-ax5select="cboGbn" data-ax5select-config="{}" style="width:100%;"></div>
+						<div data-ax5select="cboGbn" data-ax5select-config="{size:'sm',theme:'primary'}" style="width:100%;"></div>
 					</div>
 				</div>
 				<div class="col-sm-2">
@@ -65,7 +56,7 @@ div[class^="row"] {
 						<label  id="lbEditor" name="lbEditor">신청인</label>
 					</div>
 					<div class="form-group col-sm-9 no-padding">
-						<input id="txtUser" name="txtUser" type="text" class="form-control" placeholder="신청인을 입력하세요." onkeypress="if(event.keyCode==13) {cmdQry_Proc();}"/>
+						<input class="input-sm" id="txtUser" name="txtUser" type="text" class="form-control" placeholder="신청인을 입력하세요." onkeypress="if(event.keyCode==13) {cmdQry_Proc();}"/>
 					</div>
 				</div>
 				<div class="col-sm-1 col-sm-offset-1">
@@ -81,7 +72,7 @@ div[class^="row"] {
 						<label  id="lbBlank" name="lbBlank">신청종류</label>
 					</div>
 					<div class="form-group col-sm-10 no-padding">
-						<div data-ax5select="cboSin" data-ax5select-config="{multiple: true}" style="width:100%;"></div> 	
+						<div data-ax5select="cboSin" data-ax5select-config="{multiple: true, size:'sm', theme:'primary'}" style="width:100%;"></div> 	
 					</div>
 				</div>
 				
@@ -90,7 +81,7 @@ div[class^="row"] {
 						<label  id="lbSta" name="lbSta">진행상태</label>
 					</div>
 					<div class="form-group col-sm-10 no-padding">
-						<div data-ax5select="cboSta" data-ax5select-config="{}" style="width:100%;"></div>
+						<div data-ax5select="cboSta" data-ax5select-config="{size:'sm',theme:'primary'}" style="width:100%;"></div>
 					</div>
 				</div>
 				<div class="col-sm-4">
@@ -98,7 +89,7 @@ div[class^="row"] {
 						<label  id="lbSpms" name="lbSpms">SR-ID/SR명</label>
 					</div>
 					<div class="form-group col-sm-10 no-padding">
-						<input id="txtSpms" name="txtSpms" type="text" class="form-control" placeholder="SR-ID/SR명을 입력하세요." onkeypress="if(event.keyCode==13) {cmdQry_Proc();}"/>
+						<input class="input-sm" id="txtSpms" name="txtSpms" type="text" class="form-control" placeholder="SR-ID/SR명을 입력하세요." onkeypress="if(event.keyCode==13) {cmdQry_Proc();}"/>
 					</div>
 				</div>
 				<div class="col-sm-1 col-sm-offset-1">
@@ -117,10 +108,10 @@ div[class^="row"] {
 				</div>
 				<div class="col-sm-3">
 					<div class="col-sm-4 form-group">
-						<label><input id="rdoStrDate" name="rdoDate" type="radio" value="0" checked/>신청일기준</label>
+						<label><input style="vertical-align: middle;" id="rdoStrDate" name="rdoDate" type="radio" value="0" checked/>&nbsp;&nbsp;신청일기준</label>
 					</div>
 					<div class="col-sm-8 form-group">
-						<label><input id="rdoEndDate" name="rdoDate"  type="radio" value="1"/>완료일기준</label>
+						<label><input style="vertical-align: middle;" id="rdoEndDate" name="rdoDate"  type="radio" value="1"/>&nbsp;&nbsp;완료일기준</label>
 					</div>
 				</div>
 				<div class="col-sm-4">
@@ -141,7 +132,9 @@ div[class^="row"] {
 </section>
 
 <section>
-	<div data-ax5grid="first-grid" data-ax5grid-config="{showLineNumber: true, multipleSelect: true}" style="height: 750px;"></div>
+	<div class="container-fluid">
+		<div data-ax5grid="first-grid" data-ax5grid-config="{showLineNumber: true, multipleSelect: true}" style="height: 550px;"></div>
+	</div>
 </section>
 
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" />

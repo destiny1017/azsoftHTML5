@@ -11,11 +11,13 @@
 .login-form h2 {
     margin: 0 0 15px;
 }
+/*다른 화면에서도  style이 동일하게 먹힘
 .form-control, .btn {
-    min-height: 38px;
+    min-height: 30px;
     border-radius: 2px;
 }
+*/
 .btn {        
-    font-size: 15px;
+    font-size: 14px;
     font-weight: bold;
 }

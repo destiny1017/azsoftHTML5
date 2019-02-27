@@ -12,6 +12,18 @@ var firstGrid = new ax5.ui.grid();
 // 달력 생성
 var picker = new ax5.ui.picker();
 
+// 이 부분 지우면 영어명칭으로 바뀜
+// ex) 월 -> MON
+ax5.info.weekNames = [
+    {label: "일"},
+    {label: "월"},
+    {label: "화"},
+    {label: "수"},
+    {label: "목"},
+    {label: "금"},
+    {label: "토"}
+];
+
 $(document).ready(function(){
 	if(strReqCD != null && strReqCD != ""){
 		if(strReqCD.length > 2) strReqCD.substring(0, 2);
@@ -26,18 +38,22 @@ $(document).ready(function(){
                  break;
          }
      });
-	
+
 	setPicker();
 	getUserInfo();
 	cboGbn_set();
 });
 
 function setPicker(){
+	//default 오늘날짜 setting
+	$('#datStD').val(getDate('DATE',0));
+	$('#datEdD').val(getDate('DATE',0));
+	
 	 picker.bind({
          target: $('[data-ax5picker="basic"]'),
          direction: "top",
          content: {
-             width: 270,
+             width: 220,
              margin: 10,
              type: 'date',
              config: {
@@ -47,17 +63,53 @@ function setPicker(){
                      monthTmpl: '%s',
                      right: '<i class="fa fa-chevron-right"></i>'
                  },
+                 dateFormat: 'yyyy/MM/dd',
                  lang: {
                      yearTmpl: "%s년",
                      months: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
                      dayTmpl: "%s"
                  }
+             },
+             formatter: {
+            	 //ax5formatter.min.js
+                 pattern: 'date'
              }
          },
          onStateChanged: function () {
-
+             /*if (this.state == "open") {
+                 //console.log(this.item);
+                 var selectedValue = this.self.getContentValue(this.item["$target"]);
+                 if (!selectedValue) {
+                     this.item.pickerCalendar[0].ax5uiInstance.setSelection([ax5.util.date(new Date(), {'return': 'yyyy/MM/dd', 'add': {d: 0}})]);
+                     this.item.pickerCalendar[1].ax5uiInstance.setSelection([ax5.util.date(new Date(), {'return': 'yyyy/MM/dd', 'add': {d: 0}})]);
+                 }
+             }*/
+         },
+         btns: {
+             today: {
+                 label: "Today", onClick: function () {
+                     var today = new Date();
+                     this.self
+                             .setContentValue(this.item.id, 0, ax5.util.date(today, {"return": "yyyy/MM/dd"}))
+                             .setContentValue(this.item.id, 1, ax5.util.date(today, {"return": "yyyy/MM/dd"}))
+                             .close();
+                 }
+             },
+             thisMonth: {
+                 label: "This Month", onClick: function () {
+                     var today = new Date();
+                     this.self
+                             .setContentValue(this.item.id, 0, ax5.util.date(today, {"return": "yyyy/MM/01"}))
+                             .setContentValue(this.item.id, 1, ax5.util.date(today, {"return": "yyyy/MM"})
+                                     + '/'
+                                     + ax5.util.daysOfMonth(today.getFullYear(), today.getMonth()))
+                             .close();
+                 }
+             },
+             ok: {label: "Close", theme: "default"}
          }
      });
+		
 }
 
 function getUserInfo(){
