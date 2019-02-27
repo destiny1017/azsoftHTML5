@@ -31,8 +31,6 @@ var SBpath = "/";
 <link rel="stylesheet" href="<c:url value="/vendor/animate.css/animate.css"/>" />
 <link rel="stylesheet" href="<c:url value="/vendor/bootstrap/dist/css/bootstrap.css"/>" />
 
-
-
 <!-- sbux library start -->
 <link rel="stylesheet" href="<c:url value="/lib/sbux/assets/js/sbgrid/2_5/SBGrid/css/SBGrid.css" />">
 <link rel="stylesheet" href="<c:url value="/lib/sbux/assets/js/sbgrid/2_5/SBGrid/css/SBGrid_Default.css" />">
@@ -42,6 +40,10 @@ var SBpath = "/";
 <link rel="stylesheet" href="<c:url value="/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css"/>" />
 <link rel="stylesheet" href="<c:url value="/fonts/pe-icon-7-stroke/css/helper.css"/>" />
 <link rel="stylesheet" href="<c:url value="/styles/style.css"/>">
+
+<link rel="stylesheet" href="<c:url value="/styles/ax5select.css"/>">
+<link rel="stylesheet" href="<c:url value="/styles/ax5picker.css"/>">
+<link rel="stylesheet" href="<c:url value="/styles/ax5calendar.css"/>">
 
 <!-- openGrid -->
 <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/ax5ui/ax5ui-grid/master/dist/ax5grid.css" />
@@ -57,4 +59,3 @@ var SBpath = "/";
 <script src="<c:url value="/lib/sbux/assets/js/sbgrid/2_5/SBGrid/js/lib/jquery-1.11.3.min.js" />" type="text/javascript"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 -->
-

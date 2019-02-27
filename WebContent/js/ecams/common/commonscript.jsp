@@ -23,3 +23,8 @@
 <script src="<c:url value="/lib/sbux/assets/js/sbgrid/2_5/SBGrid/SBGrid_min.js" />" type="text/javascript"></script>
 
 <script src="<c:url value="/js/ecams/common/common.js" />" type="text/javascript"></script>
+
+<script src="<c:url value="/scripts/ax5calendar.min.js"/>" type="text/javascript"></script>
+<script src="<c:url value="/scripts/ax5formatter.min.js"/>" type="text/javascript"></script>
+<script src="<c:url value="/scripts/ax5picker.min.js"/>" type="text/javascript"></script>
+<script src="<c:url value="/scripts/ax5select.min.js"/>" type="text/javascript"></script>
