@@ -65,7 +65,7 @@ div[class^="row"] {
 					</div>
 				</div>
 			</div>
-
+			 
 			<div class="row">
 				<div class="col-sm-3">
 					<div class="col-sm-2">
