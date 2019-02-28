@@ -268,31 +268,50 @@ function cboGbn_set(){
 	});
 }
 
+
 function cmdQry_Proc(){
-	//console.log($('input[name="rdoDate"]:checked').val());
-	
 	var tmpObj = {};
 	var ajaxResultData = null;
 	
-	var strStD = "20190220";
-	var strEdD = "20190220";
-	
-	tmpObj.stDt = strStD;
-	tmpObj.edDt = strEdD;
-	
-	//tmpObj.reqsta1 = SBUxMethod.get("cboSta1");
-	tmpObj.reqtit = "";
-	
-	tmpObj.selfsw = "T";     	
-					
-	tmpObj.userid = userid;
+	tmpObj.strStD = $("#datStD").val().substr(0,4) + $("#datStD").val().substr(5,2) + $("#datStD").val().substr(8,2);
+	tmpObj.strEdD = $("#datEdD").val().substr(0,4) + $("#datEdD").val().substr(5,2) + $("#datEdD").val().substr(8,2);
 
-	var tmpData = {
-			prjData: 		JSON.stringify(tmpObj),
-			requestType : 'PrjInfo'			
+	if($('[data-ax5select="cboSysCd"]').ax5select("getValue")[0]['@index'] > 0){
+		tmpObj.strSys = $('[data-ax5select="cboSysCd"]').ax5select("getValue")[0].value;
+	}
+		
+	tmpObj.cboGbn = $('[data-ax5select="cboGbn"]').ax5select("getValue")[0].value;
+	
+	if($('[data-ax5select="cboSin"]').ax5select("getValue")[0]['@index'] > 0){
+		tmpObj.strQry = $('[data-ax5select="cboSin"]').ax5select("getValue")[0].value;	// 멀티셀렉트 가능하게 수정해야됨
+	} 
+	
+	if($('[data-ax5select="cboDept"]').ax5select("getValue")[0]['@index'] > 0){
+		tmpObj.strTeam = $('[data-ax5select="cboDept"]').ax5select("getValue")[0].value;
 	}
 	
-	ajaxResultData = ajaxCallWithJson('/webPage/regist/SRStatus', tmpData, 'json');
+	if($('[data-ax5select="cboSta"]').ax5select("getValue")[0]['@index'] > 0){
+		tmpObj.strSta = $('[data-ax5select="cboSta"]').ax5select("getValue")[0].value;
+	}
+	
+	tmpObj.dategbn = $('input[name="rdoDate"]:checked').val();
+
+	tmpObj.txtUser = document.getElementById("txtUser").value.trim();
+	tmpObj.txtSpms = document.getElementById("txtSpms").value.trim();
+	
+	tmpObj.strUserId = userid;
+	
+	console.log(tmpObj);
+	
+	var tmpData = {
+			requestType : 'get_SelectList',
+			prjData: JSON.stringify(tmpObj)
+	}	
+	
+	
+	ajaxResultData = ajaxCallWithJson('/webPage/approval/RequestStatus', tmpData, 'json');
+	
+	console.log("result" + ajaxResultData);
 	
 	var cnt = Object.keys(ajaxResultData).length;	
 	
@@ -301,34 +320,32 @@ function cmdQry_Proc(){
 	firstGrid.setData(ajaxResultData);	
 	
 	tmpObj = null;
-	
 }
 
 function setGrid(){
 	firstGrid.setConfig({
         target: $('[data-ax5grid="first-grid"]'),
+        header: {
+            align: "center",
+            columnHeight: 40
+        },
+        body: {
+            columnHeight: 40
+        },
         columns: [
-            {key: "isrid", label: "SR-ID", sortable: true, width: '10%'},
-            {key: "genieid", label: "문서번호", sortable: true, width: '10%'},
-            {key: "recvdate", label: "등록일", sortable: true, width: '10%'},
-            {key: "reqdept", label: "요청부서", sortable: true, width: '10%'},
-            {key: "reqsta1", label: "SR상태", sortable: true, width: '10%'},
-            {key: "reqtitle", label: "요청제목", sortable: true, width: '10%'},
-            {key: "reqedday", label: "완료요청일", sortable: true, width: '10%'},
-            {key: "comdept", label: "등록부서", sortable: true, width: '10%'},
-            {key: "recvuser", label: "등록인", sortable: true, width: '10%'},
-            {key: "recvdept", label: "개발부서", sortable: true, width: '10%'},
-            {key: "devuser", label: "개발담당자", sortable: true, width: '10%'},
-            {key: "reqsta2", label: "개발자상태", sortable: true, width: '10%'},
-            {key: "chgdevterm", label: "개발기간", sortable: true, width: '10%'},
-            {key: "chgdevtime", label: "개발계획공수", sortable: true, width: '10%'},
-            {key: "realworktime", label: "개발투입공수", sortable: true, width: '10%'},
-            {key: "chgworktime", label: "검수투입공수", sortable: true, width: '10%'},
-            {key: "chgpercent", label: "개발진행율", sortable: true, width: '10%'},
-            {key: "chgedgbn", label: "변경종료구분", sortable: true, width: '10%'},
-            {key: "chgeddate", label: "변경종료일", sortable: true, width: '10%'},
-            {key: "isredgbn", label: "SR완료구분", sortable: true, width: '10%'},
-            {key: "isreddate", label: "SR완료일", sortable: true, width: '10%'}	// formatter: function(){	return "<button>" + this.value + "</button>"	}, 
+            {key: "syscd", label: "시스템",  width: '10%'},
+            {key: "spms", label: "SR-ID",  width: '10%'},
+            {key: "acptno", label: "신청번호",  width: '10%'},
+            {key: "editor", label: "신청자",  width: '10%'},
+            {key: "qrycd", label: "신청종류",  width: '10%'},
+            {key: "passok", label: "처리구분",  width: '10%'},
+            {key: "acptdate", label: "신청일시",  width: '10%'},
+            {key: "sta", label: "진행상태",  width: '10%'},
+            {key: "pgmid", label: "프로그램명",  width: '10%'},
+            {key: "prcdate", label: "완료일시",  width: '10%'},
+            {key: "prcreq", label: "적용예정일시",  width: '10%'},
+            {key: "Sunhang", label: "선후행",  width: '10%'},
+            {key: "sayu", label: "신청사유", width: '10%'}	//formatter: function(){	return "<button>" + this.value + "</button>"}, 	 
         ]
     });
 }

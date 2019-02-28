@@ -28,3 +28,4 @@
 <script src="<c:url value="/scripts/ax5formatter.min.js"/>" type="text/javascript"></script>
 <script src="<c:url value="/scripts/ax5picker.min.js"/>" type="text/javascript"></script>
 <script src="<c:url value="/scripts/ax5select.min.js"/>" type="text/javascript"></script>
+<script src="<c:url value="/scripts/ax5toast.min.js"/>" type="text/javascript"></script>

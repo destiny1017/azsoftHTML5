@@ -93,7 +93,7 @@ div[class^="row"] {
 					</div>
 				</div>
 				<div class="col-sm-1 col-sm-offset-1">
-					<button class="btn btn-default">조&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;회</button>
+					<button class="btn btn-default" onclick="cmdQry_Proc();">조&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;회</button>
 				</div>
 			</div>
 			
@@ -133,7 +133,7 @@ div[class^="row"] {
 
 <section>
 	<div class="container-fluid">
-		<div data-ax5grid="first-grid" data-ax5grid-config="{showLineNumber: true, multipleSelect: true}" style="height: 550px;"></div>
+		<div data-ax5grid="first-grid" data-ax5grid-config="{showLineNumber: true, sortable: true,showRowSelector: true, lineNumberColumnWidth: 40, rowSelectorColumnWidth: 26}" style="height: 550px;"></div>
 	</div>
 </section>
 

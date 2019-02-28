@@ -44,10 +44,10 @@ var SBpath = "/";
 <link rel="stylesheet" href="<c:url value="/styles/ax5select.css"/>">
 <link rel="stylesheet" href="<c:url value="/styles/ax5picker.css"/>">
 <link rel="stylesheet" href="<c:url value="/styles/ax5calendar.css"/>">
+<link rel="stylesheet" href="<c:url value="/styles/ax5toast.css"/>">
 
 <!-- openGrid -->
 <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/ax5ui/ax5ui-grid/master/dist/ax5grid.css" />
-
 <script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5core/master/dist/ax5core.min.js"></script>
 <script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5ui-grid/master/dist/ax5grid.min.js"></script>
 
