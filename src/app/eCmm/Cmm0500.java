@@ -55,7 +55,7 @@ public class Cmm0500{
 			conn = connectionContext.getConnection();
 
 			strQuery.setLength(0);
-			strQuery.append("select cm_menucd,cm_maname,cm_filename,cm_reqcd from cmm0080 ");
+			strQuery.append("select cm_menucd,cm_maname,cm_filename,cm_reqcd from cmm0081 ");
 			if (sqlGB.equals("LOW")){
 				strQuery.append("where cm_befmenu=0 ");
 				strQuery.append("order by cm_order ");
@@ -151,7 +151,7 @@ public class Cmm0500{
 			conn = connectionContext.getConnection();
 
 			strQuery.setLength(0);
-			strQuery.append("select cm_menucd,cm_maname from cmm0080 ");
+			strQuery.append("select cm_menucd,cm_maname from cmm0081 ");
 			strQuery.append("where cm_befmenu=? ");
 			strQuery.append("order by cm_order ");
             pstmt = conn.prepareStatement(strQuery.toString());
@@ -227,7 +227,7 @@ public class Cmm0500{
 			conn = connectionContext.getConnection();
 
 			strQuery.setLength(0);
-			strQuery.append("Select cm_menucd,cm_maname from cmm0080 ");
+			strQuery.append("Select cm_menucd,cm_maname from cmm0081 ");
 			strQuery.append("where cm_befmenu=0 ");
 			strQuery.append("order by cm_order ");
             pstmt = conn.prepareStatement(strQuery.toString());
@@ -235,7 +235,7 @@ public class Cmm0500{
 
             while (rs.next()){
             	strQuery.setLength(0);
-    			strQuery.append("Select cm_menucd,cm_maname,cm_filename from cmm0080 ");
+    			strQuery.append("Select cm_menucd,cm_maname,cm_filename from cmm0081 ");
     			strQuery.append("where cm_befmenu=? ");
     			strQuery.append("order by cm_order ");
                 pstmt2 = conn.prepareStatement(strQuery.toString());
@@ -318,7 +318,7 @@ public class Cmm0500{
 
 			strQuery.setLength(0);
 			strQuery.append("select cm_menucd,cm_order,cm_befmenu,cm_maname,cm_filename ");
-			strQuery.append("from (Select cm_menucd,cm_order,cm_befmenu,cm_maname,cm_filename from cmm0080) ");
+			strQuery.append("from (Select cm_menucd,cm_order,cm_befmenu,cm_maname,cm_filename from cmm0081) ");
 			strQuery.append("start with cm_befmenu=0 ");
 			strQuery.append("connect by prior cm_menucd = cm_befmenu ");			
             pstmt = conn.prepareStatement(strQuery.toString());
@@ -426,7 +426,7 @@ public class Cmm0500{
 
 		    if (Cbo_MaCode.equals("000")){
 		    	strQuery.setLength(0);
-		    	strQuery.append("select count(*) as cnt from cmm0080 where ");
+		    	strQuery.append("select count(*) as cnt from cmm0081 where ");
 		    	strQuery.append("cm_maname=? ");//Txt_MaCode
 
 		    	pstmt = conn.prepareStatement(strQuery.toString());
@@ -437,7 +437,7 @@ public class Cmm0500{
 		    	   if (rs.getInt("cnt")==0){
 		    		   insertFg = true;
 		    		   strQuery.setLength(0);
-		    		   strQuery.append("select max(cm_menucd) as max from cmm0080 ");
+		    		   strQuery.append("select max(cm_menucd) as max from cmm0081 ");
 		    		   pstmt2 = conn.prepareStatement(strQuery.toString());
 		    		   rs2 = pstmt2.executeQuery();
 		    		   if(rs2.next()){
@@ -463,7 +463,7 @@ public class Cmm0500{
 
 		    strQuery.setLength(0);
 		    if (insertFg){
-		    	strQuery.append("insert into cmm0080 (CM_BEFMENU,CM_MANAME,CM_FILENAME ");
+		    	strQuery.append("insert into cmm0081 (CM_BEFMENU,CM_MANAME,CM_FILENAME ");
 		    	if(!reqcd.equals("00")){
 		    		strQuery.append(",CM_REQCD ");
 		    	}
@@ -476,7 +476,7 @@ public class Cmm0500{
 		    	}
 		    	strQuery.append(",?)");
 		    }else{
-		    	strQuery.append("update cmm0080 set cm_maname=? ");//Txt_MaCode
+		    	strQuery.append("update cmm0081 set cm_maname=? ");//Txt_MaCode
 		    	strQuery.append(",cm_filename=? ");//Txt_MaFile
 		    	if(!reqcd.equals("00")){
 		    		strQuery.append(",cm_reqcd=? ");//Cbo_reqcd
@@ -563,7 +563,7 @@ public class Cmm0500{
 		    if (Cbo_selMenu.equals("상위메뉴")){
 		    	for (X=0 ; X<Lst_DevStep.size() ; X++){
 		    		strQuery.setLength(0);
-		    		strQuery.append("update cmm0080 set cm_order=?, ");
+		    		strQuery.append("update cmm0081 set cm_order=?, ");
 		    		strQuery.append("cm_befmenu=0 ");
 		    		strQuery.append("where cm_menucd=? ");
 		    		pstmt = conn.prepareStatement(strQuery.toString());
@@ -576,7 +576,7 @@ public class Cmm0500{
 		    	}
 		    }else{
 		    	strQuery.setLength(0);
-		    	strQuery.append("update cmm0080 set cm_befmenu=999 ");
+		    	strQuery.append("update cmm0081 set cm_befmenu=999 ");
 		    	strQuery.append("where cm_befmenu=? ");
 	    		pstmt = conn.prepareStatement(strQuery.toString());
 	    		pstmt.setInt(1, Integer.parseInt(Cbo_Menu));
@@ -585,7 +585,7 @@ public class Cmm0500{
 
 		    	for (X=0 ; X<Lst_DevStep.size() ; X++){
 		    		strQuery.setLength(0);
-		    		strQuery.append("update cmm0080 set cm_order=?, ");
+		    		strQuery.append("update cmm0081 set cm_order=?, ");
 		    		strQuery.append("cm_befmenu=? ");
 		    		strQuery.append("where cm_menucd=? ");
 		    		pstmt = conn.prepareStatement(strQuery.toString());
@@ -658,7 +658,7 @@ public class Cmm0500{
 			conn = connectionContext.getConnection();
 
 			strQuery.setLength(0);
-			strQuery.append("select count(*) as cnt from cmm0080 where cm_befmenu=? ");
+			strQuery.append("select count(*) as cnt from cmm0081 where cm_befmenu=? ");
 	    	pstmt = conn.prepareStatement(strQuery.toString());
 	    	pstmt.setString(1, Cbo_MaCode);
 	    	rs = pstmt.executeQuery();
@@ -678,7 +678,7 @@ public class Cmm0500{
 		    pstmt.executeUpdate();
 
 	    	strQuery.setLength(0);
-		    strQuery.append("delete cmm0080 where cm_menucd=? ");
+		    strQuery.append("delete cmm0081 where cm_menucd=? ");
 		    pstmt = conn.prepareStatement(strQuery.toString());
 		    pstmt.setString(1, Cbo_MaCode);
 		    pstmt.executeUpdate();

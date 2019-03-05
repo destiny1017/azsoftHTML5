@@ -45,6 +45,8 @@ function getMenuList(temp){
 
 
 function cbo_selMenu_click(){
+	var resultData;
+	
 	if($('[data-ax5select="Cbo_selMenu"]').ax5select("getValue")[0].text === "선택하세요"){
 		return;
 	}
@@ -56,34 +58,24 @@ function cbo_selMenu_click(){
 		});
 		
 		$("#Cbo_Menu").hide();
-		/*
-		var ajaxResultData = null;
-		var tmpData = {
-				requestType : 'getMenuList',
-				temp		: '999'
-		}	
-		ajaxResultData = ajaxCallWithJson('/webPage/test/LSH_testPage', tmpData, 'json');
-		*/
 		
-		var resultDate = getMenuList("999");
+		resultData = getMenuList("999");
 		
 		$('#tmpTest *').remove();
-		if(resultDate[0].ID === "999"){
-			$.each(resultDate,function(key,value) {
-				var option = $("<li class='dd-item' data-id="+key+"><div class='dd-handle'>"+value.cm_maname+"</div></li>");
+		if(resultData[0].ID === "999"){
+			$.each(resultData,function(key,value) {
+				var option = $("<li class='dd-item' data-id="+value.cm_menucd+"><div class='dd-handle'>"+value.cm_maname+"</div></li>");
 				$('#tmpTest').append(option);
 			});
 			
+			resultData = null;
+			
 			if($('[data-ax5select="Cbo_selMenu"]').ax5select("getValue")[0].text === "상위메뉴"){
-				var ajaxResultData = null;
-				var tmpData = {
-						requestType : 'getMenuList',
-						temp		: 'LOW'
-				}	
-				ajaxResultData = ajaxCallWithJson('/webPage/test/LSH_testPage', tmpData, 'json');
+				resultData = getMenuList("LOW");
+				
 				$('#tmpTest2 *').remove();
-				$.each(ajaxResultData,function(key,value) {
-					var option = $("<li class='dd-item' data-id="+key+"><div class='dd-handle'>"+value.cm_maname+"</div></li>");
+				$.each(resultData,function(key,value) {
+					var option = $("<li class='dd-item' data-id="+value.cm_menucd+"><div class='dd-handle'>"+value.cm_maname+"</div></li>");
 					$('#tmpTest2').append(option);
 				});
 			}
@@ -91,30 +83,20 @@ function cbo_selMenu_click(){
 	} else {
 		$("#Cbo_Menu").show();
 		var options = [];
-		var ajaxResultData = null;
-		var tmpData = {
-				requestType : 'getMenuList',
-				temp		: '999'	// 파라미터
-		}	
-		ajaxResultData = ajaxCallWithJson('/webPage/test/LSH_testPage', tmpData, 'json'); // 여기까지 함수로
+		resultData = null;
 		
+		resultData = getMenuList("999"); 
+
 		$('#tmpTest *').remove();
-		$.each(ajaxResultData,function(key,value) {
-			var option = $("<li class='dd-item' data-id="+key+"><div class='dd-handle'>"+value.cm_maname+"</div></li>");
+		$.each(resultData,function(key,value) {
+			var option = $("<li class='dd-item' data-id="+value.cm_menucd+"><div class='dd-handle'>"+value.cm_maname+"</div></li>");
 			$('#tmpTest').append(option);
 		});
+		
+		resultData = null;
 
-		ajaxResultData = null;
-		tmpData = null;
-		
-		tmpData = {
-			requestType : 'getMenuList',
-			temp		: 'LOW'
-		}	
-		
-		ajaxResultData = ajaxCallWithJson('/webPage/test/LSH_testPage', tmpData, 'json');
-		console.log(ajaxResultData);
-		$.each(ajaxResultData,function(key,value) {
+		resultData = getMenuList("LOW");
+		$.each(resultData,function(key,value) {
 		    options.push({value: value.cm_menucd, text: value.cm_maname});
 		});
 		
@@ -127,6 +109,14 @@ function cbo_selMenu_click(){
 }
 
 function Cbo_Menu_Click(){
+	var resultData = getMenuList("999"); 
+
+	$('#tmpTest *').remove();
+	$.each(resultData,function(key,value) {
+		var option = $("<li class='dd-item' data-id="+value.cm_menucd+"><div class='dd-handle'>"+value.cm_maname+"</div></li>");
+		$('#tmpTest').append(option);
+	});
+	resultData = null;
 	var ajaxResultData = null;
 	var tmpData = {
 			requestType : 'getLowMenuList',
@@ -138,4 +128,36 @@ function Cbo_Menu_Click(){
 		var option = $("<li class='dd-item' data-id="+value.cm_menucd+"><div class='dd-handle'>"+value.cm_maname+"</div></li>");
 		$('#tmpTest2').append(option);
 	});
+}
+
+function Cmd_Ip_Click(){
+	if($("#tmpTest2").children().length == 0) return;
+	
+	var menucd = "";
+	if($('[data-ax5select="Cbo_Menu"]').ax5select("getValue")[0] != undefined){
+		menucd = $('[data-ax5select="Cbo_Menu"]').ax5select("getValue")[0].value;
+	}
+	
+	var tmpList = new Array();
+	$("#tmpTest2").children().each(function(){
+		var data = new Object();
+		data.cm_menucd = $(this).attr("data-id");
+		tmpList.push(data);
+	})	
+	
+	var ajaxResultData = null;
+	var tmpData = {
+			requestType : 'setMenuList',
+			selectLabel : $('[data-ax5select="Cbo_selMenu"]').ax5select("getValue")[0].text,
+			menucd		: menucd,
+			tmpList		: JSON.stringify(tmpList)
+	}	
+	ajaxResultData = ajaxCallWithJson('/webPage/test/LSH_testPage', tmpData, 'json');
+	
+	// 임시 alert 창
+	if(ajaxResultData == ""){
+		alert("적용완료");
+	}else{
+		alert("적용실패");
+	}
 }

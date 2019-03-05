@@ -298,7 +298,9 @@
 			</div>
 		</div>
 		<div class="col-sm-6">
-			
+			<div class="form-group">
+				<button class="btn btn-default" onclick="Cmd_Ip_Click();">적용</button>
+			</div>
 		</div>
 	</div>
 	<div class="row">

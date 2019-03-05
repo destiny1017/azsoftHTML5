@@ -2,6 +2,8 @@ package html.app.test;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,7 +46,10 @@ public class LSH_testPage extends HttpServlet {
 					break;
 				case "getLowMenuList":
 					response.getWriter().write( getLowMenuList(request) );
-					break;	
+					break;
+				case "setMenuList":
+					response.getWriter().write( setMenuList(request) );
+					break;
 				default : 
 					break;
 			}
@@ -56,14 +61,19 @@ public class LSH_testPage extends HttpServlet {
 	}
 	
 	private String getUserInfoChk(HttpServletRequest request) throws SQLException, Exception {
-		String tmp = null;
-		tmp = ParsingCommon.parsingRequestJsonParamToString(request, "temp");
+		String tmp = ParsingCommon.parsingRequestJsonParamToString(request, "temp");
 		return gson.toJson(cmm0500.getMenuList(tmp));
 	}
 	
 	private String getLowMenuList(HttpServletRequest request) throws SQLException, Exception {
-		String tmp = null;
-		tmp = ParsingCommon.parsingRequestJsonParamToString(request, "Cbo_Menu");
+		String tmp = ParsingCommon.parsingRequestJsonParamToString(request, "Cbo_Menu");
 		return gson.toJson(cmm0500.getLowMenuList(tmp));
+	}
+	
+	private String setMenuList(HttpServletRequest request) throws SQLException, Exception {
+		String menucd = ParsingCommon.parsingRequestJsonParamToString(request, "menucd");
+		String selectLabel = ParsingCommon.parsingRequestJsonParamToString(request, "selectLabel");
+		ArrayList<HashMap<String, String>> tmpList = ParsingCommon.parsingRequestJsonParamToArrayList(request, "tmpList");
+		return gson.toJson(cmm0500.setMenuList(selectLabel, menucd, tmpList));
 	}
 }
