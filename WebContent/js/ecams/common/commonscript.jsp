@@ -24,6 +24,12 @@
 
 <script src="<c:url value="/js/ecams/common/common.js" />" type="text/javascript"></script>
 
+<!--  
+<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5core/master/dist/ax5core.min.js"></script>
+<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5ui-grid/master/dist/ax5grid.min.js"></script>
+-->
+<script src="<c:url value="/scripts/ax5core.min.js"/>" type="text/javascript"></script>
+<script src="<c:url value="/scripts/ax5grid.min.js"/>" type="text/javascript"></script>
 <script src="<c:url value="/scripts/ax5calendar.min.js"/>" type="text/javascript"></script>
 <script src="<c:url value="/scripts/ax5formatter.min.js"/>" type="text/javascript"></script>
 <script src="<c:url value="/scripts/ax5picker.min.js"/>" type="text/javascript"></script>

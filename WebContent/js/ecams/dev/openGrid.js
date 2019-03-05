@@ -217,7 +217,9 @@ function getCodeInfo(){
 	$('[data-ax5select="cboSin"]').ax5select({
         options: options
 	});
-	
+	// default 전체선택
+    $('[data-ax5select="cboSin"]').ax5select("setValue", ['00',], true);
+    
 	options = [];
 	
 	$.each(cboSta,function(key,value) {
@@ -311,13 +313,26 @@ function cmdQry_Proc(){
 	
 	ajaxResultData = ajaxCallWithJson('/webPage/approval/RequestStatus', tmpData, 'json');
 	
-	console.log("result" + ajaxResultData);
+	//console.log("result" + ajaxResultData);
 	
 	var cnt = Object.keys(ajaxResultData).length;	
 	
 	$("#lbTotalCnt").text("총" + cnt + "건");
 	
-	firstGrid.setData(ajaxResultData);	
+	firstGrid.setData(ajaxResultData);
+	
+	$(ajaxResultData).each(function(i){
+		if(ajaxResultData[i].colorsw == '5'){
+			
+		} else if (ajaxResultData[i].colorsw == '3'){
+			
+		} else if (ajaxResultData[i].colorsw == '0'){
+			
+		} else {
+			console.log(ajaxResultData[i].colorsw);
+		}
+	});
+	
 	
 	tmpObj = null;
 }
@@ -325,12 +340,24 @@ function cmdQry_Proc(){
 function setGrid(){
 	firstGrid.setConfig({
         target: $('[data-ax5grid="first-grid"]'),
+        sortable: true, 
+        multiSort: true,
+        multipleSelect: true,
+        showRowSelector: true,
         header: {
             align: "center",
-            columnHeight: 40
+            columnHeight: 30
         },
         body: {
-            columnHeight: 40
+            columnHeight: 28,
+            onClick: function () {
+                // console.log(this);
+                this.self.select(this.dindex);
+            }/*,
+        	trStyleClass: function () {
+        		console.log(this["colorSw"]);
+        		return "fontStyle-red";
+        	}*/
         },
         columns: [
             {key: "syscd", label: "시스템",  width: '10%'},

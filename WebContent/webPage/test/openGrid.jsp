@@ -19,6 +19,16 @@ div[class^="col"] {
 div[class^="row"] { 
 	margin: 0px 0px 5px 5px !important;
 }
+
+.fontStyle-red {
+	color: #ff0000;
+}
+.fontStyle-blue {
+	color: #0000ff;
+}
+.fontStyle-none {
+	color: #000000;
+}
 </style>
 
 <section>

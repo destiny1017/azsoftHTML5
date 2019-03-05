@@ -32,7 +32,7 @@ var SBpath = "/";
 <link rel="stylesheet" href="<c:url value="/vendor/bootstrap/dist/css/bootstrap.css"/>" />
 
 <!-- sbux library start -->
-<link rel="stylesheet" href="<c:url value="/lib/sbux/assets/js/sbgrid/2_5/SBGrid/css/SBGrid.css" />">
+<link rel="stylesheet" href="<c:url value="/lib/sbux/assets/js/sbgrid/2_5/SBGrid/css/SBGrid.cs`s" />">
 <link rel="stylesheet" href="<c:url value="/lib/sbux/assets/js/sbgrid/2_5/SBGrid/css/SBGrid_Default.css" />">
 <link rel="stylesheet" href="<c:url value="/lib/sbux/assets/css/SBUxCustom.css" />">
 
@@ -47,9 +47,8 @@ var SBpath = "/";
 <link rel="stylesheet" href="<c:url value="/styles/ax5toast.css"/>">
 
 <!-- openGrid -->
-<link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/ax5ui/ax5ui-grid/master/dist/ax5grid.css" />
-<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5core/master/dist/ax5core.min.js"></script>
-<script type="text/javascript" src="https://cdn.rawgit.com/ax5ui/ax5ui-grid/master/dist/ax5grid.min.js"></script>
+<!-- <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/ax5ui/ax5ui-grid/master/dist/ax5grid.css" />-->
+<link rel="stylesheet" href="<c:url value="/styles/ax5grid.css"/>">
 
 <!-- eCAMS js, css -->
 <link rel="stylesheet" href="<c:url value="/css/ecams/common/ecamsStyle.css" />">
