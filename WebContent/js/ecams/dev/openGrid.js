@@ -320,19 +320,19 @@ function cmdQry_Proc(){
 	$("#lbTotalCnt").text("총" + cnt + "건");
 	
 	firstGrid.setData(ajaxResultData);
-	
+	/*
 	$(ajaxResultData).each(function(i){
-		if(ajaxResultData[i].colorsw == '5'){
+		if(ajaxResultData[i].colorsw === '5'){
 			
-		} else if (ajaxResultData[i].colorsw == '3'){
+		} else if (ajaxResultData[i].colorsw === '3'){
 			
-		} else if (ajaxResultData[i].colorsw == '0'){
+		} else if (ajaxResultData[i].colorsw === '0'){
 			
 		} else {
 			console.log(ajaxResultData[i].colorsw);
 		}
 	});
-	
+	*/
 	
 	tmpObj = null;
 }
@@ -342,7 +342,7 @@ function setGrid(){
         target: $('[data-ax5grid="first-grid"]'),
         sortable: true, 
         multiSort: true,
-        multipleSelect: true,
+        //multipleSelect: true,
         showRowSelector: true,
         header: {
             align: "center",
@@ -353,11 +353,23 @@ function setGrid(){
             onClick: function () {
                 // console.log(this);
                 this.self.select(this.dindex);
-            }/*,
+            },
         	trStyleClass: function () {
-        		console.log(this["colorSw"]);
-        		return "fontStyle-red";
-        	}*/
+        		//console.log(this); -> string으로 변환하면 item 데이타 로그 볼수 없음
+        		//console.log('++++++colorsw:'+this.item.colorsw);
+        		if(this.item.colorsw === '5'){
+        			return "fontStyle-error";
+        		} else if (this.item.colorsw === '3'){
+        			return "fontStyle-cncl";
+        		} else if (this.item.colorsw === '0'){
+        			return "fontStyle-ing";
+        		} else {
+        		}
+        	},
+        	onDataChanged: function(){
+        		//그리드 새로고침 (스타일 유지)
+        	    this.self.repaint();
+        	}
         },
         columns: [
             {key: "syscd", label: "시스템",  width: '10%'},

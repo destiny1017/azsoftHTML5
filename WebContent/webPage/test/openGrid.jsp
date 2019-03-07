@@ -20,14 +20,14 @@ div[class^="row"] {
 	margin: 0px 0px 5px 5px !important;
 }
 
-.fontStyle-red {
-	color: #ff0000;
+.fontStyle-error {
+	color: #BE81F7;;
 }
-.fontStyle-blue {
-	color: #0000ff;
+.fontStyle-ing {
+	color: #0000FF;
 }
-.fontStyle-none {
-	color: #000000;
+.fontStyle-cncl {
+	color: #FF0000;
 }
 </style>
 

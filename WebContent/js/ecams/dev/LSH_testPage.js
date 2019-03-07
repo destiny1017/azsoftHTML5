@@ -170,14 +170,21 @@ function getMenuAllList(){
 	}	
 	ajaxResultData = ajaxCallWithJson('/webPage/test/LSH_testPage', tmpData, 'json');
 	console.log(ajaxResultData);
+	
+	//첫번째 tree만 닫기
+	//ajaxResultData[0].collapse = true;
+	
+	$(ajaxResultData).each(function(i){
+		//grid tree 전체닫기
+		ajaxResultData[i].collapse = true;
+	});
+	
 	firstGrid.setData(ajaxResultData);
 }
 
 function setGrid(){
 	firstGrid.setConfig({
         target: $('[data-ax5grid="first-grid"]'),
-        sortable: true, 
-        multiSort: true,
         header: {
             align: "center",
             columnHeight: 30
@@ -186,7 +193,11 @@ function setGrid(){
             columnHeight: 28,
             onClick: function () {
                 //this.self.select(this.dindex);
-            }
+            },
+        	onDataChanged: function(){
+        		//그리드 새로고침 (스타일 유지)
+        	    this.self.repaint();
+        	}
         },
         tree: {
             use: true,
