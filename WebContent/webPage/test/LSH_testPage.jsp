@@ -328,6 +328,11 @@
 	</div>
 </section>
 
+<section>
+	<div class="container-fluid" >
+		<div data-ax5grid="first-grid" data-ax5grid-config="{}" style="height: 500px;"></div>
+	</div>
+</section>
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" />
 
 <script type="text/javascript" src="<c:url value="/js/ecams/dev/LSH_testPage.js"/>"></script>

@@ -5,13 +5,17 @@ var userid = window.parent.userId;
 var strReqCD = "";
 var request =  new Request();
 strReqCD = request.getParameter('reqcd');
+//grid 생성
+var firstGrid = new ax5.ui.grid();
 
 $(document).ready(function(){
 	if(strReqCD != null && strReqCD != ""){
 		if(strReqCD.length > 2) strReqCD.substring(0, 2);
 		else strReqCD = "";
 	}
+	setGrid();
 	setCboMenu();
+	getMenuAllList();
 });
 
 function setCboMenu(){
@@ -86,7 +90,6 @@ function cbo_selMenu_click(){
 		resultData = null;
 		
 		resultData = getMenuList("999"); 
-
 		$('#tmpTest *').remove();
 		$.each(resultData,function(key,value) {
 			var option = $("<li class='dd-item' data-id="+value.cm_menucd+"><div class='dd-handle'>"+value.cm_maname+"</div></li>");
@@ -153,7 +156,6 @@ function Cmd_Ip_Click(){
 			tmpList		: JSON.stringify(tmpList)
 	}	
 	ajaxResultData = ajaxCallWithJson('/webPage/test/LSH_testPage', tmpData, 'json');
-	
 	// 임시 alert 창
 	if(ajaxResultData == ""){
 		alert("적용완료");
@@ -161,3 +163,52 @@ function Cmd_Ip_Click(){
 		alert("적용실패");
 	}
 }
+function getMenuAllList(){
+	var ajaxResultData = null;
+	var tmpData = {
+			requestType : 'getMenuAllList',
+	}	
+	ajaxResultData = ajaxCallWithJson('/webPage/test/LSH_testPage', tmpData, 'json');
+	console.log(ajaxResultData);
+	firstGrid.setData(ajaxResultData);
+}
+
+function setGrid(){
+	firstGrid.setConfig({
+        target: $('[data-ax5grid="first-grid"]'),
+        sortable: true, 
+        multiSort: true,
+        header: {
+            align: "center",
+            columnHeight: 30
+        },
+        body: {
+            columnHeight: 28,
+            onClick: function () {
+                //this.self.select(this.dindex);
+            }
+        },
+        tree: {
+            use: true,
+            indentWidth: 10,
+            arrowWidth: 15,
+            iconWidth: 18,
+            icons: {
+                openedArrow: '<i class="fa fa-caret-down" aria-hidden="true"></i>',
+                collapsedArrow: '<i class="fa fa-caret-right" aria-hidden="true"></i>',
+                groupIcon: '<i class="fa fa-folder-open" aria-hidden="true"></i>',
+                collapsedGroupIcon: '<i class="fa fa-folder" aria-hidden="true"></i>',
+                itemIcon: '<i class="fa fa-circle" aria-hidden="true"></i>'
+            },
+            columnKeys: {
+                parentKey: "parentMenucd",
+                selfKey: "cm_menucd"
+            }
+        },
+        columns: [
+            {key: "cm_maname", label: "메뉴명",  width: '30%', treeControl: true},
+            {key: "cm_filename", label: "링크파일명",  width: '70%'} //formatter: function(){	return "<button>" + this.value + "</button>"}, 	 
+        ]
+    });
+}
+

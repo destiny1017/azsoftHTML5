@@ -50,6 +50,9 @@ public class LSH_testPage extends HttpServlet {
 				case "setMenuList":
 					response.getWriter().write( setMenuList(request) );
 					break;
+				case "getMenuAllList":
+					response.getWriter().write( getMenuAllList(request) );
+					break;
 				default : 
 					break;
 			}
@@ -75,5 +78,9 @@ public class LSH_testPage extends HttpServlet {
 		String selectLabel = ParsingCommon.parsingRequestJsonParamToString(request, "selectLabel");
 		ArrayList<HashMap<String, String>> tmpList = ParsingCommon.parsingRequestJsonParamToArrayList(request, "tmpList");
 		return gson.toJson(cmm0500.setMenuList(selectLabel, menucd, tmpList));
+	}
+	
+	private String getMenuAllList(HttpServletRequest request) throws SQLException, Exception {
+		return gson.toJson(cmm0500.getMenuAllList());
 	}
 }

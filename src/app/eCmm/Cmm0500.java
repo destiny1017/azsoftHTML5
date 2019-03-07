@@ -234,6 +234,13 @@ public class Cmm0500{
             rs = pstmt.executeQuery();
 
             while (rs.next()){
+            	// 트리에 부모가되는 데이터 추가
+            	rst = new HashMap<String, String>();
+            	rst.put("cm_menucd", rs.getString("cm_menucd"));
+            	rst.put("cm_maname", rs.getString("cm_maname"));
+            	rsval.add(rst);
+				rst = null;
+				
             	strQuery.setLength(0);
     			strQuery.append("Select cm_menucd,cm_maname,cm_filename from cmm0081 ");
     			strQuery.append("where cm_befmenu=? ");
@@ -241,10 +248,11 @@ public class Cmm0500{
                 pstmt2 = conn.prepareStatement(strQuery.toString());
                 pstmt2.setInt(1, rs.getInt("cm_menucd"));
                 rs2 = pstmt2.executeQuery();
-
+                
                 while (rs2.next()){
 					rst = new HashMap<String, String>();
 					rst.put("maname", rs.getString("cm_maname"));
+					rst.put("parentMenucd", rs.getString("cm_menucd"));
 					rst.put("cm_menucd", rs2.getString("cm_menucd"));
 					rst.put("cm_maname", rs2.getString("cm_maname"));
 					rst.put("cm_filename", rs2.getString("cm_filename"));
@@ -261,6 +269,8 @@ public class Cmm0500{
             rs = null;
             pstmt = null;
             conn = null;
+            
+            ecamsLogger.error(rsval.toString());
 
             return rsval.toArray();
 
