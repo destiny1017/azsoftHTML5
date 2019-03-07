@@ -41,14 +41,12 @@ var SBpath = "/";
 <link rel="stylesheet" href="<c:url value="/fonts/pe-icon-7-stroke/css/helper.css"/>" />
 <link rel="stylesheet" href="<c:url value="/styles/style.css"/>">
 
-<link rel="stylesheet" href="<c:url value="/styles/ax5select.css"/>">
-<link rel="stylesheet" href="<c:url value="/styles/ax5picker.css"/>">
-<link rel="stylesheet" href="<c:url value="/styles/ax5calendar.css"/>">
-<link rel="stylesheet" href="<c:url value="/styles/ax5toast.css"/>">
-
-<!-- openGrid -->
-<!-- <link rel="stylesheet" type="text/css" href="https://cdn.rawgit.com/ax5ui/ax5ui-grid/master/dist/ax5grid.css" />-->
-<link rel="stylesheet" href="<c:url value="/styles/ax5grid.css"/>">
+<link rel="stylesheet" href="<c:url value="/styles/ax5/ax5calendar.css"/>">
+<link rel="stylesheet" href="<c:url value="/styles/ax5/ax5picker.css"/>">
+<link rel="stylesheet" href="<c:url value="/styles/ax5/ax5select.css"/>">
+<link rel="stylesheet" href="<c:url value="/styles/ax5/ax5menu.css"/>">
+<link rel="stylesheet" href="<c:url value="/styles/ax5/ax5grid.css"/>"><!-- openGrid -->
+<link rel="stylesheet" href="<c:url value="/styles/ax5/ax5toast.css"/>">
 
 <!-- eCAMS js, css -->
 <link rel="stylesheet" href="<c:url value="/css/ecams/common/ecamsStyle.css" />">
@@ -58,3 +56,5 @@ var SBpath = "/";
 <script src="<c:url value="/lib/sbux/assets/js/sbgrid/2_5/SBGrid/js/lib/jquery-1.11.3.min.js" />" type="text/javascript"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 -->
+
+<link rel="stylesheet" href="<c:url value="/styles/jquery-ui.css"/>">

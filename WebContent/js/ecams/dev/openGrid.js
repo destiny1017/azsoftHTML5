@@ -320,19 +320,6 @@ function cmdQry_Proc(){
 	$("#lbTotalCnt").text("총" + cnt + "건");
 	
 	firstGrid.setData(ajaxResultData);
-	/*
-	$(ajaxResultData).each(function(i){
-		if(ajaxResultData[i].colorsw === '5'){
-			
-		} else if (ajaxResultData[i].colorsw === '3'){
-			
-		} else if (ajaxResultData[i].colorsw === '0'){
-			
-		} else {
-			console.log(ajaxResultData[i].colorsw);
-		}
-	});
-	*/
 	
 	tmpObj = null;
 }
@@ -343,7 +330,8 @@ function setGrid(){
         sortable: true, 
         multiSort: true,
         //multipleSelect: true,
-        showRowSelector: true,
+        //showRowSelector: true, //checkbox option
+        //rowSelectorColumnWidth: 26 
         header: {
             align: "center",
             columnHeight: 30
@@ -352,7 +340,18 @@ function setGrid(){
             columnHeight: 28,
             onClick: function () {
                 // console.log(this);
+            	this.self.clearSelect(); //기존선택된 row deselect 처리 (multipleSelect 할땐 제외해야함)
                 this.self.select(this.dindex);
+            },
+            onDBLClick: function () {
+        		//alert('신청상세팝업');
+            	//console.log(this);
+            	//Sweet Alert [https://sweetalert.js.org/guides/]
+        		swal({
+                    title: "신청상세팝업",
+                    text: "신청번호 ["+this.item.acptno2+"]"
+                });
+
             },
         	trStyleClass: function () {
         		//console.log(this); -> string으로 변환하면 item 데이타 로그 볼수 없음
@@ -370,6 +369,45 @@ function setGrid(){
         		//그리드 새로고침 (스타일 유지)
         	    this.self.repaint();
         	}
+        },
+        contextMenu: {
+            iconWidth: 20,
+            acceleratorWidth: 100,
+            itemClickAndClose: false,
+            icons: {
+                'arrow': '<i class="fa fa-caret-right"></i>'
+            },
+            items: [
+                {type: 1, label: "변경신청상세"},
+                {type: 2, label: "결재정보"},
+                {type: 3, label: "전체회수"}
+            ],
+            popupFilter: function (item, param) {
+                //console.log(item, param);
+            	//param.item.qrycd2 -> 01,02,03,04,06,07,11,12,16
+            	
+            	/** 
+            	 * return 값에 따른 context menu filter
+            	 * 
+            	 * return true; -> 모든 context menu 보기
+            	 * return item.type == 1; --> type이 1인 context menu만 보기
+            	 * return item.type == 1 | item.type == 2; --> type 이 1,2인 context menu만 보기
+            	 * 
+            	 * ex)
+	            	if(param.item.qrycd2 === '01'){
+	            		return item.type == 1 | item.type == 2;
+	            	}
+            	 */
+            	return true;
+            },
+            onClick: function (item, param) {
+                //console.log(item, param);
+        		swal({
+                    title: item.label+"팝업",
+                    text: "신청번호 ["+param.item.acptno2+"]"
+                });
+                firstGrid.contextMenu.close();//또는 return true;
+            }
         },
         columns: [
             {key: "syscd", label: "시스템",  width: '10%'},

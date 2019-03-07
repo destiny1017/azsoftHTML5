@@ -4,20 +4,6 @@
 <c:import url="/webPage/common/common.jsp" />
 <c:import url="/js/ecams/common/commonscript.jsp" />
 
-<!-- Vendor scripts -->
-	<script type="text/javascript" src="<c:url value="/vendor/jquery/dist/jquery.min.js"/>"></script>
-	<script type="text/javascript" src="<c:url value="/vendor/jquery-ui/jquery-ui.min.js"/>"></script>
-	<script type="text/javascript" src="<c:url value="/vendor/slimScroll/jquery.slimscroll.min.js"/>"></script>
-	<script type="text/javascript" src="<c:url value="/vendor/bootstrap/dist/js/bootstrap.min.js"/>"></script>
-	<script type="text/javascript" src="<c:url value="/vendor/metisMenu/dist/metisMenu.min.js"/>"></script>
-	<script type="text/javascript" src="<c:url value="/vendor/iCheck/icheck.min.js"/>"></script>
-	<script type="text/javascript" src="<c:url value="/vendor/peity/jquery.peity.min.js"/>"></script>
-	<script type="text/javascript" src="<c:url value="/vendor/sparkline/index.js"/>"></script>
-	<script type="text/javascript" src="<c:url value="/vendor/nestable/jquery.nestable.js"/>"></script>
-
-	<script src="<c:url value="/scripts/ax5select.min.js"/>" type="text/javascript"></script>
-<script src="<c:url value="/scripts/homer.js"/>"></script>
-<script src="<c:url value="/scripts/charts.js"/>"></script>
 <style>
 #toast-container {
 }
@@ -333,6 +319,5 @@
 		<div data-ax5grid="first-grid" data-ax5grid-config="{}" style="height: 500px;"></div>
 	</div>
 </section>
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" />
 
 <script type="text/javascript" src="<c:url value="/js/ecams/dev/LSH_testPage.js"/>"></script>

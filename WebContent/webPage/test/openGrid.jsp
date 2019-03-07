@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/webPage/common/common.jsp" />
 <c:import url="/js/ecams/common/commonscript.jsp" />
+
 <style>
 select,input[type="text"] {
 	width: 100% !important;
@@ -143,11 +144,9 @@ div[class^="row"] {
 
 <section>
 	<div class="container-fluid">
-		<div data-ax5grid="first-grid" data-ax5grid-config="{showLineNumber: true, sortable: true,showRowSelector: true, lineNumberColumnWidth: 40, rowSelectorColumnWidth: 26}" style="height: 550px;"></div>
+		<div data-ax5grid="first-grid" data-ax5grid-config="{showLineNumber: true, lineNumberColumnWidth: 40}" style="height: 550px;"></div>
 	</div>
 </section>
-
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" />
 
 <script type="text/javascript" src="<c:url value="/js/ecams/dev/openGrid.js"/>"></script>
 

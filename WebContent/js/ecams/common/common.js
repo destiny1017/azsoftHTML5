@@ -91,7 +91,13 @@ function ajaxCallWithJson(url, requestData, dataType) {
 		url 	: url,
 		data 	: requestData,
 		dataType: dataType,
-		async 	: false, 
+		async 	: false,
+		/**
+		 * async 안쓰는게 좋다고 함
+		 * [Deprecation] Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience. 
+		 * For more help, check https://xhr.spec.whatwg.org/.
+		 * 메인 쓰레드에서의 동기화된 XMLHttpRequest는 사용자 경험에 안좋은 영향을 미치기 때문에 더이상 사용하지 않습니다. 더 자세한 사항은 http://xhr.spec.whatwg.org/  를 참고해 주십시오.
+		 */
 		success : function(data) {
 			successData =  copyReferenceNone(data);
 		},
