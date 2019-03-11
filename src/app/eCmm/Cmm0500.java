@@ -238,6 +238,7 @@ public class Cmm0500{
             	rst = new HashMap<String, String>();
             	rst.put("cm_menucd", rs.getString("cm_menucd"));
             	rst.put("cm_maname", rs.getString("cm_maname"));
+            	rst.put("colorsw", ""); // 컬럼 라인 색상 변경용 추가 테스트
             	rsval.add(rst);
 				rst = null;
 				
@@ -256,6 +257,7 @@ public class Cmm0500{
 					rst.put("cm_menucd", rs2.getString("cm_menucd"));
 					rst.put("cm_maname", rs2.getString("cm_maname"));
 					rst.put("cm_filename", rs2.getString("cm_filename"));
+					rst.put("colorsw", "");	// 컬럼 라인 색상 변경용 추가 테스트
 					rsval.add(rst);
 					rst = null;
                 }
@@ -270,8 +272,6 @@ public class Cmm0500{
             pstmt = null;
             conn = null;
             
-            ecamsLogger.error(rsval.toString());
-
             return rsval.toArray();
 
 		} catch (SQLException sqlexception) {

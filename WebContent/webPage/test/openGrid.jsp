@@ -22,7 +22,7 @@ div[class^="row"] {
 }
 
 .fontStyle-error {
-	color: #BE81F7;;
+	color: #BE81F7;
 }
 .fontStyle-ing {
 	color: #0000FF;
