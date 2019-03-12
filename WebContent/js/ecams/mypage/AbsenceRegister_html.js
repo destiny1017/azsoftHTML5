@@ -18,11 +18,10 @@ var picker = new ax5.ui.picker();
 var myGrid1Area = new ax5.ui.grid();
 
 $(document).ready(function() {
-	$('#btnReg').children('span').text($('#rdoOpt0').attr('text'));
-	isAdmin_Handler();
-	Cbo_Sayu_resultHandler();
-	date_init();
 	createGrid();
+	date_init();
+	Cbo_Sayu_resultHandler();
+	isAdmin_Handler();
 })
 
 function changeBtnText() {
@@ -39,9 +38,7 @@ function createGrid() {
         target: $('[data-ax5grid="myGrid1Area"]'),
         sortable: true, 
         multiSort: true,
-        //multipleSelect: true,
-        showRowSelector: false, //checkbox option
-        //rowSelectorColumnWidth: 26 
+        showRowSelector: false,
         header: {
             align: "center",
             columnHeight: 30
@@ -73,7 +70,6 @@ function createGrid() {
 }
 
 function isAdmin_Handler() {
-	SBUxMethod.attr('txtUser', 'readonly', 'false');
 	Cbo_User_resultHandler();
 }
 
@@ -105,9 +101,7 @@ function Cbo_User_resultHandler() {
 			if (comboDp1.length > 1) {
 				for (var i = 0; comboDp1.length > i; i++) {
 					if (comboDp1[i].cm_userid == userid) {
-						
-						setValue.push(comboDp1[i].cm_userid);
-						$('[data-ax5select="cboUser"]').ax5select("setValue", setValue, true);
+						$('[data-ax5select="cboUser"]').ax5select("setValue", comboDp1[i].cm_userid, true);
 						Cbo_User_Click();
 						break;
 					}
@@ -179,7 +173,6 @@ function Cbo_Sayu_resultHandler() {
 	
 	if(ajaxReturnData !== 'ERR') {
 		comboDp3 = ajaxReturnData;
-		console.log(comboDp3);
 		var options = [];
 		var setValue = [];
 		$.each(comboDp3,function(key,value) {
@@ -320,15 +313,14 @@ function Search_click2() {
 			break;
 		}
 	}
-	selectedIndex = $("#cboDaeSign option").index(
-			$("#cboDaeSign option:selected"));
+	selectedIndex = $("#cboDaeSign option").index($("#cboDaeSign option:selected"));
 	if (Sql_tmp_dp1[selectedIndex].cm_username != document.getElementById("txtName").value)
 		alert("이름이 존재하지 않습니다.");
 }
 
 function select_resultHandler() {
 	var cm_userid;
-	cm_userid = SBUxMethod.get('cboUser');
+	cm_userid = $('#cboUser option:selected').val();
 	var ajaxReturnData = null;
 	
 	var tmpData = {
@@ -337,42 +329,26 @@ function select_resultHandler() {
 		cm_userid : cm_userid
 	}
 	
+	gridDp1 = null;
 	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/AbsenceRegister', tmpData, 'json');
 	
 	if(ajaxReturnData !== 'ERR') {
 		gridDp1 = ajaxReturnData;
-		console.log('check');
-		console.log(gridDp1);
-		if(gridDp1 !== null && gridDp1.length > 0) myGrid1Area.setData(gridDp1);
+		if(gridDp1 !== null) myGrid1Area.setData(gridDp1);
 		
 		if (gridDp1 !== null && gridDp1.length > 0) {
 			var daegyulObj = null;
 			var tmpObj = null;
 			daegyulObj = gridDp1[0];
+			
+			if( Sql_tmp_dp1 !== null && Sql_tmp_dp1.length > 0){
+				for (var i = 0; i < Sql_tmp_dp1.length; i++) {
+					tmpObj = Sql_tmp_dp1[i];
 
-			for (var i = 0; i < Sql_tmp_dp1.length; i++) {
-				tmpObj = Sql_tmp_dp1[i];
-
-				if (tmpObj.cm_userid == daegyulObj.cm_daegyul) {
-					$("#cboDaeSign option:eq("+i+")").prop("selected", true);
-					SBUxMethod.refresh('cboDaeSign');
-					var selectedIndex = $("#cboDaeSign option").index(
-							$("#cboDaeSign option:selected"));
-					Sql_tmp_dp1[selectedIndex] = tmpObj;
-					break;
-				}
-			}
-
-			for (var j = 0; j < comboDp3.length; j++) {
-				tmpObj = comboDp3[j];
-
-				if (tmpObj.cm_codename == daegyulObj.cm_daegmsg) {
-					$("#cboSayu option:eq("+i+")").prop("selected", true);
-					SBUxMethod.refresh('cboSayu');
-					var selectedIndex = $("#cboSayu option").index(
-							$("#cboSayu option:selected"));
-					comboDp3[selectedIndex] = tmpObj;
-					break;
+					if (tmpObj.cm_userid == daegyulObj.cm_daegyul) {
+						$('[data-ax5select="cboDaeSign"]').ax5select("setValue", daegyulObj.cm_daegyul);
+						break;
+					}
 				}
 			}
 			daegyulObj = null;
@@ -380,9 +356,7 @@ function select_resultHandler() {
 		} else {
 			$("#txtSayu").val("");
 			$("#cboDaeSign option:eq(0)").prop("selected", true);
-			SBUxMethod.refresh('cboDaeSign');
 			$("#cboSayu option:eq(0)").prop("selected", true);
-			SBUxMethod.refresh('cboSayu');
 		}
 	}
 	
@@ -398,32 +372,26 @@ function Cbo_Sayu_Click() {
 }
 
 function getDaegyulState_resultHandler() {
-	console.log('dfjksdlfjklsdjfklsjfklsdjklfjsdkl');
-	var daegyulState;
-	var cm_userid;
-	cm_userid = SBUxMethod.get('cboUser');
+	var daegyulState = null;
+	var cm_userid = $('#cboUser option:selected').val();
 	var ajaxReturnData = null;
 	
 	var tmpData = {
-			requestType : 'Cmm1100_3',
-			UserId : userid,
-			cm_userid : cm_userid
+		requestType : 'Cmm1100_3',
+		UserId : userid,
+		cm_userid : cm_userid
 	}
 	
 	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/AbsenceRegister', tmpData, 'json');
-	
 	if(ajaxReturnData !== 'ERR') {
 		daegyulState = ajaxReturnData;
-		if (daegyulState.length != 0) {
-			$('#btnReg').children('span').text(
-					$('#rdoOpt0').attr('text'));
+		if (daegyulState !== null && daegyulState.length != 0) {
 			if (daegyulState[0].cm_status == '0') {
 				$("#rdoOpt0").attr("checked", true);
 			} else if (daegyulState[0].cm_status == "9") {
 				$("#rdoOpt1").attr("checked", true);
-				$('#btnReg').children('span').text(
-						$('#rdoOpt1').attr('text'));
-				SBUxMethod.show('lbTit');
+				//$('#btnReg').children('span').text($('#rdoOpt1').attr('text'));
+				//SBUxMethod.show('lbTit');
 				$("#lbTit").val(daegyulState[0].Lbl_Tit);
 				$("#txtSayu").val("");
 				$("#txtName").val("");
@@ -433,8 +401,8 @@ function getDaegyulState_resultHandler() {
 				}
 			} else {
 				$("#rdoOpt0").attr("checked", true);
-				SBUxMethod.hide('Lbl_Con');
-				SBUxMethod.hide('lbTit');
+				//SBUxMethod.hide('Lbl_Con');
+				//SBUxMethod.hide('lbTit');
 			}
 		}
 		daegyulState = null;
@@ -511,7 +479,7 @@ function cmd_click() {
 			selectedObj.sdate = $("#datStD").val().substr(0,4) + $("#datStD").val().substr(5,2) + $("#datStD").val().substr(8,2);
 			selectedObj.edate = $("#datEdD").val().substr(0,4) + $("#datEdD").val().substr(5,2) + $("#datEdD").val().substr(8,2);
 			selectedObj.Opt_Cd0 = $("#rdoOpt0").is(":checked").toString();
-
+			
 			update_resultHandler(selectedObj);
 		}
 	}
@@ -530,7 +498,6 @@ function update_resultHandler(selectedObj) {
 	
 	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/AbsenceRegister', tmpData, 'json');
 	
-	
 	if(ajaxReturnData !== 'ERR') {
 		tmp_dp = Number(ajaxReturnData);
 		if (tmp_dp == 1) {/*등록선택시*/
@@ -539,8 +506,6 @@ function update_resultHandler(selectedObj) {
 		} else if (tmp_dp == 2) {/* 해지선택시 */
 			alert("부재 및 대결재자 등록이 해제되었습니다");
 			Cbo_User_Click();
-			SBUxMethod.hide('Lbl_Con');
-			SBUxMethod.hide('lbTit');
 			$("#txtName").val("");
 			$("#txtSayu").val("");
 		} else {

@@ -17,6 +17,7 @@
 			<div id="opt">
 				<label><input style="vertical-align: middle;" id="rdoOpt0" name="rdoOpt0" type="radio" value="0" onclick="changeBtnText()" checked />&nbsp;&nbsp;등록</label>
 				<label><input style="vertical-align: middle;" id="rdoOpt1" name="rdoOpt0" type="radio" value="1" onclick="changeBtnText()"/>&nbsp;&nbsp;해제</label>
+				<label id="lbTit"></label>
 			</div>
 		</div>
 	</section>
