@@ -102,7 +102,7 @@ function clickSideMenu(event) {
 	if( pathName.indexOf('doneMove') < 0) {
 		//IFRAME 지워준후 다시그리기
 		$('#eCAMSFrame').empty();
-		$iFrm = $('<IFRAME id="iFrm" frameBorder="0" name="iFrm" scrolling="no" src="'+event.target.href+'" style=" width:100%; height: 92vh"></IFRAME>');
+		$iFrm = $('<IFRAME id="iFrm" frameBorder="0" name="iFrm" scrolling="yes" src="'+event.target.href+'" style=" width:100%; height: 92vh"></IFRAME>');
 		$iFrm.appendTo('#eCAMSFrame');
 		
 		//상위 TITLE TEXT SET
@@ -110,13 +110,14 @@ function clickSideMenu(event) {
 		$('#ecamsTitleText').html('['+parentMenuName+'] '+event.target.innerText);
 	}
 	
-// ifrmae contents의 height에 맞게 height 값 추가
-	$("#iFrm").on("load resize",function(){
+	// ifrmae contents의 height에 맞게 height 값 추가
+/*	$("#iFrm").on("load resize",function(){
 		$("#iFrm").css("height","");
+		console.log("load height : "+$("#iFrm").contents().height());
 		if(iframeHeight != $("#iFrm").contents().height() + 20){
 			iframeHeight = resizeIframe($("#iFrm"));
 		}
-	})
+	})*/
 }
 
 function goHome() {
@@ -127,10 +128,14 @@ function logOut() {
 	window.location.replace('/webPage/login/ecamsLogin.jsp');
 }
 
-	
-
 function resizeIframe(iframe) {
     var addHeight = 20;
+    
+    //var h = window. innerHeight; document. getElementById("top"). style. height = (h - 90) + "px";
+    
+    /*console.log("window.innerHeight : "+window.innerHeight);
+    console.log("document.getEflementById('header').style.heght : "+document.getElementById('header').style.height);*/
+    
     iframe.css("height",iframe.contents().height() + addHeight + "px");
     return iframe.contents().height() + addHeight;
   }

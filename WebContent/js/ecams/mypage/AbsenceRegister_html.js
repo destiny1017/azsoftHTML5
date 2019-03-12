@@ -512,5 +512,4 @@ function update_resultHandler(selectedObj) {
 			alert("작업 실패.관리자에게 문의해주세요.");
 		}
 	}
-	
 }

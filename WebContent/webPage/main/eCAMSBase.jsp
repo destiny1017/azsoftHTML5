@@ -204,19 +204,17 @@
     </div>
 </aside>
 
-
 <div id="wrapper">
 	<div id="eCAMSFrame">
 	</div>
+</div>
 <!-- Footer-->
 <footer class="footer">
     <span class="pull-right">
         Copyright ⓒ AZSoft Corp. All Right Reserved
     </span>
-			<img src="<c:url value="/img/azsoft.jpg"/>">
+	<img src="<c:url value="/img/azsoft.jpg"/>">
 </footer>
-</div>
-
 <input id="txtSessionID" type="hidden" value="${sessionID}">
 
 <c:import url="/js/ecams/common/commonscript.jsp" />

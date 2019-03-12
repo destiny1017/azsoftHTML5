@@ -11,7 +11,6 @@
     .row {margin-top: 10px}
 </style>
 
-<div style="height:800px;">
 	<section>
 		<div class="container-fluid padding-40-top">
 			<div id="opt">
@@ -84,6 +83,5 @@
 			<button id="btnReg" name="btnReg" onclick="cmd_click()">등록</button>
 		</div>
 	</section>
-</div>
 <c:import url="/js/ecams/common/commonscript.jsp" />
 <script type="text/javascript" src="<c:url value="/js/ecams/mypage/AbsenceRegister_html.js"/>"></script>
