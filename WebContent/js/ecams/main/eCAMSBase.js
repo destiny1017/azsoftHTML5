@@ -16,6 +16,14 @@ var iframeHeight = 0;
 $(document).ready(function() {
 	screenInit();
 	$('#side-menu').click(clickSideMenu);
+	$('.hide-menu').on('click', function(event){
+        event.preventDefault();
+        if ($(window).width() < 769) {
+            $("body").toggleClass("show-sidebar");
+        } else {
+            $("body").toggleClass("hide-sidebar");
+        }
+    });
 });
 
 function screenInit() {
