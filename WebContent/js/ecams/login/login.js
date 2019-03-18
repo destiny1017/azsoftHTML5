@@ -17,12 +17,12 @@ function screenInit() {
 
 function setInput() {
 	if( getCookie('remember') === 'true'){
-		SBUxMethod.set('idx_input_id', 	getCookie('ecams_id'));
-		SBUxMethod.set('idx_input_pwd', getCookie('ecams_pwd'));
-		SBUxMethod.attr('chkbox_remember','checked','checked');
+		$('#idx_input_id').val(getCookie('ecams_id'));
+		$('#idx_input_pwd').val(getCookie('ecams_pwd'));
+		$('#chkbox_remember').prop("checked",true);
 	}else {
-		SBUxMethod.set('idx_input_id', 	'');
-		SBUxMethod.set('idx_input_pwd', '');
+		$('#idx_input_id', 	'');
+		$('#idx_input_pwd', '');
 	}
 }
 
@@ -32,7 +32,7 @@ var loginSubmitAction = function(e) {
     e.stopPropagation();
     
     var validationCheckFlag = checkValidation();
-    var selectedRemember 	= SBUxMethod.get('chkbox_remember').chkbox_remember;
+    var selectedRemember 	= $('#chkbox_remember').is(":checked");
     var loginValidReturnStr = null;
     var authCode 			= null;
     var userId 				= null;
@@ -40,8 +40,8 @@ var loginSubmitAction = function(e) {
     if( ! validationCheckFlag ) return;
 
     if(selectedRemember) {
-		setCookie('ecams_id', 	SBUxMethod.get('idx_input_id'));
-    	setCookie('ecams_pwd', 	SBUxMethod.get('idx_input_pwd'));
+		setCookie('ecams_id', 	$('#idx_input_id').val());
+    	setCookie('ecams_pwd', 	$('#idx_input_pwd').val());
     	setCookie('remember', 	true);
 	} else {
 		setCookie('ecams_id', 	'');
@@ -121,8 +121,8 @@ function isValidLogin() {
 	var ajaxReturnData = null;
 	
 	var userInfo = {
-		userId		: 	JSON.stringify(SBUxMethod.get('idx_input_id')),
-		userPwd		: 	JSON.stringify(SBUxMethod.get('idx_input_pwd')),
+		userId		: 	JSON.stringify($('#idx_input_id').val()),
+		userPwd		: 	JSON.stringify($('#idx_input_pwd').val()),
 		requestType	: 	'ISVALIDLOGIN'
 	}
 	ajaxReturnData = ajaxCallWithJson('/webPage/login/Login', userInfo, 'json');
@@ -130,8 +130,8 @@ function isValidLogin() {
 }
 
 function checkValidation() {
-	var cookieId = SBUxMethod.get('idx_input_id');
-	var cookiePwd = SBUxMethod.get('idx_input_pwd');
+	var cookieId = $('#idx_input_id').val();
+	var cookiePwd = $('#idx_input_pwd').val();
 	var validationFlag = false;
 	if( cookieId !== undefined && cookieId !== '' && cookiePwd !== undefined && cookiePwd !== '') validationFlag = true;
 	else validationFlag = false;

@@ -3,7 +3,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta  name="input1" model-name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-
+<!-- 소프트보울 사용안함 삭제 190318
 <script>
 var SBUxConfig = {
 	License : "SBUX-G12XD-131XD",				
@@ -21,7 +21,7 @@ var SBUxConfig = {
 };
 var SBpath = "/";
 </script>
-
+ -->
 
 <script src="<c:url value="/lib/sbux/SBUx.js" />" type="text/javascript"></script>
 

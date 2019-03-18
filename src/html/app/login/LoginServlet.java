@@ -31,7 +31,6 @@ public class LoginServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String requestType = null;
 		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
-		
 		try {
 			response.setContentType("text/plain");
 			response.setCharacterEncoding("UTF-8");
@@ -54,10 +53,8 @@ public class LoginServlet extends HttpServlet {
 	}
 	
 	private String isValidLoginUser(HttpServletRequest request) throws SQLException, Exception {
-		
 		String userId = ParsingCommon.parsingRequestJsonParamToString(request, "userId");
 		String userPwd = ParsingCommon.parsingRequestJsonParamToString(request, "userPwd");
-		
 		return gson.toJson(loginManager.isValid(userId, userPwd));
 	}
 	
