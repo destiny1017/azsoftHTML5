@@ -286,7 +286,7 @@ function new_Click(){ //완료(확인필요)
         iframe: {
             method: "get",
             url: "../modal/PopNotice.jsp",
-            param: "callBack=modalCallBack&memo_date=1"+"&user_id="+userid+"&memo_id=null"
+            param: "callBack=modalCallBack"
         },
         onStateChanged: function () {
             // mask

@@ -133,6 +133,12 @@ function popNoticeInit() {
 	
 }
 
+function popClose(){
+	//console.log(parent.document.modal);
+	console.log(parent)
+	//parent[param.callBack]();
+}
+
 function confirm() {
 	parent.listData();
 	parent.setUserName(dataObj);
