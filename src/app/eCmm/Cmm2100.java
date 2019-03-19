@@ -23,6 +23,8 @@ import com.ecams.common.dbconn.ConnectionContext;
 import com.ecams.common.dbconn.ConnectionResource;
 import com.ecams.common.logger.EcamsLogger;
 
+import app.common.LoggableStatement;
+
 
 
 
@@ -62,6 +64,7 @@ public class Cmm2100{
 		int				fcnt		=0;
 		ConnectionContext connectionContext = new ConnectionResource();
 		try {
+			Txt_Find = Txt_Find == null ? "" : Txt_Find;
 			conn = connectionContext.getConnection();
 			strQuery.append("select a.cm_acptno,a.cm_gbncd,to_char(a.cm_acptdate,'yyyy-mm-dd')as acptdate,a.cm_title, \n");
 			strQuery.append("       a.cm_editor,a.cm_contents,a.cm_deptcd,a.cm_notiyn,b.cm_username, \n");
@@ -75,20 +78,15 @@ public class Cmm2100{
 				strQuery.append("and instr(a.cm_title,?) > 0 \n");
 			}
 			else if (Cbo_Find.equals("02")){
-		    	strQuery.append("and (instr(a.cm_title,?) > 0 or \n");
-		    	strQuery.append("instr(a.cm_contents,?) > 0) \n");
+				strQuery.append("and (a.cm_title LIKE  '%' || ? || '%'  or a.cm_contents LIKE  '%' || ? || '%') \n");
 			}
-			else if (Cbo_Find.equals("03")){
-				strQuery.append("  and to_char(a.CM_ACPTDATE,'yyyymmdd')>=?  	\n");
-				strQuery.append("  and to_char(a.CM_ACPTDATE,'yyyymmdd')<=?  	\n");
-			} else if (Cbo_Find.equals("03")){
-				strQuery.append("and rownum<6                         \n");
-			}
+			strQuery.append("  and to_char(a.CM_ACPTDATE,'yyyymmdd')>=?  	\n");
+			strQuery.append("  and to_char(a.CM_ACPTDATE,'yyyymmdd')<=?  	\n");
 			strQuery.append("and cm_editor=b.cm_userid \n");
 			strQuery.append("Order by cm_acptno desc  \n");
 
-			pstmt = conn.prepareStatement(strQuery.toString());
-	//		pstmt = new LoggableStatement(conn,strQuery.toString());
+			//pstmt = conn.prepareStatement(strQuery.toString());
+			pstmt = new LoggableStatement(conn,strQuery.toString());
 			if (Cbo_Find.equals("00")){
 				;
 			}
@@ -99,12 +97,10 @@ public class Cmm2100{
 				pstmt.setString(++Cnt, Txt_Find);
 				pstmt.setString(++Cnt, Txt_Find);
 			}
-			else if (Cbo_Find.equals("03")){
-	            pstmt.setString(++Cnt, strStD);
-	            pstmt.setString(++Cnt, strEdD);
-			}
+            pstmt.setString(++Cnt, strStD);
+            pstmt.setString(++Cnt, strEdD);
 
-		//	//ecamsLogger.error(((LoggableStatement)pstmt).getQueryString());
+            ecamsLogger.error(((LoggableStatement)pstmt).getQueryString());
             rs = pstmt.executeQuery();
             rtList.clear();
             while (rs.next()){

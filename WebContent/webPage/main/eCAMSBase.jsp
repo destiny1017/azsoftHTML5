@@ -175,8 +175,8 @@
 </div>
 
 <!-- Navigation -->
-<aside id="menu">
-    <div id="navigation">
+<aside id="menu" style="overflow:auto;">
+    <div id="navigation" >
         <div class="profile-picture">
             <a href="index.jsp">
                 <img src="<c:url value="/img/profile.jpg"/>" class="img-circle m-b" alt="logo">

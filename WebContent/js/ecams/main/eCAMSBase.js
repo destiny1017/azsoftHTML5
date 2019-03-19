@@ -29,7 +29,7 @@ $(document).ready(function() {
 function screenInit() {
 	if( sessionID === null ) sessionID =$('#txtSessionID').val();
 	console.log(sessionID);
-	if( sessionID === null || sessionID === '') {
+	if( sessionID === null || sessionID === '' || sessionID === 'undefinded' ) {
 		window.location.replace('/webPage/login/ecamsLogin.jsp');
 		return;
 	}

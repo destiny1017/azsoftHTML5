@@ -16,20 +16,29 @@ var upFiles;
 var editUser = false;
 var dataObj = {memo_id:"", user_name:"", user_id:"", memo_date:"", cm_eddate:"" , cm_stdate:""};
 var now = new Date();
-
-function confirm() {
-	parent.listData();
-	parent.setUserName(dataObj);
-	parent.popNoticeClose();
-}
-
+var picker = new ax5.ui.picker();
+var request =  new Request();
+var memo_date = null;
 $(document).ready(function() {
-	SBUxMethod.hide('dateStD');
+	dataObj.memo_date =  request.getParameter('memo_date');
+	dataObj.memo_id =  request.getParameter('memo_id');
+	dataObj.user_id =  request.getParameter('user_id');
+	
+	
+	$('#dateStD').attr('disabled',true);
+	$('#lbFrom').attr('disabled',true);
+	$('#dateEdD').attr('disabled',true);
+	$('#lbTo').attr('disabled',true);
+	
+	popNoticeInit();
+	
+	/*SBUxMethod.hide('dateStD');
 	SBUxMethod.hide('lbFrom');
 	SBUxMethod.hide('dateEdD');
-	SBUxMethod.hide('lbTo');
+	SBUxMethod.hide('lbTo');*/
 	
-	var today = new Date();
+	
+	/*var today = new Date();
 	var year = today.getFullYear();
 	var month = (today.getMonth() + 1).toString();
 	if (month.length < 2) {
@@ -67,7 +76,68 @@ $(document).ready(function() {
 		SBUxMethod.show('btnFile');
 		SBUxMethod.hide('btnRem');
 	}
-})
+	*/
+	picker.bind({
+        target: $('[data-ax5picker="basic"]'),
+        direction: "top",
+        content: {
+            width: 220,
+            margin: 10,
+            type: 'date',
+            config: {
+                control: {
+                    left: '<i class="fa fa-chevron-left"></i>',
+                    yearTmpl: '%s',
+                    monthTmpl: '%s',
+                    right: '<i class="fa fa-chevron-right"></i>'
+                },
+                dateFormat: 'yyyy/MM/dd',
+                lang: {
+                    yearTmpl: "%s년",
+                    months: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                    dayTmpl: "%s"
+                }
+            },
+            formatter: {
+                pattern: 'date'
+            }
+        },
+        btns: {
+            today: {
+                label: "Today", onClick: function () {
+                    var today = new Date();
+                    this.self
+                            .setContentValue(this.item.id, 0, ax5.util.date(today, {"return": "yyyy/MM/dd"}))
+                            .setContentValue(this.item.id, 1, ax5.util.date(today, {"return": "yyyy/MM/dd"}))
+                            .close();
+                }
+            },
+            thisMonth: {
+                label: "This Month", onClick: function () {
+                    var today = new Date();
+                    this.self
+                            .setContentValue(this.item.id, 0, ax5.util.date(today, {"return": "yyyy/MM/01"}))
+                            .setContentValue(this.item.id, 1, ax5.util.date(today, {"return": "yyyy/MM"})
+                                    + '/'
+                                    + ax5.util.daysOfMonth(today.getFullYear(), today.getMonth()))
+                            .close();
+                }
+            },
+            ok: {label: "Close", theme: "default"}
+        }
+    });
+	
+});
+
+function popNoticeInit() {
+	
+}
+
+function confirm() {
+	parent.listData();
+	parent.setUserName(dataObj);
+	parent.popNoticeClose();
+}
 
 function getNoticeInfo(){ //selectHandler
 	var ajaxReturnData = null;

@@ -670,3 +670,13 @@
 	font-size: 12px;
 }
 
+.pop-header {
+	height: 25px;
+	background-color: #4f6dad;
+}
+.pop-header > div > label{
+	color: white;
+	margin-top: 5px;
+	font-size: 12px;	
+	
+}

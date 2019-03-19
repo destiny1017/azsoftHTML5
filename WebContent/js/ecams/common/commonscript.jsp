@@ -35,5 +35,7 @@
 <script src="<c:url value="/scripts/ax5/ax5menu.min.js"/>" type="text/javascript"></script>
 <script src="<c:url value="/scripts/ax5/ax5grid.min.js"/>" type="text/javascript"></script>
 <script src="<c:url value="/scripts/ax5/ax5toast.min.js"/>" type="text/javascript"></script>
+<script src="<c:url value="/scripts/ax5/ax5mask.min.js"/>" type="text/javascript"></script>
+<script src="<c:url value="/scripts/ax5/ax5modal.min.js"/>" type="text/javascript"></script>
 
 <script src="<c:url value="/js/ecams/common/common.js" />" type="text/javascript"></script>
