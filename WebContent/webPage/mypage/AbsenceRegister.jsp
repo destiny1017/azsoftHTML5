@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:import url="/webPage/common/common.jsp" />
-
 <style>
     #divContent {width: 380px; padding: 20px; border:1px solid black; margin: 0 auto}
     #myGrid1Area {width:100%; height:23%}
@@ -12,79 +11,77 @@
     .row {margin-top: 10px}
 </style>
 
-<section>
-	<div class="container-fluid padding-40-top">
-		<div id="opt">
-			<sbux-radio id="rdoOpt0" name="radiogroup" uitype="normal" text="등록" value="reg"
-				onclick="$('#btnReg').children('span').text($('#rdoOpt0').attr('text'));">
-			</sbux-radio>
-			<sbux-radio id="rdoOpt1" name="radiogroup" uitype="normal" text="해제" value="cancel"
-				onclick="$('#btnReg').children('span').text($('#rdoOpt1').attr('text'));">
-			</sbux-radio>
-			<sbux-label id="lbTit" name="lbTit" uitype="normal"></sbux-label>
-		</div>
-	</div>
-</section>
-	
-<section>
-	<div class="container-fluid margin-15-top">
-		<div id="divContent">
-			<div class="row-fluid">
-				<div class="row">
-					<div class="col-xs-12 col-sm-4">
-						<sbux-label id="lbUser" name="lbUser" uitype="normal" text="부 재 자"></sbux-label>
-					</div>
-					<div class="col-xs-12 col-sm-8">
-						<sbux-input id="txtUser" name="txtUser" uitype="text" onkeyenter="Search_click1()"></sbux-input>
-						<sbux-select id="cboUser" name="cboUser" uitype="single"
-							jsondata-ref="comboDp1" jsondata-text="username"
-							jsondata-value="cm_userid" onchange="Cbo_User_Click()"></sbux-select>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12 col-sm-4">
-						<sbux-label id="lbDaeSign" name="lbDaeSign" uitype="normal" text="대결재자"></sbux-label>
-					</div>
-					<div class="col-xs-12 col-sm-8">
-						<sbux-input id="txtName" name="txtName" uitype="text" onkeyenter="Search_click2()"></sbux-input>
-						<sbux-select
-							id="cboDaeSign" name="cboDaeSign" uitype="single"
-							jsondata-ref="Sql_tmp_dp1" jsondata-text="username"
-							jsondata-value="cm_userid" onchange="DaeSign_username_Set()"></sbux-select>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12 col-sm-4">
-						<sbux-label id="lbSayu" name="lbSayu" uitype="normal" text="부재사유"></sbux-label>
-					</div>
-					<div class="col-xs-12 col-sm-8">
-						<sbux-select id="cboSayu" name="cboSayu" uitype="single"
-							jsondata-ref="comboDp3" jsondata-text="cm_codename"
-							jsondata-value="cm_codename" onchange="Cbo_Sayu_Click()"></sbux-select>
-						<sbux-input id="txtSayu" name="txtSayu" uitype="text"></sbux-input>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-xs-12 col-sm-4">
-						<sbux-label id="lbDate" name="lbDate" uitype="normal" text="부재기간"></sbux-label>
-					</div>
-					<div class="col-xs-12 col-sm-8">
-						<sbux-label id="lbFrom" name="lbFrom" uitype="normal" text="FROM"></sbux-label>
-						<sbux-picker id="dateStD" name="dateStD" uitype="date" mode="popup" date-format="yyyy/mm/dd"></sbux-picker>
-						<sbux-label id="lbTo" name="lbTo" uitype="normal" text="TO"></sbux-label>
-						<sbux-picker id="dateEdD" name="dateEdD" uitype="date" mode="popup" date-format="yyyy/mm/dd"></sbux-picker>
-					</div>
-				</div>
+	<section>
+		<div class="container-fluid padding-40-top">
+			<div id="opt">
+				<label><input style="vertical-align: middle;" id="rdoOpt0" name="rdoOpt0" type="radio" value="0" onclick="changeBtnText()" checked />&nbsp;&nbsp;등록</label>
+				<label><input style="vertical-align: middle;" id="rdoOpt1" name="rdoOpt0" type="radio" value="1" onclick="changeBtnText()"/>&nbsp;&nbsp;해제</label>
+				<label id="lbTit"></label>
 			</div>
-			<div id="myGrid1Area"></div>
 		</div>
-	</div>
-</section>
-
-<section>
-	<div id="divPw" class="margin-15-top" style="text-align:center">
-		<sbux-button id="btnReg" name="btnReg" uitype="normal" text="등록" onclick="cmd_click()"></sbux-button>
-	</div>
-</section>
-
+	</section>
+		
+	<section>
+		<div class="container-fluid margin-15-top">
+			<div id="divContent">
+				<div class="row-fluid">
+					<div class="row">
+						<div class="col-xs-12 col-sm-4">
+							<label id="lbUser">부 재 자</label>
+						</div>
+						<div class="col-xs-12 col-sm-8">
+							<input id="txtUser" name="txtUser" class="input-sm width-100" onkeypress="Search_click1()"  disabled></input>
+							 <div 	id="cboUser" data-ax5select="cboUser" data-ax5select-config="{size:'sm',theme:'primary'}" 
+							 		style="width:100%;" onchange="Cbo_User_Click()"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-12 col-sm-4">
+							<label id="lbDaeSign">대결재자</label>
+						</div>
+						<div class="col-xs-12 col-sm-8">
+							<input id="txtName" name="txtName" class="input-sm width-100" type="text" onkeypress="Search_click2()" disabled></input>
+							<div 	id="cboDaeSign" data-ax5select="cboDaeSign" data-ax5select-config="{size:'sm',theme:'primary'}" 
+							 		style="width:100%;" onchange="DaeSign_username_Set()"></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-12 col-sm-4">
+							<label id="lbSayu">부재사유</label>
+						</div>
+						<div class="col-xs-12 col-sm-8">
+							<div 	id="cboSayu" data-ax5select="cboSayu" data-ax5select-config="{size:'sm',theme:'primary'}" 
+							 		style="width:100%;" onchange="Cbo_Sayu_Click()"></div>
+							<input id="txtSayu" name="txtSayu" class="input-sm width-100" type="text"></input>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-12 col-sm-4">
+							<label id="lbDate">부재기간</label>
+						</div>
+						<div class="col-xs-12 col-sm-8">
+							<label id="lbFrom">FROM</label>
+							<div class="input-group" data-ax5picker="basic" style="width:100%;">
+								<input id="datStD" name="datStD" type="text" class="form-control" placeholder="yyyy/mm/dd">
+					            <span class="input-group-addon"><i class="fa fa-calendar-o"></i></span>
+							</div>
+							<label id="lbTo">TO</label>
+							<div class="input-group" data-ax5picker="basic2" style="width:100%;">
+					            <input id="datEdD" name="datEdD" type="text" class="form-control" placeholder="yyyy/mm/dd">
+					            <span class="input-group-addon"><i class="fa fa-calendar-o"></i></span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div data-ax5grid="myGrid1Area" data-ax5grid-config="{showLineNumber: false, lineNumberColumnWidth: 40}" style="height: 150px;"></div>
+			</div>
+		</div>
+	</section>
+	
+	<section>
+		<div id="divPw" class="margin-15-top" style="text-align:center">
+			<button id="btnReg" name="btnReg" onclick="cmd_click()">등록</button>
+		</div>
+	</section>
+<c:import url="/js/ecams/common/commonscript.jsp" />
 <script type="text/javascript" src="<c:url value="/js/ecams/mypage/AbsenceRegister.js"/>"></script>

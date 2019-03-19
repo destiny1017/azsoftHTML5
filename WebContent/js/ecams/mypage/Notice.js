@@ -9,7 +9,6 @@
  * 
  */
 var strAdmin = "";
-var myGrid1;
 var combo_dp1;
 var strStD = "";
 var strEdD = "";
@@ -20,107 +19,106 @@ var dataObj = {
 	user_id : "",
 	memo_date : ""
 };
+var picker = new ax5.ui.picker();
+var divGrid1 = new ax5.ui.grid();
+var mask = new ax5.ui.mask();
+var modal = new ax5.ui.modal();
 
 $(document).ready(function() { //완료
 	createGrid();
-	SBUxMethod.hide('start_date');
-	SBUxMethod.hide('end_date');
+	getAdminInfo();
 	date_init();
-	getAdminInfo();//isAdmin_resultHandler
-	combo1_resultHandler();
-
-	myGrid1.bind('dblclick', 'doubleClickGrid1');
 })
-
 function createGrid() {
-	var myGrid1Properties = {};
-	myGrid1Properties.parentid = "divGrid1";
-	myGrid1Properties.id = "myGrid1";
-	myGrid1Properties.jsonref = "grid_dp1";
-	myGrid1Properties.tooltip = true;
-	myGrid1Properties.rowheader = [ 'seq' ];
-	myGrid1Properties.rowheadercaption = {
-		seq : 'No'
-	};
-	myGrid1Properties.columns = [ {
-		caption : [ '제목' ],
-		ref : 'CM_TITLE',
-		width : '16%',
-		style : 'text-align:left',
-		type : 'output'
-	}, {
-		caption : [ '등록자' ],
-		ref : 'CM_USERNAME',
-		width : '14%',
-		style : 'text-align:center',
-		type : 'output'
-	}, {
-		caption : [ '등록일' ],
-		ref : 'CM_ACPTDATE',
-		width : '14%',
-		style : 'text-align:center',
-		type : 'output'
-	}, {
-		caption : [ '팝업시작일' ],
-		ref : 'CM_STDATE',
-		width : '14%',
-		style : 'text-align:center',
-		type : 'output'
-	}, {
-		caption : [ '팝업마감일' ],
-		ref : 'CM_EDDATE',
-		width : '14%',
-		style : 'text-align:center',
-		type : 'output'
-	}, {
-		caption : [ '팝업' ],
-		ref : 'CM_NOTIYN',
-		width : '14%',
-		style : 'text-align:center',
-		type : 'output'
-	}, {
-		caption : [ '첨부파일' ],
-		ref : 'fileCnt',
-		width : '14%',
-		style : 'text-align:center',
-		type : 'output'
-	} ];
-	myGrid1Properties.allowuserresize = true;
-	myGrid1Properties.width = "100%";
-	myGrid1Properties.height = "100%";
-	myGrid1 = _SBGrid.create(myGrid1Properties);
-	myGrid1.rebuild();
+	
+	divGrid1.setConfig({
+        target: $('[data-ax5grid="divGrid1"]'),
+        sortable: true, 
+        multiSort: true,
+        showRowSelector: false,
+        header: {
+            align: "center",
+            columnHeight: 30
+        },
+        body: {
+            columnHeight: 28,
+            onClick: function () {
+            	this.self.clearSelect(); //기존선택된 row deselect 처리 (multipleSelect 할땐 제외해야함)
+                this.self.select(this.dindex);
+            },
+            onDBLClick: function () {
+            	doubleClickGrid1();
+            },
+        	onDataChanged: function(){
+        	    this.self.repaint();
+        	}
+        },
+        columns: [
+            {key: "CM_TITLE", label: "제목",  width: '40%'},
+            {key: "CM_USERNAME", label: "등록자",  width: '10%'},
+            {key: "CM_STDATE", label: "팝업시작일",  width: '10%'},
+            {key: "CM_EDDATE", label: "팝업마감일",  width: '10%'},
+            {key: "CM_NOTIYN", label: "팝업",  width: '10%'},
+            {key: "fileCnt", label: "첨부파일",  width: '20%'}
+        ]
+    });
 }
 
 function date_init() { //한달전 날짜로 해야
-	var now = new Date();
-	var year = now.getFullYear();
-	var month = (now.getMonth() + 1).toString();
-	if (month.length < 2) {
-		month = "0" + month;
-	}
-	var date = now.getDate();
-	if (date.length < 2) {
-		date = "0" + date;
-	}
-	SBUxMethod.set('start_date', "" + year + month + date);
-	SBUxMethod.set('end_date', "" + year + month + date);
-	var today = new Date();
-	var weekDate = today.getTime() - (30*24*60*60*1000);
-	today.setTime(weekData);
+	$('#start_date').val(getDate('MON',-1));
+	$('#end_date').val(getDate('DATE',0));
 	
-	var weekYear = today.getFullYear();
-	var weekMonth = today.getMonth() + 1;
-	var weekDay = today.getDate();
+	picker.bind({
+        target: $('[data-ax5picker="basic"]'),
+        direction: "top",
+        content: {
+            width: 220,
+            margin: 10,
+            type: 'date',
+            config: {
+                control: {
+                    left: '<i class="fa fa-chevron-left"></i>',
+                    yearTmpl: '%s',
+                    monthTmpl: '%s',
+                    right: '<i class="fa fa-chevron-right"></i>'
+                },
+                dateFormat: 'yyyy/MM/dd',
+                lang: {
+                    yearTmpl: "%s년",
+                    months: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                    dayTmpl: "%s"
+                }
+            },
+            formatter: {
+                pattern: 'date'
+            }
+        },
+        btns: {
+            today: {
+                label: "Today", onClick: function () {
+                    var today = new Date();
+                    this.self
+                            .setContentValue(this.item.id, 0, ax5.util.date(today, {"return": "yyyy/MM/dd"}))
+                            .setContentValue(this.item.id, 1, ax5.util.date(today, {"return": "yyyy/MM/dd"}))
+                            .close();
+                }
+            },
+            thisMonth: {
+                label: "This Month", onClick: function () {
+                    var today = new Date();
+                    this.self
+                            .setContentValue(this.item.id, 0, ax5.util.date(today, {"return": "yyyy/MM/01"}))
+                            .setContentValue(this.item.id, 1, ax5.util.date(today, {"return": "yyyy/MM"})
+                                    + '/'
+                                    + ax5.util.daysOfMonth(today.getFullYear(), today.getMonth()))
+                            .close();
+                }
+            },
+            ok: {label: "Close", theme: "default"}
+        }
+    });
 	
-	if(weekMonth < 10) {weekMonth = "0" + weekMonth;}
-	if(weekDay <10) {weekDay = "0" +weekDay;}
-	
-	var resultDate = weekYear+""+weekMonth+""+weekDay;
-	
-		
-	
-	
+	grid_resultHandler();
 }
 
 function getAdminInfo() {//isAdmin_resultHandler 완료
@@ -128,80 +126,73 @@ function getAdminInfo() {//isAdmin_resultHandler 완료
 	var ajaxReturnData = null;
 	
 	var tmpData = {
-			requestType : 'UserInfo',
-			UserId : userid
+		requestType : 'UserInfo',
+		UserId : userid
 	}
 	
 	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', tmpData, 'json');
-	
+	console.log('admin');
+	console.log(ajaxReturnData);
 	if(ajaxReturnData !== 'ERR') {
 		if (ajaxReturnData) { //관리자여부
 			strAdmin = "1";
-			SBUxMethod.attr('btnReg', 'disabled', 'false');
-		} else {
-			SBUxMethod.attr('btnReg', 'disabled', 'true');
+			$('#btnReg').attr('disabled',false);
 		}
 	}
 }
 
-function combo1_resultHandler() { //완료
+/*function combo1_resultHandler() { //완료
 	var ajaxReturnData = null;
 	
 	var tmpData = {
-			requestType : 'CodeInfo',
-			UserId : userid
+		requestType : 'CodeInfo',
+		UserId : userid
 	}
 	
 	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', tmpData, 'json');
 	
 	if(ajaxReturnData !== 'ERR') {
+		
 		combo_dp1 = ajaxReturnData;
-		SBUxMethod.refresh('Cbo_Find');
-		cbo();
-		grid_resultHandler();
+		
+		var options = [];
+		var setValue = [];
+		$.each(combo_dp1,function(key,value) {
+		    options.push({value: value.cm_micode, text: value.cm_codename});
+		});
+		$('[data-ax5select="Cbo_Find"]').ax5select({
+	        options: options
+		});
+		
 	}
-}
-
-function cbo() {//완료
-	SBUxMethod.hide('start_date');
-	SBUxMethod.hide('end_date');
-	SBUxMethod.hide('lbl_c');
-	SBUxMethod.show('Txt_Find');
-	SBUxMethod.attr('Txt_Find', 'disabled', 'true');
-	if (SBUxMethod.get('Cbo_Find') == "01" || SBUxMethod.get('Cbo_Find') == "02") {
-		SBUxMethod.show('Txt_Find');
-		SBUxMethod.attr('Txt_Find', 'disabled', 'false');
-	} else if (SBUxMethod.get('Cbo_Find') == "03") {
-		SBUxMethod.show('start_date');
-		SBUxMethod.show('end_date');
-		SBUxMethod.show('lbl_c');
-		SBUxMethod.hide('Txt_Find');
-	}
-}
+}*/
 
 function grid_resultHandler() { //완료(확인필요)
-	var CboFind_micode = SBUxMethod.get("Cbo_Find");
-	var TxtFind_text = document.getElementById("Txt_Find").value;
+	strStD = $("#start_date").val().substr(0,4) + $("#start_date").val().substr(5,2) + $("#start_date").val().substr(8,2);
+	strEdD = $("#end_date").val().substr(0,4) + $("#end_date").val().substr(5,2) + $("#end_date").val().substr(8,2);
+	var CboFind_micode = $('#Cbo_Find option:selected').val();
+	var TxtFind_text = document.getElementById("Txt_Find").value === null ? '' : document.getElementById("Txt_Find").value;
 	var ajaxReturnData = null;
 	
 	var tmpData = {
-			requestType : 'Cmm2100',
-			UserId : userid,
-			CboFind_micode : CboFind_micode,
-			TxtFind_text : TxtFind_text,
-			strStD : $("#strStD").val(),
-			strEdD : $("#strEdD").val()
+		requestType : 'Cmm2100',
+		UserId : userid,
+		CboFind_micode : '02',
+		TxtFind_text : TxtFind_text,
+		strStD : strStD,
+		strEdD : strEdD
 	}
 	
 	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', tmpData, 'json');
 
 	if(ajaxReturnData !== 'ERR') {
 		grid_dp1 = ajaxReturnData;
-		myGrid1.rebuild();
-		SBUxMethod.set('lbCnt','총 '+myGrid1.getRows()+'건');
-		for(var i=0;i<myGrid1.getRows();i++){
-			myGrid1.setCellTooltip(i,2,myGrid1.getCellData(i,2));
-		}
+		
+		divGrid1.setData(grid_dp1);
+		
+		$('#lbCnt').text('총 '+grid_dp1.length+'건');
+
+		//제목에 툴팁달기  !!
 	}
 }
 
@@ -213,24 +204,7 @@ function Search_click() { //완료
 	if ($("#Cbo_Find option").index($("#Cbo_Find option:selected")) == 1
 			|| $("#Cbo_Find option").index($("#Cbo_Find option:selected")) == 2) {
 		$('#Txt_Find').val($.trim(document.getElementById("Txt_Find").value));
-		if (document.getElementById("Txt_Find").value == "") {
-			alert("검색단어를 입력한 후 조회하십시오");
-			$("#Txt_Find").focus();
-		}
 	}
-
-	if ($("#start_date").val() > $("#end_date").val()) {
-		alert("조회기간을 정확하게 선택하여 주십시오.");
-		return;
-	}
-
-	strStD = $("#start_date").val().substr(0, 4)
-			+ $("#start_date").val().substr(5, 2)
-			+ $("#start_date").val().substr(8, 2);
-	strEdD = $("#end_date").val().substr(0, 4)
-			+ $("#end_date").val().substr(5, 2)
-			+ $("#end_date").val().substr(8, 2);
-
 	grid_resultHandler();
 }
 
@@ -300,13 +274,32 @@ function DataToExcel_Handler() {
 	}
 }
 
+var modalCallBack = function(){
+    modal.close();
+};
+
 function new_Click(){ //완료(확인필요)
-	SBUxMethod.openModal("modalPopWin"); //eCmm2101
-	dataObj.memo_id = null;
-	dataObj.memo_date = "1";
-	dataObj.user_id = userid;
-	$("#modalPopWin").parentfun = popNoticeClose();
-	$("#modalPopWin").dataObj = this.dataObj;
+	
+    modal.open({
+        width: 600,
+        height: 440,
+        iframe: {
+            method: "get",
+            url: "../modal/PopNotice_html.jsp",
+            param: "callBack=modalCallBack&memo_date=1"+"&user_id="+userid+"&memo_id=null"
+        },
+        onStateChanged: function () {
+            // mask
+            if (this.state === "open") {
+                mask.open();
+            }
+            else if (this.state === "close") {
+                mask.close();
+            }
+        }
+    }, function () {
+    });
+	
 }
 
 function sysPathButton_Click() { //완성

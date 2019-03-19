@@ -18,12 +18,10 @@ var picker = new ax5.ui.picker();
 var myGrid1Area = new ax5.ui.grid();
 
 $(document).ready(function() {
-	$('#btnReg').children('span').text($('#rdoOpt0').attr('text'));
-	isAdmin_Handler();
-	Cbo_Sayu_resultHandler();
-	date_init();
 	createGrid();
-	//SBUxMethod.attr('txtUser', 'readonly', 'true');
+	date_init();
+	Cbo_Sayu_resultHandler();
+	isAdmin_Handler();
 })
 
 function changeBtnText() {
@@ -35,17 +33,12 @@ function changeBtnText() {
 	}
 }
 
-
-
 function createGrid() {
-	
 	myGrid1Area.setConfig({
         target: $('[data-ax5grid="myGrid1Area"]'),
         sortable: true, 
         multiSort: true,
-        //multipleSelect: true,
-        showRowSelector: false, //checkbox option
-        //rowSelectorColumnWidth: 26 
+        showRowSelector: false,
         header: {
             align: "center",
             columnHeight: 30
@@ -53,14 +46,10 @@ function createGrid() {
         body: {
             columnHeight: 28,
             onClick: function () {
-                // console.log(this);
             	this.self.clearSelect(); //기존선택된 row deselect 처리 (multipleSelect 할땐 제외해야함)
                 this.self.select(this.dindex);
             },
             onDBLClick: function () {
-        		//alert('신청상세팝업');
-            	//console.log(this);
-            	//Sweet Alert [https://sweetalert.js.org/guides/]
         		swal({
                     title: "신청상세팝업",
                     text: "신청번호 ["+this.item.acptno2+"]"
@@ -68,7 +57,6 @@ function createGrid() {
 
             },
         	onDataChanged: function(){
-        		//그리드 새로고침 (스타일 유지)
         	    this.self.repaint();
         	}
         },
@@ -79,38 +67,9 @@ function createGrid() {
         ]
     });
 	
-	/*var myGrid1Properties = {};
-	myGrid1Properties.parentid = "myGrid1Area"; //그리드 영역의 div id입니다.
-	myGrid1Properties.id = "myGrid1"; //그리드를 담기 위한 객체명과 동일하게 입력합니다.
-	myGrid1Properties.jsonref = "gridDp1";
-	myGrid1Properties.columns = [ {
-		caption : [ '사원번호' ],
-		ref : 'cm_userid',
-		width : '30%',
-		style : 'text-align:center',
-		type : 'output'
-	}, {
-		caption : [ '대결자' ],
-		ref : 'cm_username',
-		width : '30%',
-		style : 'text-align:center',
-		type : 'output'
-	}, {
-		caption : [ '대결기간' ],
-		ref : 'sedate',
-		width : '40%',
-		style : 'text-align:center',
-		type : 'output'
-	} ];
-	myGrid1Properties.allowuserresize = true;
-	myGrid1Properties.width = "100%";
-	myGrid1Properties.height = "100%";
-	myGrid1 = _SBGrid.create(myGrid1Properties);
-	myGrid1.rebuild();*/
 }
 
 function isAdmin_Handler() {
-	SBUxMethod.attr('txtUser', 'readonly', 'false');
 	Cbo_User_resultHandler();
 }
 
@@ -142,9 +101,7 @@ function Cbo_User_resultHandler() {
 			if (comboDp1.length > 1) {
 				for (var i = 0; comboDp1.length > i; i++) {
 					if (comboDp1[i].cm_userid == userid) {
-						
-						setValue.push(comboDp1[i].cm_userid);
-						$('[data-ax5select="cboUser"]').ax5select("setValue", setValue, true);
+						$('[data-ax5select="cboUser"]').ax5select("setValue", comboDp1[i].cm_userid, true);
 						Cbo_User_Click();
 						break;
 					}
@@ -216,7 +173,6 @@ function Cbo_Sayu_resultHandler() {
 	
 	if(ajaxReturnData !== 'ERR') {
 		comboDp3 = ajaxReturnData;
-		console.log(comboDp3);
 		var options = [];
 		var setValue = [];
 		$.each(comboDp3,function(key,value) {
@@ -258,16 +214,6 @@ function date_init() {
             formatter: {
                 pattern: 'date'
             }
-        },
-        onStateChanged: function () {
-            /*if (this.state == "open") {
-                //console.log(this.item);
-                var selectedValue = this.self.getContentValue(this.item["$target"]);
-                if (!selectedValue) {
-                    this.item.pickerCalendar[0].ax5uiInstance.setSelection([ax5.util.date(new Date(), {'return': 'yyyy/MM/dd', 'add': {d: 0}})]);
-                    this.item.pickerCalendar[1].ax5uiInstance.setSelection([ax5.util.date(new Date(), {'return': 'yyyy/MM/dd', 'add': {d: 0}})]);
-                }
-            }*/
         },
         btns: {
             today: {
@@ -318,16 +264,6 @@ function date_init() {
                 pattern: 'date'
             }
         },
-        onStateChanged: function () {
-            /*if (this.state == "open") {
-                //console.log(this.item);
-                var selectedValue = this.self.getContentValue(this.item["$target"]);
-                if (!selectedValue) {
-                    this.item.pickerCalendar[0].ax5uiInstance.setSelection([ax5.util.date(new Date(), {'return': 'yyyy/MM/dd', 'add': {d: 0}})]);
-                    this.item.pickerCalendar[1].ax5uiInstance.setSelection([ax5.util.date(new Date(), {'return': 'yyyy/MM/dd', 'add': {d: 0}})]);
-                }
-            }*/
-        },
         btns: {
             today: {
                 label: "Today", onClick: function () {
@@ -377,15 +313,14 @@ function Search_click2() {
 			break;
 		}
 	}
-	selectedIndex = $("#cboDaeSign option").index(
-			$("#cboDaeSign option:selected"));
+	selectedIndex = $("#cboDaeSign option").index($("#cboDaeSign option:selected"));
 	if (Sql_tmp_dp1[selectedIndex].cm_username != document.getElementById("txtName").value)
 		alert("이름이 존재하지 않습니다.");
 }
 
 function select_resultHandler() {
 	var cm_userid;
-	cm_userid = SBUxMethod.get('cboUser');
+	cm_userid = $('#cboUser option:selected').val();
 	var ajaxReturnData = null;
 	
 	var tmpData = {
@@ -394,41 +329,26 @@ function select_resultHandler() {
 		cm_userid : cm_userid
 	}
 	
+	gridDp1 = null;
 	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/AbsenceRegister', tmpData, 'json');
 	
 	if(ajaxReturnData !== 'ERR') {
 		gridDp1 = ajaxReturnData;
-		//myGrid1.rebuild();
+		if(gridDp1 !== null) myGrid1Area.setData(gridDp1);
 		
-		if(gridDp1 !== null && gridDp1.length > 0) myGrid1Area.setData(gridDp1);
 		if (gridDp1 !== null && gridDp1.length > 0) {
 			var daegyulObj = null;
 			var tmpObj = null;
 			daegyulObj = gridDp1[0];
+			
+			if( Sql_tmp_dp1 !== null && Sql_tmp_dp1.length > 0){
+				for (var i = 0; i < Sql_tmp_dp1.length; i++) {
+					tmpObj = Sql_tmp_dp1[i];
 
-			for (var i = 0; i < Sql_tmp_dp1.length; i++) {
-				tmpObj = Sql_tmp_dp1[i];
-
-				if (tmpObj.cm_userid == daegyulObj.cm_daegyul) {
-					$("#cboDaeSign option:eq("+i+")").prop("selected", true);
-					SBUxMethod.refresh('cboDaeSign');
-					var selectedIndex = $("#cboDaeSign option").index(
-							$("#cboDaeSign option:selected"));
-					Sql_tmp_dp1[selectedIndex] = tmpObj;
-					break;
-				}
-			}
-
-			for (var j = 0; j < comboDp3.length; j++) {
-				tmpObj = comboDp3[j];
-
-				if (tmpObj.cm_codename == daegyulObj.cm_daegmsg) {
-					$("#cboSayu option:eq("+i+")").prop("selected", true);
-					SBUxMethod.refresh('cboSayu');
-					var selectedIndex = $("#cboSayu option").index(
-							$("#cboSayu option:selected"));
-					comboDp3[selectedIndex] = tmpObj;
-					break;
+					if (tmpObj.cm_userid == daegyulObj.cm_daegyul) {
+						$('[data-ax5select="cboDaeSign"]').ax5select("setValue", daegyulObj.cm_daegyul);
+						break;
+					}
 				}
 			}
 			daegyulObj = null;
@@ -436,9 +356,7 @@ function select_resultHandler() {
 		} else {
 			$("#txtSayu").val("");
 			$("#cboDaeSign option:eq(0)").prop("selected", true);
-			SBUxMethod.refresh('cboDaeSign');
 			$("#cboSayu option:eq(0)").prop("selected", true);
-			SBUxMethod.refresh('cboSayu');
 		}
 	}
 	
@@ -454,31 +372,26 @@ function Cbo_Sayu_Click() {
 }
 
 function getDaegyulState_resultHandler() {
-	var daegyulState;
-	var cm_userid;
-	cm_userid = SBUxMethod.get('cboUser');
+	var daegyulState = null;
+	var cm_userid = $('#cboUser option:selected').val();
 	var ajaxReturnData = null;
 	
 	var tmpData = {
-			requestType : 'Cmm1100_3',
-			UserId : userid,
-			cm_userid : cm_userid
+		requestType : 'Cmm1100_3',
+		UserId : userid,
+		cm_userid : cm_userid
 	}
 	
 	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/AbsenceRegister', tmpData, 'json');
-	
 	if(ajaxReturnData !== 'ERR') {
 		daegyulState = ajaxReturnData;
-		if (daegyulState.length != 0) {
-			$('#btnReg').children('span').text(
-					$('#rdoOpt0').attr('text'));
+		if (daegyulState !== null && daegyulState.length != 0) {
 			if (daegyulState[0].cm_status == '0') {
 				$("#rdoOpt0").attr("checked", true);
 			} else if (daegyulState[0].cm_status == "9") {
 				$("#rdoOpt1").attr("checked", true);
-				$('#btnReg').children('span').text(
-						$('#rdoOpt1').attr('text'));
-				SBUxMethod.show('lbTit');
+				//$('#btnReg').children('span').text($('#rdoOpt1').attr('text'));
+				//SBUxMethod.show('lbTit');
 				$("#lbTit").val(daegyulState[0].Lbl_Tit);
 				$("#txtSayu").val("");
 				$("#txtName").val("");
@@ -488,8 +401,8 @@ function getDaegyulState_resultHandler() {
 				}
 			} else {
 				$("#rdoOpt0").attr("checked", true);
-				SBUxMethod.hide('Lbl_Con');
-				SBUxMethod.hide('lbTit');
+				//SBUxMethod.hide('Lbl_Con');
+				//SBUxMethod.hide('lbTit');
 			}
 		}
 		daegyulState = null;
@@ -506,38 +419,49 @@ function cmd_click() {
 			selectedObj = null;
 			return;
 		} else {
-			selectedIndex = $("#cboSayu option").index(
-					$("#cboSayu option:selected"));
+			selectedIndex = $("#cboDaeSign option").index($("#cboDaeSign option:selected"));
+			if (selectedIndex < 1) {
+				alert("대결재자를 선택하여 주십시오.");
+				return;
+			} 
+			
+			
+			selectedIndex = $("#cboSayu option").index($("#cboSayu option:selected"));
 			if (selectedIndex < 1) {
 				alert("부재사유를 선택하여 주십시오.");
+				return;
+			} 
+			
+			$("#txtSayu").val( $.trim(document.getElementById("txtSayu").value) );
+			var TxtSayu_text = document.getElementById("txtSayu").value;
+			
+			if (TxtSayu_text == "") {
+				alert("부재사유를 입력하여 주십시오.");
+				return;
+			} 
+			if ($("#dateStD").val() > $("#dateEdD").val()) {
+				alert("부재기간을 정확하게 선택하십시오.");
+				return;
+			} 
+			if ($("#dateEdD").val() < $("#dateStD").val()) {
+				alert("부재기간을 정확하게 선택하십시오.");
+				return;
+			} 
+			
+			selectedObj.Frm_User = $('#cboUser option:selected').val();
+
+			if (document.getElementById("txtName").value == "") {
+				selectedObj.DaeSign = "";
 			} else {
-				$("#txtSayu").val( $.trim(document.getElementById("txtSayu").value) );
-				var TxtSayu_text = document.getElementById("txtSayu").value;
-				if (TxtSayu_text == "") {
-					alert("부재사유를 입력하여 주십시오.");
-				} else {
-					if ($("#dateStD").val() > $("#dateEdD").val()) {
-						alert("부재기간을 정확하게 선택하십시오.");
-					} else if ($("#dateEdD").val() < $("#dateStD").val()) {
-						alert("부재기간을 정확하게 선택하십시오.");
-					} else {
-						selectedObj.Frm_User = SBUxMethod.get('cboUser');
-
-						if (document.getElementById("txtName").value == "") {
-							selectedObj.DaeSign = "";
-						} else {
-							selectedObj.DaeSign = SBUxMethod.get('cboDaeSign');
-						}
-						selectedObj.Cbo_Sayu = SBUxMethod.get('cboSayu');
-						selectedObj.Txt_Sayu = document.getElementById("txtSayu").value;
-						selectedObj.sdate = $("#dateStD").val();
-						selectedObj.edate = $("#dateEdD").val();
-						selectedObj.Opt_Cd0 = $("#rdoOpt0").is(":checked").toString();
-
-						update_resultHandler(selectedObj);
-					}
-				}
+				selectedObj.DaeSign = $('#cboDaeSign option:selected').val();
 			}
+			selectedObj.Cbo_Sayu = $('#cboSayu option:selected').val();
+			selectedObj.Txt_Sayu = document.getElementById("txtSayu").value;
+			selectedObj.sdate = $("#datStD").val().substr(0,4) + $("#datStD").val().substr(5,2) + $("#datStD").val().substr(8,2);
+			selectedObj.edate = $("#datEdD").val().substr(0,4) + $("#datEdD").val().substr(5,2) + $("#datEdD").val().substr(8,2);
+			selectedObj.Opt_Cd0 = $("#rdoOpt0").is(":checked").toString();
+
+			update_resultHandler(selectedObj);
 		}
 	} else {
 		if (gridDp1.length < 1) {
@@ -548,14 +472,14 @@ function cmd_click() {
 			var TxtSayu_text = document.getElementById("txtSayu").value;
 			$("#txtSayu").val($.trim(TxtSayu_text));
 
-			selectedObj.Frm_User = SBUxMethod.get('cboUser');
-			selectedObj.DaeSign = SBUxMethod.get('cboDaeSign');
-			selectedObj.Cbo_Sayu = SBUxMethod.get('cboSayu');
+			selectedObj.Frm_User =$('#cboUser option:selected').val();
+			selectedObj.DaeSign = $('#cboDaeSign option:selected').val();
+			selectedObj.Cbo_Sayu =  $('#cboSayu option:selected').val();
 			selectedObj.Txt_Sayu = document.getElementById("txtSayu").value;
-			selectedObj.sdate = $("#dateStD").val();
-			selectedObj.edate = $("#dateEdD").val();
+			selectedObj.sdate = $("#datStD").val().substr(0,4) + $("#datStD").val().substr(5,2) + $("#datStD").val().substr(8,2);
+			selectedObj.edate = $("#datEdD").val().substr(0,4) + $("#datEdD").val().substr(5,2) + $("#datEdD").val().substr(8,2);
 			selectedObj.Opt_Cd0 = $("#rdoOpt0").is(":checked").toString();
-
+			
 			update_resultHandler(selectedObj);
 		}
 	}
@@ -565,8 +489,7 @@ function cmd_click() {
 function update_resultHandler(selectedObj) {
 	var tmp_dp = 0;
 	var ajaxReturnData = null;
-	console.log(selectedObj);
-	return;
+	
 	var tmpData = {
 		requestType : 'Cmm1100_4',
 		UserId : userid,
@@ -574,7 +497,6 @@ function update_resultHandler(selectedObj) {
 	}
 	
 	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/AbsenceRegister', tmpData, 'json');
-	
 	
 	if(ajaxReturnData !== 'ERR') {
 		tmp_dp = Number(ajaxReturnData);
@@ -584,13 +506,10 @@ function update_resultHandler(selectedObj) {
 		} else if (tmp_dp == 2) {/* 해지선택시 */
 			alert("부재 및 대결재자 등록이 해제되었습니다");
 			Cbo_User_Click();
-			SBUxMethod.hide('Lbl_Con');
-			SBUxMethod.hide('lbTit');
 			$("#txtName").val("");
 			$("#txtSayu").val("");
 		} else {
 			alert("작업 실패.관리자에게 문의해주세요.");
 		}
 	}
-	
 }

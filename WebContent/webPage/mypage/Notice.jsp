@@ -5,47 +5,58 @@
 <c:import url="/webPage/common/common.jsp" />
 
 <style>
-	#divPan1 {border: 2px solid black; border-top-left-radius: 5px; border-top-right-radius: 5px; padding: 10px;}
-	#divGrid1 {width: 98%; height:60%}
-	#divSearch {float: right; width:23%}
-	#Cbo_Find {width:30%; font-size: 0.5em}
-    #Txt_Find {width: 50%}
-    #Search_Data {float:right; width:18%; font-size: 0.5em}
 </style>
 
 <section>
 	<div class="container-fluid padding-40-top">
-		<div id="divPan1">
-			<sbux-button id="btnReg" name="btnReg" uitype="normal" text="공지사항등록" onclick="new_Click()" disabled></sbux-button>
-<!-- 			Cmd_Ip3 -->
-      		<sbux-button id="sysPath" name="sysPath" uitype="normal" text="Excel저장" onclick="sysPathButton_Click()"></sbux-button>
-      		<sbux-label id="lbCnt" class="margin-40-right margin-5-top" name="lbCnt" uitype="normal" text="총 0건" style="float:right"></sbux-label>
+		<div  class="border-style-black">
+			<div class="row">
+				<div class="col-sm-3">
+					<div id="divPicker" class="input-group" data-ax5picker="basic">
+			            <input id="start_date" name="start_date" type="text" class="form-control" placeholder="yyyy/mm/dd">
+						<span class="input-group-addon">~</span>
+						<input id="end_date" name="end_date" type="text" class="form-control" placeholder="yyyy/mm/dd">
+			            <span class="input-group-addon"><i class="fa fa-calendar-o"></i></span>
+					</div>
+				</div>
+				<div class="col-sm-3 no-padding">
+					<input 	id="Txt_Find" name="Txt_Find" class="form-control width-100" type="text" 
+							onkeypress="if(event.keyCode==13) {Search_click();}"  
+							placeholder="제목/내용 입력후 조회"></input>
+				</div>
+				
+				<div class="col-sm-1 no-padding">
+					<button id="Search_Data" name="Search_Data" class="btn btn-default" onclick="Search_click()">조  회</button>
+				</div>
+				
+				<div class="col-sm-3 col-sm-offset-2" >
+					<div class="col-sm-5 no-padding">
+						<button id="btnReg" name="btnReg" class="btn btn-default width-100" onclick="new_Click()" disabled >공지사항등록</button>
+					</div>
+					<div class="col-sm-5 no-padding">
+			      		<button id="sysPath" name="sysPath"  class="btn btn-default width-100" onclick="sysPathButton_Click()">Excel저장</button>
+					</div>
+					<div class="col-sm-2 no-padding">
+			      		<label id="lbCnt" class="margin-10-top" style="float: right;">총 0건</label>
+					</div>
+				</div>
+	      		
+			</div>
 		</div>
 	</div>
 </section>
 
 <section>
 	<div class="container-fluid">
-		<div id="divGrid1"></div>
+		<div data-ax5grid="divGrid1" data-ax5grid-config="{showLineNumber: true, lineNumberColumnWidth: 40}" style="height: 80%"></div>
 	</div>
 </section>
 
-<section>
-	<div class="container-fluid margin-15-top">
-		<div id="divSearch">
-			<sbux-select id="Cbo_Find" name="Cbo_Find" uitype="single" jsondata-ref="combo_dp1" jsondata-text="cm_codename" jsondata-value="cm_micode" onchange="cbo()"></sbux-select>
-      		<sbux-picker id="start_date" name="start_date" uitype="date" mode="popup" date-format="yyyy/mm/dd"></sbux-picker>
-      		<sbux-picker id="end_date" name="end_date" uitype="date" mode="popup" date-format="yyyy/mm/dd"></sbux-picker>
-      		<sbux-input id="Txt_Find" name="Txt_Find" uitype="text" onkeyenter="Search_click1()" disabled></sbux-input>
-      		<sbux-button id="Search_Data" name="Search_Data" uitype="normal" text="조  회" onclick="Search_click()"></sbux-button>
-      		<sbux-modal id="modalPopWin" name="modalPopWin" uitype="middle" header-title="공지사항 등록" body-html-id="popupBody">
-   			</sbux-modal>
+<%-- <modal id="modalPopWin" name="modalPopWin" uitype="middle" header-title="공지사항 등록" body-html-id="popupBody">
+   			</modal>
    			<div id="popupBody">
 				<IFRAME id="popWin" src="<c:url value="/webPage/modal/PopNotice.jsp"/>" width="564" height="480"></IFRAME>
-			</div>
-		</div>
-	</div>
-</section>
+			</div>  --%>
 
-
+<c:import url="/js/ecams/common/commonscript.jsp" />
 <script type="text/javascript" src="<c:url value="/js/ecams/mypage/Notice.js"/>"></script>
