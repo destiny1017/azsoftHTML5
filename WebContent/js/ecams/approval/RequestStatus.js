@@ -1,34 +1,115 @@
-// userId 및 reqcd 가져오기
-var userid = window.parent.userId;
+// http://axisj.com/
+// http://ax5.io/ax5ui-grid/demo/1-formatter.html
+// userid 및 ReqCD 가져오기
+var userid = window.parent.userId;   
+var strReqCD = "";
 var request =  new Request();
 strReqCD = request.getParameter('reqcd');
 
-// 변수 선언
-var strDeptCd;
-var strRgtCd;
+// grid 생성
+var firstGrid = new ax5.ui.grid();
 
-// 콤보박스 변수
-var cboSysCd;
-var cboSin;
-var cboSta;
-var cboDept;
-var cboGbn;
+// 달력 생성
+var picker = new ax5.ui.picker();
 
-// 그리드 변수
-var grid_data;
+// 이 부분 지우면 영어명칭으로 바뀜
+// ex) 월 -> MON
+ax5.info.weekNames = [
+    {label: "일"},
+    {label: "월"},
+    {label: "화"},
+    {label: "수"},
+    {label: "목"},
+    {label: "금"},
+    {label: "토"}
+];
 
 $(document).ready(function(){
 	if(strReqCD != null && strReqCD != ""){
 		if(strReqCD.length > 2) strReqCD.substring(0, 2);
 		else strReqCD = "";
 	}
-	SBUxMethod.set('datStD', getDate('DATE',0));
-	SBUxMethod.set('datEdD', getDate('DATE',0));
 	
+	setGrid();
+	 $('[data-grid-control]').click(function () {
+         switch (this.getAttribute("data-grid-control")) {
+             case "excel-export":
+                 firstGrid.exportExcel("grid-to-excel.xls");
+                 break;
+         }
+     });
+
+	setPicker();
 	getUserInfo();
 	cboGbn_set();
-	createGrid();
 });
+
+function setPicker(){
+	//default 오늘날짜 setting
+	$('#datStD').val(getDate('DATE',0));
+	$('#datEdD').val(getDate('DATE',0));
+	
+	 picker.bind({
+         target: $('[data-ax5picker="basic"]'),
+         direction: "top",
+         content: {
+             width: 220,
+             margin: 10,
+             type: 'date',
+             config: {
+                 control: {
+                     left: '<i class="fa fa-chevron-left"></i>',
+                     yearTmpl: '%s',
+                     monthTmpl: '%s',
+                     right: '<i class="fa fa-chevron-right"></i>'
+                 },
+                 dateFormat: 'yyyy/MM/dd',
+                 lang: {
+                     yearTmpl: "%s년",
+                     months: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                     dayTmpl: "%s"
+                 }
+             },
+             formatter: {
+                 pattern: 'date'
+             }
+         },
+         onStateChanged: function () {
+             /*if (this.state == "open") {
+                 //console.log(this.item);
+                 var selectedValue = this.self.getContentValue(this.item["$target"]);
+                 if (!selectedValue) {
+                     this.item.pickerCalendar[0].ax5uiInstance.setSelection([ax5.util.date(new Date(), {'return': 'yyyy/MM/dd', 'add': {d: 0}})]);
+                     this.item.pickerCalendar[1].ax5uiInstance.setSelection([ax5.util.date(new Date(), {'return': 'yyyy/MM/dd', 'add': {d: 0}})]);
+                 }
+             }*/
+         },
+         btns: {
+             today: {
+                 label: "Today", onClick: function () {
+                     var today = new Date();
+                     this.self
+                             .setContentValue(this.item.id, 0, ax5.util.date(today, {"return": "yyyy/MM/dd"}))
+                             .setContentValue(this.item.id, 1, ax5.util.date(today, {"return": "yyyy/MM/dd"}))
+                             .close();
+                 }
+             },
+             thisMonth: {
+                 label: "This Month", onClick: function () {
+                     var today = new Date();
+                     this.self
+                             .setContentValue(this.item.id, 0, ax5.util.date(today, {"return": "yyyy/MM/01"}))
+                             .setContentValue(this.item.id, 1, ax5.util.date(today, {"return": "yyyy/MM"})
+                                     + '/'
+                                     + ax5.util.daysOfMonth(today.getFullYear(), today.getMonth()))
+                             .close();
+                 }
+             },
+             ok: {label: "Close", theme: "default"}
+         }
+     });
+		
+}
 
 function getUserInfo(){
 	var ajaxResultData = null;
@@ -39,7 +120,7 @@ function getUserInfo(){
 	ajaxResultData = ajaxCallWithJson('/webPage/approval/RequestStatus', tmpData, 'json');
 	
 	if(strReqCD != null && strReqCD != ""){
-		SBUxMethod.set('txtUser', ajaxResultData[0].cm_username);
+		$("#txtUser").text(ajaxResultData[0].cm_username);
 	}
 	
 	getPMOInfo();
@@ -63,20 +144,31 @@ function getPMOInfo(){
 	getTeamInfoGrid2();
 }
 
+
 function getSysInfo(){
 	var ajaxResultData = null;
 	var tmpData = {
 			requestType : 'SysInfo',
 			UserId : userid
 	}	
+	var options = [];
 	ajaxResultData = ajaxCallWithJson('/webPage/approval/RequestStatus', tmpData, 'json');
 	
-	cboSysCd = ajaxResultData;        	        	        	
-	SBUxMethod.refresh('cboSysCd');
+	
+	$.each(ajaxResultData,function(key,value) {
+		options.push({value: value.cm_syscd, text: value.cm_sysmsg});
+	});
+	
+	$('[data-ax5select="cboSysCd"]').ax5select({
+        options: options
+	});
 }
 
 function getCodeInfo(){
 	var ajaxResultData = null;
+	var cboSin;
+	var cboSta;
+	var options = [];
 	var tmpData = {
 			requestType : 'CodeInfo_1',
 	}	
@@ -103,7 +195,6 @@ function getCodeInfo(){
 		});
 	}
 	
-	
 	cboSta = cboSta.filter(function(data) {
 		   return data.cm_macode === "R3200STA";
 	});
@@ -114,106 +205,112 @@ function getCodeInfo(){
 		}
 	}
 	
-	SBUxMethod.refresh('cboSin');
-	SBUxMethod.refresh('cboSta');
+	$.each(cboSin,function(key,value) {
+		options.push({value: value.cm_micode, text: value.cm_codename});
+	});
+	
+	$('[data-ax5select="cboSin"]').ax5select({
+        options: options
+	});
+	// default 전체선택
+   // $('[data-ax5select="cboSin"]').ax5select("setValue", ['00',], true); // 다중선택시 [ ] 내부에  , 로 구분
+	options = [];
+	
+	$.each(cboSta,function(key,value) {
+		options.push({value: value.cm_micode, text: value.cm_codename});
+	});
+	
+	$('[data-ax5select="cboSta"]').ax5select({
+        options: options
+	});
+	// default 선택
+    $('[data-ax5select="cboSta"]').ax5select("setValue", ['1'], true);
 }
 
-function cboSta_change_resultHandler(args){
-	if(SBUxMethod.get("cboSta") == "00" || SBUxMethod.get("cboSta") == "3" || SBUxMethod.get("cboSta") == "9"){
-		$('#datStD').attr('disabled', false);
-		$('[name="_datStD_sub"]').attr('disabled', false);
-		$('#datEdD').attr('disabled', false);
-		$('[name="_datEdD_sub"]').attr('disabled', false);
-	} else {
-		$('#datStD').attr('disabled', true);
-		$('[name="_datStD_sub"]').attr('disabled', true);
-		$('#datEdD').attr('disabled', true);
-		$('[name="_datEdD_sub"]').attr('disabled', true);
-	}
-}
-	
 function getTeamInfoGrid2(){
 	var ajaxResultData = null;
 	var tmpData = {
 			requestType : 'TeamInfo',
 	}	
+	var options = [];
 	ajaxResultData = ajaxCallWithJson('/webPage/approval/RequestStatus', tmpData, 'json');
 	
-	cboDept = ajaxResultData;
-	SBUxMethod.refresh('cboDept');
+	$.each(ajaxResultData,function(key,value) {
+	    options.push({value: value.cm_deptcd, text: value.cm_deptname});
+	});
+	console.log(options);
+	
+	$('[data-ax5select="cboDept"]').ax5select({
+        options: options
+	});
 }
 
 function cboGbn_set(){
-	cboGbn = [
-		{cm_codename : "전체", cm_micode : "ALL", cm_macode : "REQPASS"},
-		{cm_codename : "일반적용", cm_micode : "4", cm_macode : "REQPASS"},
-		{cm_codename : "수시적용", cm_micode : "0", cm_macode : "REQPASS"},
-		{cm_codename : "긴급적용", cm_micode : "2", cm_macode : "REQPASS"}
-	]
-	SBUxMethod.refresh('cboGbn');
+	var options = [];
+	var cboGbn = [
+			{cm_codename : "전체", cm_micode : "ALL", cm_macode : "REQPASS"},
+			{cm_codename : "일반적용", cm_micode : "4", cm_macode : "REQPASS"},
+			{cm_codename : "수시적용", cm_micode : "0", cm_macode : "REQPASS"},
+			{cm_codename : "긴급적용", cm_micode : "2", cm_macode : "REQPASS"}
+		]
+	
+	$.each(cboGbn,function(key,value) {
+	    options.push({value: value.cm_micode, text: value.cm_codename});
+	});
+	
+	$('[data-ax5select="cboGbn"]').ax5select({
+        options: options
+	});
+}
+
+function reset_btn(){
+	firstGrid.setData([]); // grid 초기화
+	$('[data-ax5select="cboSta"]').ax5select("setValue", ['1'], true); // 진행상태 초기화
+	$('[data-ax5select="cboSin"]').ax5select("setValue", ['00'], true); // 신청종류 초기화
+	setPicker();	// 달력 초기화
+	$('[data-ax5select="cboGbn"]').ax5select("setValue", ['ALL'], true); // 처리구분 초기화
+	$('[data-ax5select="cboSysCd"]').ax5select("setValue", ['00000'], true); // 시스템 초기화
+	$('[data-ax5select="cboDept"]').ax5select("setValue", ['0'], true); // 신청부서 초기화
+	document.getElementById("rdoStrDate").checked = true;
+	$("#txtUser").val('');
+	$("#txtSpms").val('');
+	$("#lbTotalCnt").text("총0건");
 }
 
 function cmdQry_Proc(){
 	var tmpObj = {};
-	var selectedIndex;
-	var strStD = "";
-	var strEdD = "";
+	var ajaxResultData = null;
 	
-	strStD = SBUxMethod.get("datStD");
-	strEdD = SBUxMethod.get("datEdD");
+	tmpObj.strStD = $("#datStD").val().substr(0,4) + $("#datStD").val().substr(5,2) + $("#datStD").val().substr(8,2);
+	tmpObj.strEdD = $("#datEdD").val().substr(0,4) + $("#datEdD").val().substr(5,2) + $("#datEdD").val().substr(8,2);
+
+	if($('[data-ax5select="cboSysCd"]').ax5select("getValue")[0]['@index'] > 0){
+		tmpObj.strSys = $('[data-ax5select="cboSysCd"]').ax5select("getValue")[0].value;
+	}
+		
+	tmpObj.cboGbn = $('[data-ax5select="cboGbn"]').ax5select("getValue")[0].value;
 	
-	if(strStD > strEdD){
-		alert("조회기간을 정확하게 선택하여 주십시오.");
-		strStD = "";
-		strEdD = "";
-		return;
-	}  
-	
-	tmpObj.strStD = strStD;
-	tmpObj.strEdD = strEdD;
-	
-	selectedIndex = document.getElementById("cboSysCd");
-	if(selectedIndex.selectedIndex > 0){
-		tmpObj.strSys = SBUxMethod.get("cboSysCd");
-		selectedIndex = null;
+	if($('[data-ax5select="cboSin"]').ax5select("getValue")[0]['@index'] > 0){
+		tmpObj.strQry = $('[data-ax5select="cboSin"]').ax5select("getValue")[0].value;	// 멀티셀렉트 가능하게 수정해야됨
 	}
 	
-	selectedIndex = document.getElementById("cboSin");
-	if(selectedIndex.selectedIndex > 0){
-		tmpObj.strQry = SBUxMethod.get("cboSin");
-		selectedIndex = null;
+	if($('[data-ax5select="cboDept"]').ax5select("getValue")[0]['@index'] > 0){
+		tmpObj.strTeam = $('[data-ax5select="cboDept"]').ax5select("getValue")[0].value;
 	}
 	
-	selectedIndex = document.getElementById("cboSta");
-	if(selectedIndex.selectedIndex > 0){
-		tmpObj.strSta = SBUxMethod.get("cboSta");
-		selectedIndex = null;
+	if($('[data-ax5select="cboSta"]').ax5select("getValue")[0]['@index'] > 0){
+		tmpObj.strSta = $('[data-ax5select="cboSta"]').ax5select("getValue")[0].value;
 	}
 	
-	selectedIndex = document.getElementById("cboDept");
-	if(selectedIndex.selectedIndex > 0){
-		tmpObj.strTeam = SBUxMethod.get("cboDept");
-		selectedIndex = null;
-	}
-	
-	tmpObj.dategbn = SBUxMethod.get("rdoDate");
-	
-	if(SBUxMethod.get("txtUser") !== undefined){
-		tmpObj.txtUser = SBUxMethod.get("txtUser").trim();
-	} else {
-		tmpObj.txtUser = "";
-	}
-	
-	if(SBUxMethod.get("txtSpms") !== undefined){
-		tmpObj.txtSpms = SBUxMethod.get("txtSpms").trim();
-	} else {
-		tmpObj.txtSpms = "";
-	}
+	tmpObj.dategbn = $('input[name="rdoDate"]:checked').val();
+
+	tmpObj.txtUser = document.getElementById("txtUser").value.trim();
+	tmpObj.txtSpms = document.getElementById("txtSpms").value.trim();
 	
 	tmpObj.strUserId = userid;
-	tmpObj.cboGbn = SBUxMethod.get("cboGbn");
 	
-	var ajaxResultData = null;
+	console.log(tmpObj);
+	
 	var tmpData = {
 			requestType : 'get_SelectList',
 			prjData: JSON.stringify(tmpObj)
@@ -222,54 +319,116 @@ function cmdQry_Proc(){
 	
 	ajaxResultData = ajaxCallWithJson('/webPage/approval/RequestStatus', tmpData, 'json');
 	
-	var cnt = Object.keys(ajaxResultData).length;				// json 객체 길이 구하기			
-	SBUxMethod.set('lbTotalCnt', '총'+cnt+'건');	// 총 개수 표현		
+	//console.log("result" + ajaxResultData);
 	
-	grid_data = ajaxResultData;
-	datagrid.refresh();	
+	var cnt = Object.keys(ajaxResultData).length;	
 	
-	$(ajaxResultData).each(function(i){
-		if(ajaxResultData[i].errflag != "0"){
-			datagrid.setRowStyle(i+1, 'data', 'color', '#BE81F7');	//시스템처리 중 에러발생
-			datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
-		} else if (ajaxResultData[i].cr_status == '3'){
-			datagrid.setRowStyle(i+1, 'data', 'color', '#FF0000');	//반려 또는 취소
-			datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
-		} else if (ajaxResultData[i].cr_status == '0'){
-			datagrid.setRowStyle(i+1, 'data', 'color', '#0000FF');	// 진행중
-			datagrid.setRowStyle(i+1, 'data', 'font-weight', 'bold');
-		}
-	});
+	$("#lbTotalCnt").text("총" + cnt + "건");
+	
+	firstGrid.setData(ajaxResultData);
+	
+	tmpObj = null;
 }
 
-function createGrid(){
-	SBGridProperties = {};
-	SBGridProperties.parentid = 'sbGridArea';  // [필수] 그리드 영역의 div id 입니다.            
-	SBGridProperties.id = 'datagrid';          // [필수] 그리드를 담기위한 객체명과 동일하게 입력합니다.                
-	SBGridProperties.jsonref = 'grid_data';    // [필수] 그리드의 데이터를 나타내기 위한 json data 객체명을 입력합니다.
-	SBGridProperties.waitingui = true;
-	// 그리드의 여러 속성들을 입력합니다.
-	SBGridProperties.explorerbar = 'sort';
-	SBGridProperties.extendlastcol = 'scroll';
-	SBGridProperties.tooltip = true;
-	SBGridProperties.ellipsis = true;
-	SBGridProperties.rowheader = 'seq';
-	    			
-	// [필수] 그리드의 컬럼을 입력합니다.  
-	SBGridProperties.columns = [
-		{caption : ['시스템'],	ref : 'syscd',width : '100px', style : 'text-align:center',  type : 'output'},
-		{caption : ['SR-ID'],	ref : 'spms', width : '150px', style : 'text-align:center',	type : 'output'},
-		{caption : ['신청번호'],	ref : 'acptno',width : '150px',  style : 'text-align:center',	type : 'output'},
-		{caption : ['신청자'],	ref : 'editor',width : '150px',  style : 'text-align:center',	type : 'output'},
-		{caption : ['신청종류'],	ref : 'qrycd',width : '150px',  style : 'text-align:center',	type : 'output'},
-		{caption : ['처리구분'],	ref : 'passok',width : '100px',  style : 'text-align:center',	type : 'output'},
-		{caption : ['신청일시'],	ref : 'acptdate',width : '200px',  style : 'text-align:center', type : 'output'},
-		{caption : ['진행상태'],	ref : 'sta',width : '100px',  style : 'text-align:center',	type : 'output'},
-		{caption : ['프로그램명'],	ref : 'pgmid',width : '150px',  style : 'text-align:center', type : 'output'},
-		{caption : ['완료일시'],	ref : 'prcdate',width : '150px',  style : 'text-align:center', type : 'output'},
-		{caption : ['적용예정일시'],	ref : 'prcreq',width : '150px',  style : 'text-align:center', type : 'output'},		
-		{caption : ['선후행'],	ref : 'Sunhang',width : '100px',  style : 'text-align:center',	type : 'output'},
-		{caption : ['신청사유'],	ref : 'sayu', style : 'text-align:center',	type : 'output'}
-	];
-	datagrid = _SBGrid.create(SBGridProperties); // 만들어진 SBGridProperties 객체를 파라메터로 전달합니다.
+function setGrid(){
+	firstGrid.setConfig({
+        target: $('[data-ax5grid="first-grid"]'),
+        sortable: true, 
+        multiSort: true,
+        //multipleSelect: true,
+        //showRowSelector: true, //checkbox option
+        //rowSelectorColumnWidth: 26 
+        header: {
+            align: "center",
+            columnHeight: 30
+        },
+        body: {
+            columnHeight: 28,
+            onClick: function () {
+                // console.log(this);
+            	this.self.clearSelect(); //기존선택된 row deselect 처리 (multipleSelect 할땐 제외해야함)
+                this.self.select(this.dindex);
+            },
+            onDBLClick: function () {
+        		//alert('신청상세팝업');
+            	//console.log(this);
+            	//Sweet Alert [https://sweetalert.js.org/guides/]
+        		swal({
+                    title: "신청상세팝업",
+                    text: "신청번호 ["+this.item.acptno2+"]"
+                });
+
+            },
+        	trStyleClass: function () {
+        		//console.log(this); -> string으로 변환하면 item 데이타 로그 볼수 없음
+        		//console.log('++++++colorsw:'+this.item.colorsw);
+        		if(this.item.colorsw === '5'){
+        			return "fontStyle-error";
+        		} else if (this.item.colorsw === '3'){
+        			return "fontStyle-cncl";
+        		} else if (this.item.colorsw === '0'){
+        			return "fontStyle-ing";
+        		} else {
+        		}
+        	},
+        	onDataChanged: function(){
+        		//그리드 새로고침 (스타일 유지)
+        	    this.self.repaint();
+        	}
+        },
+        contextMenu: {
+            iconWidth: 20,
+            acceleratorWidth: 100,
+            itemClickAndClose: false,
+            icons: {
+                'arrow': '<i class="fa fa-caret-right"></i>'
+            },
+            items: [
+                {type: 1, label: "변경신청상세"},
+                {type: 2, label: "결재정보"},
+                {type: 3, label: "전체회수"}
+            ],
+            popupFilter: function (item, param) {
+                //console.log(item, param);
+            	//param.item.qrycd2 -> 01,02,03,04,06,07,11,12,16
+            	
+            	/** 
+            	 * return 값에 따른 context menu filter
+            	 * 
+            	 * return true; -> 모든 context menu 보기
+            	 * return item.type == 1; --> type이 1인 context menu만 보기
+            	 * return item.type == 1 | item.type == 2; --> type 이 1,2인 context menu만 보기
+            	 * 
+            	 * ex)
+	            	if(param.item.qrycd2 === '01'){
+	            		return item.type == 1 | item.type == 2;
+	            	}
+            	 */
+            	return true;
+            },
+            onClick: function (item, param) {
+                //console.log(item, param);
+        		swal({
+                    title: item.label+"팝업",
+                    text: "신청번호 ["+param.item.acptno2+"]"
+                });
+                firstGrid.contextMenu.close();//또는 return true;
+            }
+        },
+        columns: [
+            {key: "syscd", label: "시스템",  width: '10%'},
+            {key: "spms", label: "SR-ID",  width: '10%'},
+            {key: "acptno", label: "신청번호",  width: '10%'},
+            {key: "editor", label: "신청자",  width: '10%'},
+            {key: "qrycd", label: "신청종류",  width: '10%'},
+            {key: "passok", label: "처리구분",  width: '10%'},
+            {key: "acptdate", label: "신청일시",  width: '10%'},
+            {key: "sta", label: "진행상태",  width: '10%'},
+            {key: "pgmid", label: "프로그램명",  width: '10%'},
+            {key: "prcdate", label: "완료일시",  width: '10%'},
+            {key: "prcreq", label: "적용예정일시",  width: '10%'},
+            {key: "Sunhang", label: "선후행",  width: '10%'},
+            {key: "sayu", label: "신청사유", width: '10%'}	//formatter: function(){	return "<button>" + this.value + "</button>"}, 	 
+        ]
+    });
 }
