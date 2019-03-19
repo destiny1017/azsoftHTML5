@@ -285,7 +285,7 @@ function new_Click(){ //완료(확인필요)
         height: 440,
         iframe: {
             method: "get",
-            url: "../modal/PopNotice_html.jsp",
+            url: "../modal/PopNotice.jsp",
             param: "callBack=modalCallBack&memo_date=1"+"&user_id="+userid+"&memo_id=null"
         },
         onStateChanged: function () {
