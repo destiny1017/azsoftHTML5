@@ -48,6 +48,7 @@ var SBpath = "/";
 <link rel="stylesheet" href="<c:url value="/styles/ax5/ax5toast.css"/>">
 <link rel="stylesheet" href="<c:url value="/styles/ax5/ax5modal.css"/>">
 <link rel="stylesheet" href="<c:url value="/styles/ax5/ax5mask.css"/>">
+<link rel="stylesheet" href="<c:url value="/styles/ax5/ax5dialog.css"/>">
 
 <!-- eCAMS js, css -->
 <link rel="stylesheet" href="<c:url value="/css/ecams/common/ecamsStyle.css" />">

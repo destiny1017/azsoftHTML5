@@ -24,14 +24,6 @@ $(document).ready(function() {
 	dataObj.memo_id =  request.getParameter('memo_id');
 	dataObj.user_id =  request.getParameter('user_id');
 	
-	
-	$('#dateStD').attr('disabled',true);
-	$('#lbFrom').attr('disabled',true);
-	$('#dateEdD').attr('disabled',true);
-	$('#lbTo').attr('disabled',true);
-	
-	popNoticeInit();
-	
 	/*SBUxMethod.hide('dateStD');
 	SBUxMethod.hide('lbFrom');
 	SBUxMethod.hide('dateEdD');
@@ -77,9 +69,29 @@ $(document).ready(function() {
 		SBUxMethod.hide('btnRem');
 	}
 	*/
+	popNoticeInit();
+});
+
+function popNoticeInit() {
+	
+	dateInit();
+	
+	//$('#dateStD').attr('disabled',true);
+	//$('#lbFrom').attr('disabled',true);
+	//$('#dateEdD').attr('disabled',true);
+	//$('#lbTo').attr('disabled',true);
+	//$('#divPicker').attr('disabled',true);
+	
+	$('#divPicker').css('display','none');
+	$('#btnRem').css('display','none');
+	$('#btnReg').css('display','none');
+	
+}
+
+function dateInit() {
 	picker.bind({
         target: $('[data-ax5picker="basic"]'),
-        direction: "top",
+        direction: "bottom",
         content: {
             width: 220,
             margin: 10,
@@ -126,17 +138,18 @@ $(document).ready(function() {
             ok: {label: "Close", theme: "default"}
         }
     });
-	
-});
-
-function popNoticeInit() {
-	
 }
 
 function popClose(){
-	//console.log(parent.document.modal);
-	console.log(parent)
-	//parent[param.callBack]();
+	window.parent.modal.close();
+}
+
+function notiClick() {
+	if($("#exampleCheck1").is(":checked")){
+		$('#divPicker').css('display','');
+	}else {
+		$('#divPicker').css('display','none');
+	}
 }
 
 function confirm() {

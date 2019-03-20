@@ -32,8 +32,8 @@
 		</div>
 		<div class="row">
 			<div class="col-sm-2 col-xs-2">
-				<div class="form-check" id="chkNotice" onclick="Chk_NotiYN_Click()">
-					<input type="checkbox" class="form-check-input" id="exampleCheck1">
+				<div class="form-check" id="chkNotice">
+					<input type="checkbox" class="form-check-input" id="exampleCheck1" onclick="notiClick()">
 		    		<label class="form-check-label" for="exampleCheck1" >팝업공지</label>
 				</div>
 			</div>
