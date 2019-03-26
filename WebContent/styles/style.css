@@ -1525,6 +1525,7 @@ body {
   position: absolute;
   top: 62px;
   transition: all 0.4s ease 0s;
+  padding-bottom:40px;
 }
 #wrapper {
   margin: 0 0 0 180px;
