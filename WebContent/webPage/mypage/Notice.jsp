@@ -34,7 +34,8 @@
 						<button id="btnReg" name="btnReg" class="btn btn-default width-100" onclick="new_Click()" disabled >공지사항등록</button>
 					</div>
 					<div class="col-sm-5 no-padding">
-			      		<button id="sysPath" name="sysPath"  class="btn btn-default width-100" onclick="sysPathButton_Click()">Excel저장</button>
+						<button class="btn btn-default" data-grid-control="excel-export">엑셀저장</button>
+			      		<!-- <button id="sysPath" name="sysPath"  class="btn btn-default width-100" onclick="sysPathButton_Click()">Excel저장</button> -->
 					</div>
 					<div class="col-sm-2 no-padding">
 			      		<label id="lbCnt" class="margin-10-top" style="float: right;">총 0건</label>

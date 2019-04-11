@@ -66,7 +66,7 @@ public class Cmm2100{
 		try {
 			Txt_Find = Txt_Find == null ? "" : Txt_Find;
 			conn = connectionContext.getConnection();
-			strQuery.append("select a.cm_acptno,a.cm_gbncd,to_char(a.cm_acptdate,'yyyy-mm-dd')as acptdate,a.cm_title, \n");
+			strQuery.append("select a.cm_acptno,a.cm_gbncd,to_char(a.cm_acptdate,'yyyy/mm/dd')as acptdate,a.cm_title, \n");
 			strQuery.append("       a.cm_editor,a.cm_contents,a.cm_deptcd,a.cm_notiyn,b.cm_username, \n");
 			strQuery.append("		nvl(a.cm_eddate,'') CM_EDDATE, nvl(a.cm_stdate,'') CM_STDATE  \n");
 			strQuery.append("from cmm0200 a,cmm0040 b 						\n");
@@ -116,12 +116,12 @@ public class Cmm2100{
 				rst.put("CM_DEPTCD", rs.getString("CM_DEPTCD"));		// 작성자조직
 				rst.put("CM_USERNAME", rs.getString("CM_USERNAME"));	// 사용자이름
 				if(rs.getString("CM_EDDATE") != null && rs.getString("CM_EDDATE") != ""){
-					rst.put("CM_EDDATE", rs.getString("CM_EDDATE").substring(0,4)+"-"+rs.getString("CM_EDDATE").substring(4,6)+"-"+rs.getString("CM_EDDATE").substring(6,8));        // 20110206팝업종료일자 2011 + "-" + 02 + "-" + 06
+					rst.put("CM_EDDATE", rs.getString("CM_EDDATE").substring(0,4)+"/"+rs.getString("CM_EDDATE").substring(4,6)+"/"+rs.getString("CM_EDDATE").substring(6,8));        // 20110206팝업종료일자 2011 + "-" + 02 + "-" + 06
 				} else{
 					rst.put("CM_EDDATE","");
 				}
 				if (rs.getString("CM_STDATE") != null && rs.getString("CM_STDATE") != ""){
-					rst.put("CM_STDATE", rs.getString("CM_STDATE").substring(0,4)+"-"+rs.getString("CM_STDATE").substring(4,6)+"-"+rs.getString("CM_STDATE").substring(6,8));        // 20110206팝업종료일자 2011 + "-" + 02 + "-" + 06
+					rst.put("CM_STDATE", rs.getString("CM_STDATE").substring(0,4)+"/"+rs.getString("CM_STDATE").substring(4,6)+"/"+rs.getString("CM_STDATE").substring(6,8));        // 20110206팝업종료일자 2011 + "-" + 02 + "-" + 06
 				}else {
 					rst.put("CM_STDATE","");
 				}

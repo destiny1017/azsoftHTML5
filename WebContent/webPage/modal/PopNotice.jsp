@@ -32,7 +32,7 @@
 		</div>
 		<div class="row">
 			<div class="col-sm-2 col-xs-2">
-				<div class="form-check" id="chkNotice">
+				<div class="form-check margin-5-top" id="chkNotice">
 					<input type="checkbox" class="form-check-input" id="exampleCheck1" onclick="notiClick()">
 		    		<label class="form-check-label" for="exampleCheck1" >팝업공지</label>
 				</div>
@@ -73,4 +73,5 @@
 </div>
 	-->			
 <c:import url="/js/ecams/common/commonscript.jsp" />	
+<script type="text/javascript" src="<c:url value="/js/ecams/modal/FileUp.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/js/ecams/modal/PopNotice.js"/>"></script>

@@ -13,21 +13,59 @@ var combo_dp1;
 var strStD = "";
 var strEdD = "";
 var userid = window.parent.userId;
-var dataObj = {
-	memo_id : "",
-	user_name : "",
-	user_id : "",
-	memo_date : ""
-};
+var noticePopData = null;
 var picker = new ax5.ui.picker();
 var divGrid1 = new ax5.ui.grid();
 var mask = new ax5.ui.mask();
 var modal = new ax5.ui.modal();
+var fileLength = 0 ;
 
-$(document).ready(function() { //완료
+var fileUploadModal = new ax5.ui.modal({
+	theme: "warning",
+    header: {
+        title: '<i class="glyphicon glyphicon-file" aria-hidden="true"></i> [첨부파일]',
+        btns: {
+            minimize: {
+                label: '<i class="fa fa-minus-circle" aria-hidden="true"></i>', onClick: function(){
+                	fileUploadModal.minimize('bottom-right');
+                }
+            },
+            restore: {
+                label: '<i class="fa fa-plus-circle" aria-hidden="true"></i>', onClick: function(){
+                	fileUploadModal.restore();
+                }
+            },
+            close: {
+                label: '<i class="fa fa-times-circle" aria-hidden="true"></i>', onClick: function(){
+                	fileUploadModal.minimize('bottom-right');
+                }
+            }
+        }
+    }
+});
+
+function checkModalLength() {
+	return $("div[id*='modal']").length;
+}
+
+function returnFileModal() {
+	return $("div[id*='modal-15']");
+}
+
+$(document).ready(function() {
 	createGrid();
 	getAdminInfo();
 	date_init();
+	
+	//그리드 엑셀 저장
+	$('[data-grid-control]').click(function () {
+		console.log('excel');
+		switch (this.getAttribute("data-grid-control")) {
+			case "excel-export":
+				divGrid1.exportExcel("공지사항.xls");
+			break;
+		}
+	});
 })
 function createGrid() {
 	
@@ -54,17 +92,24 @@ function createGrid() {
         	}
         },
         columns: [
-            {key: "CM_TITLE", label: "제목",  width: '40%'},
-            {key: "CM_USERNAME", label: "등록자",  width: '10%'},
-            {key: "CM_STDATE", label: "팝업시작일",  width: '10%'},
-            {key: "CM_EDDATE", label: "팝업마감일",  width: '10%'},
-            {key: "CM_NOTIYN", label: "팝업",  width: '10%'},
-            {key: "fileCnt", label: "첨부파일",  width: '20%'}
+            {key: "CM_TITLE", label: "제목",  width: '52%'},
+            {key: "CM_USERNAME", label: "등록자",  width: '8%'},
+            {key: "CM_ACPTDATE", label: "등록일",  width: '8%'},
+            {key: "CM_STDATE", label: "팝업시작일",  width: '8%'},
+            {key: "CM_EDDATE", label: "팝업마감일",  width: '8%'},
+            {key: "CM_NOTIYN", label: "팝업",  width: '8%'},
+            {key: "fileCnt", label: "첨부파일",  width: '8%',
+             formatter: function(){
+            	 var htmlStr = this.value > 0 ? "<button class='btn-ecams-grid' >첨부파일다운</button>" : '';
+            	 console.log(this.value);
+            	 return htmlStr;
+             }
+            }
         ]
     });
 }
 
-function date_init() { //한달전 날짜로 해야
+function date_init() {
 	$('#start_date').val(getDate('MON',-1));
 	$('#end_date').val(getDate('DATE',0));
 	
@@ -121,7 +166,7 @@ function date_init() { //한달전 날짜로 해야
 	grid_resultHandler();
 }
 
-function getAdminInfo() {//isAdmin_resultHandler 완료
+function getAdminInfo() {
 	strAdmin = "0";
 	var ajaxReturnData = null;
 	
@@ -141,33 +186,7 @@ function getAdminInfo() {//isAdmin_resultHandler 완료
 	}
 }
 
-/*function combo1_resultHandler() { //완료
-	var ajaxReturnData = null;
-	
-	var tmpData = {
-		requestType : 'CodeInfo',
-		UserId : userid
-	}
-	
-	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', tmpData, 'json');
-	
-	if(ajaxReturnData !== 'ERR') {
-		
-		combo_dp1 = ajaxReturnData;
-		
-		var options = [];
-		var setValue = [];
-		$.each(combo_dp1,function(key,value) {
-		    options.push({value: value.cm_micode, text: value.cm_codename});
-		});
-		$('[data-ax5select="Cbo_Find"]').ax5select({
-	        options: options
-		});
-		
-	}
-}*/
-
-function grid_resultHandler() { //완료(확인필요)
+function grid_resultHandler() {
 	strStD = $("#start_date").val().substr(0,4) + $("#start_date").val().substr(5,2) + $("#start_date").val().substr(8,2);
 	strEdD = $("#end_date").val().substr(0,4) + $("#end_date").val().substr(5,2) + $("#end_date").val().substr(8,2);
 	var CboFind_micode = $('#Cbo_Find option:selected').val();
@@ -196,11 +215,11 @@ function grid_resultHandler() { //완료(확인필요)
 	}
 }
 
-function Search_click1() {//완료
+function Search_click1() {
 	Search_click();
 }
 
-function Search_click() { //완료
+function Search_click() {
 	if ($("#Cbo_Find option").index($("#Cbo_Find option:selected")) == 1
 			|| $("#Cbo_Find option").index($("#Cbo_Find option:selected")) == 2) {
 		$('#Txt_Find').val($.trim(document.getElementById("Txt_Find").value));
@@ -208,24 +227,29 @@ function Search_click() { //완료
 	grid_resultHandler();
 }
 
-function doubleClickGrid1() {//myGrid_doubleClick 완료(확인해야)
-	SBUxMethod.openModal("modalPopWin"); //eCmm2101
-	if ($('#btnReg').prop("disabled") == false) {
-		dataObj.memo_date = "1"
-	} else {
-		dataObj.memo_date = "0"
-	}
+function doubleClickGrid1() {
+	console.log('check double click grid');
+	noticePopData =divGrid1.list[divGrid1.selectedDataIndexs];
 	
-	var selectedRow = Number(myGrid1.getSelectedRows());
-	
-//	dataObj.memo_id = myGrid1.getRowData(selectedRow, false).CM_ACPTNO;
-//	console.log(dataObj.memo_id);
-//	dataObj.user_id = userid;
-//	dataObj.cm_stdate = myGrid1.getRowData(selectedRow, false).CM_STDATE;
-//	dataObj.cm_eddate = myGrid1.getRowData(selectedRow, false).CM_EDDATE;
-//	$("#modalPopWin").parentfun = popNoticeClose();
-//	$("#modalPopWin").dataObj = this.dataObj;
-	
+	modal.open({
+        width: 600,
+        height: 440,
+        iframe: {
+            method: "get",
+            url: "../modal/PopNotice.jsp",
+            param: "callBack=modalCallBack"
+        },
+        onStateChanged: function () {
+            // mask
+            if (this.state === "open") {
+                mask.open();
+            }
+            else if (this.state === "close") {
+                mask.close();
+            }
+        }
+    }, function () {
+    });
 }
 
 function popNoticeClose() { //eCmm2101Close	완료
@@ -264,12 +288,6 @@ function DataToExcel_Handler() {
 			arrCol = myGrid1.getGridDataAll();
 			colCnt = myGrid1.getCols();
 			grdList_dp_Len = myGrid1.getCols();
-			
-//			var tempObject = new Object;
-//			for(i=0; i<colCnt; i++){
-//				col = arrCol[i];
-//				if()
-//			}
 		}
 	}
 }
@@ -278,8 +296,13 @@ var modalCallBack = function(){
     modal.close();
 };
 
-function new_Click(){ //완료(확인필요)
-	
+var fileUploadModalCallBack = function() {
+	fileLength = 0;
+	fileUploadModal.close();
+}
+
+function new_Click(){
+	noticePopData = null;
     modal.open({
         width: 600,
         height: 440,
@@ -300,6 +323,25 @@ function new_Click(){ //완료(확인필요)
     }, function () {
     });
 	
+}
+
+function openFileUpload() {
+	fileUploadModal.open({
+        width: 600,
+        height: 360,
+        iframe: {
+            method: "get",
+            url: 	"../modal/FileUp.jsp",
+            param: "callBack=fileUploadModalCallBack"
+        },
+        onStateChanged: function () {
+            if (this.state === "open") {
+            }
+            else if (this.state === "close") {
+            }
+        }
+    }, function () {
+    });
 }
 
 function sysPathButton_Click() { //완성

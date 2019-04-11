@@ -36,5 +36,11 @@
 <script src="<c:url value="/scripts/ax5/ax5mask.min.js"/>" type="text/javascript"></script>
 <script src="<c:url value="/scripts/ax5/ax5modal.js"/>" type="text/javascript"></script>
 <script src="<c:url value="/scripts/ax5/ax5dialog.js"/>" type="text/javascript"></script>
+<script src="<c:url value="/scripts/ax5/ax5uploader.js"/>" type="text/javascript"></script>
+
+<!-- fileupload script -->
+<script src="<c:url value="/scripts/fileupload/jquery.dm-uploader.min.js"/>"></script>
+<script src="<c:url value="/scripts/fileupload/demo-ui.js"/>"></script>
+<%-- <script src="<c:url value="/scripts/fileupload/demo-config.js"/>"></script> --%>
 
 <script src="<c:url value="/js/ecams/common/common.js" />" type="text/javascript"></script>

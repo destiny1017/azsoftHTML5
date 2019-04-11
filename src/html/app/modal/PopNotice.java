@@ -2,7 +2,6 @@ package html.app.modal;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.servlet.ServletException;
@@ -44,6 +43,9 @@ public class PopNotice extends HttpServlet {
 				case "Cmm2101_1" :
 					response.getWriter().write( update(request) );
 					break;
+				case "Cmm2101_2" :
+					response.getWriter().write( delete(request) );
+					break;
 				default:
 					break;
 			}
@@ -59,8 +61,21 @@ public class PopNotice extends HttpServlet {
 	}
 	
 	private String update(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> updateMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "updateData");
+		HashMap<String, String> updateMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "dataObj");
 		return gson.toJson(cmm2101.get_update_Qry(updateMap.get("memo_id"), 
+												  updateMap.get("user_id"), 
+												  updateMap.get("txtTitle"), 
+												  updateMap.get("textareaContents"),
+												  updateMap.get("chkNotice"),
+												  updateMap.get("stDate"),
+												  updateMap.get("edDate")));
+	}
+	
+	
+	private String delete(HttpServletRequest request) throws SQLException, Exception {
+		HashMap<String, String> updateMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "dataObj");
+		
+		return gson.toJson(cmm2101.get_delete_Qry(updateMap.get("memo_id"), 
 												  updateMap.get("user_id"), 
 												  updateMap.get("txtTitle"), 
 												  updateMap.get("textareaContents"),

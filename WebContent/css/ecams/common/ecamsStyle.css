@@ -678,5 +678,13 @@
 	color: white;
 	margin-top: 5px;
 	font-size: 12px;	
-	
+}
+
+.btn-ecams-grid {
+	background-color: #fff;
+    border-color: #e4e5e7;
+    color: #6a6c6f;
+    font-size: 10px;
+    margin: 0 0 10px 20px;
+    border-radius: 2px;
 }

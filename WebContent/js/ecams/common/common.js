@@ -216,4 +216,9 @@ function changeDateToYYYYMMDD(date){
 	return year+month+date;
 }
 
+// StringReplaceAll
+// ex) replaceAllString($("#dateStD").val(), "/", "");
+function replaceAllString(source, find, replacement){
+	return source.split( find ).join( replacement );
+}
 
