@@ -53,38 +53,41 @@ $(document).ready(function(){
 
 
 $(document).on("mouseenter","[data-ax5grid-panel='body'] span",function(){
-	
-	$("[data-ax5grid-panel='body'] span").hover(function(e) {
+	var i = 1;
+	//$("[data-ax5grid-panel='body'] span[data-ax5grid-cellholder]").hover(function(e) {
 		if(this.innerHTML == ""){
 			return;
 		}
+		
 		$(this).attr("title",this.innerHTML);
 		
 		title_ = $(this).attr("title");				// title을 변수에 저장
 		class_ = $(this).attr("class");				// class를 변수에 저장
 		$(this).attr("title","");							// title 속성 삭제 ( 기본 툴팁 기능 방지 )
 		
+		console.log(i);
 		$("body").append("<div id='tip'></div>");
-			if (class_ == "img") {
-				$("#tip").html(imgTag);
-				$("#tip").css("width","100px");
-			} else {
-				$("#tip").css("width","300px");
-				$("#tip").text(title_);
-			}
+		if (class_ == "img") {
+			$("#tip").html(imgTag);
+			$("#tip").css("width","100px");
+		} else {
+			$("#tip").css("width","300px");
+			$("#tip").text(title_);
+		}
 
-			var pageX = $(this).offset().left -20;
-			var pageY = $(this).offset().top - $("#tip").innerHeight();
-			$("#tip").css({left : pageX + "px", top : pageY + "px"}).fadeIn(500);
-		
-		//console.log(this);
-	}, function() {
+		var pageX = $(this).offset().left -20;
+		var pageY = $(this).offset().top - $("#tip").innerHeight();
+		$("#tip").css({left : pageX + "px", top : pageY + "px"}).fadeIn(500);
+		i++;
+		return;
+	//console.log(this);
+	}).on('mouseleave',"[data-ax5grid-panel='body'] span",function(){
+
 		$(this).attr("title", title_);
 		$("#tip").remove();	
-
+		
 	});
 
-});
 
 function setPicker(){
 	//default 오늘날짜 setting
