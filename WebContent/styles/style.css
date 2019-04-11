@@ -1525,7 +1525,13 @@ body {
   position: absolute;
   top: 62px;
   transition: all 0.4s ease 0s;
+  margin-bottom:40px;
+  -ms-overflow-style: none;
 }
+#menu::-webkit-scrollbar { 
+  display: none !important;
+}
+
 #wrapper {
   margin: 0 0 0 180px;
   padding: 0;
@@ -2225,7 +2231,7 @@ body.fullscreen-panel-mode {
   float: left;
   width: 180px;
   background-color: #34495e;
-  padding: 18px 10px 18px 18px;
+  /*padding: 18px 10px 18px 18px;*/
   height: 56px;
   text-align: center;
 }
@@ -2234,8 +2240,12 @@ body.fullscreen-panel-mode {
   color: #fff;
   font-size: 14px;
 }
+#logo img{
+	margin: 9px 0 9px 0;
+	cursor:pointer;
+}
 #logo.light-version {
-  background-color: #f7f9fa;
+  background-color: #ffffff;
   border-bottom: 1px solid #e4e5e7;
   text-align: center;
 }

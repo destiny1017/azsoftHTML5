@@ -21,21 +21,20 @@ var SBUxConfig = {
 };
 var SBpath = "/";
 </script>
- -->
-
 <script src="<c:url value="/lib/sbux/SBUx.js" />" type="text/javascript"></script>
-
+ -->
+ 
 <!-- Vendor styles -->
 <link rel="stylesheet" href="<c:url value="/vendor/fontawesome/css/font-awesome.css"/>" />
 <link rel="stylesheet" href="<c:url value="/vendor/metisMenu/dist/metisMenu.css"/>" />
 <link rel="stylesheet" href="<c:url value="/vendor/animate.css/animate.css"/>" />
 <link rel="stylesheet" href="<c:url value="/vendor/bootstrap/dist/css/bootstrap.css"/>" />
 
-<!-- sbux library start -->
+<!-- sbux library start 
 <link rel="stylesheet" href="<c:url value="/lib/sbux/assets/js/sbgrid/2_5/SBGrid/css/SBGrid.css" />">
 <link rel="stylesheet" href="<c:url value="/lib/sbux/assets/js/sbgrid/2_5/SBGrid/css/SBGrid_Default.css" />">
 <link rel="stylesheet" href="<c:url value="/lib/sbux/assets/css/SBUxCustom.css" />">
-
+-->
 <!-- App styles -->
 <link rel="stylesheet" href="<c:url value="/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css"/>" />
 <link rel="stylesheet" href="<c:url value="/fonts/pe-icon-7-stroke/css/helper.css"/>" />
@@ -47,6 +46,10 @@ var SBpath = "/";
 <link rel="stylesheet" href="<c:url value="/styles/ax5/ax5menu.css"/>">
 <link rel="stylesheet" href="<c:url value="/styles/ax5/ax5grid.css"/>"><!-- openGrid -->
 <link rel="stylesheet" href="<c:url value="/styles/ax5/ax5toast.css"/>">
+<link rel="stylesheet" href="<c:url value="/styles/ax5/ax5modal.css"/>">
+<link rel="stylesheet" href="<c:url value="/styles/ax5/ax5mask.css"/>">
+<link rel="stylesheet" href="<c:url value="/styles/ax5/ax5dialog.css"/>">
+<link rel="stylesheet" href="<c:url value="/styles/ax5/ax5uploader.css"/>">
 
 <!-- eCAMS js, css -->
 <link rel="stylesheet" href="<c:url value="/css/ecams/common/ecamsStyle.css" />">

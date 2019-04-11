@@ -30,8 +30,16 @@ div[class^="row"] {
 .fontStyle-cncl {
 	color: #FF0000;
 }
-</style>
 
+#tip {
+	position:absolute;
+  	color:#FFFFFF;
+	padding:5px;
+	display:none;
+	background:#450e4c;
+  	border-radius: 5px;
+}
+</style>
 <section>
 <div class="container-fluid">
 	<div class="border-style-black">

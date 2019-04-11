@@ -14,72 +14,82 @@ var result_dp;
 var delete_dp3;
 var upFiles;
 var editUser = false;
-var dataObj = {memo_id:"", user_name:"", user_id:"", memo_date:"", cm_eddate:"" , cm_stdate:""};
+var stDate = "";
+var edDate = "";
 var now = new Date();
 var picker = new ax5.ui.picker();
 var request =  new Request();
 var memo_date = null;
+var noticeInfo = null;
+var dialog = new ax5.ui.dialog({title: "확인"});
+var confirmDialog = new ax5.ui.dialog();	//알럿,확인창
+
 $(document).ready(function() {
-	dataObj.memo_date =  request.getParameter('memo_date');
-	dataObj.memo_id =  request.getParameter('memo_id');
-	dataObj.user_id =  request.getParameter('user_id');
-	
-	
-	$('#dateStD').attr('disabled',true);
-	$('#lbFrom').attr('disabled',true);
-	$('#dateEdD').attr('disabled',true);
-	$('#lbTo').attr('disabled',true);
-	
+	confirmDialog.setConfig({
+        title: "공지사항",
+        theme: "info"
+    });
 	popNoticeInit();
+});
+
+function popNoticeInit() {
+	$('#divPicker').css('display','none');
+	$('#btnRem').css('display','none');
+	$('#btnReg').css('display','none');
 	
-	/*SBUxMethod.hide('dateStD');
-	SBUxMethod.hide('lbFrom');
-	SBUxMethod.hide('dateEdD');
-	SBUxMethod.hide('lbTo');*/
+	dateInit();
 	
-	
-	/*var today = new Date();
-	var year = today.getFullYear();
-	var month = (today.getMonth() + 1).toString();
-	if (month.length < 2) {
-		month = "0" + month;
-	}
-	var date = today.getDate();
-	if (date.length < 2){
-		date = "0" + date;
-	}
-	
-	if (dataObj.cm_stdate != null && dataObj.cm_stdate != ""){
-		SBUxMethod.set('dateStD', "" + dataObj.cm_stdate);
-	} else {
-		SBUxMethod.set('dateStD', "" + year + month + date);
-	}
-	
-	if (dataObj.cm_eddate != null && dataObj.cm_eddate != ""){
-		SBUxMethod.set('dateEdD', "" + dataObj.cm_stdate);
-	} else {
-		SBUxMethod.set('dateEdD', "" + year + month + date);
-	}
-	
-	if (dataObj.memo_id != null){
-		if(dataObj.memo_id != ""){
-			getNoticeInfo();
-			SBUxMethod.hide('btnFile');
+	noticeInfo = window.parent.noticePopData;
+	if(noticeInfo !== null) {
+		if(noticeInfo.CM_NOTIYN === 'Y') {
+			
+			var startDate 	= replaceAllString(noticeInfo.CM_STDATE, "/", "");
+			var endDate 	= replaceAllString(noticeInfo.CM_EDDATE, "/", "");
+			startDate 		= ax5.util.date(startDate, {'return': 'yyyy/MM/dd', 'add': {d: 0}} );
+			endDate 		= ax5.util.date(endDate, {'return': 'yyyy/MM/dd', 'add': {d: 0}} );
+			
+			$('#divPicker').css('display','');
+			$('#dateStD').val(startDate);
+			$('#dateEdD').val(endDate);
+			$('#exampleCheck1').prop('checked',true);
 		}
-		else{
-			SBUxMethod.hide('btnFile1');
-			SBUxMethod.show('btnFile');
-			SBUxMethod.hide('btnRem');
+		
+		$('#txtTitle').val(noticeInfo.CM_TITLE);
+		$('#textareaContents').val(noticeInfo.CM_CONTENTS);
+		
+		if(window.top.userId !== noticeInfo.CM_EDITOR) {
+			$('#btnRem').css('display','none');
+			$('#btnReg').css('display','none');
+			
+			if(noticeInfo.CM_NOTIYN === 'Y') {
+				$('#divPicker').empty();
+				var htmlStr = '';
+				htmlStr += '<input id="dateStD" name="dateStD" type="text" class="form-control" value="'+noticeInfo.CM_STDATE+'">';
+				htmlStr += '	<span class="input-group-addon">~</span>';
+				htmlStr += '<input id="dateEdD" name="dateEdD" type="text" class="form-control" value="'+noticeInfo.CM_EDDATE+'">';
+				$('#divPicker').html(htmlStr);
+			}
+			
+			$('#txtTitle').attr('disabled',true);
+			$('#textareaContents').attr('disabled',true);
+		} else {
+			$('#btnRem').css('display','');
+			$('#btnReg').css('display','');
+			
 		}
-	} else{
-		SBUxMethod.hide('btnFile1');
-		SBUxMethod.show('btnFile');
-		SBUxMethod.hide('btnRem');
+		
+		$('#btnFile').text('첨부파일');
+	} else if ( noticeInfo === null ) {
+		$('#btnReg').css('display','');
 	}
-	*/
+}
+
+function dateInit() {
+	// 오늘 날짜로 초기화
+	
 	picker.bind({
         target: $('[data-ax5picker="basic"]'),
-        direction: "top",
+        direction: "bottom",
         content: {
             width: 220,
             margin: 10,
@@ -96,7 +106,13 @@ $(document).ready(function() {
                     yearTmpl: "%s년",
                     months: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
                     dayTmpl: "%s"
-                }
+                },
+                marker: (function () {
+                    var marker = {};
+                    marker[ax5.util.date(new Date(), {'return': 'yyyy/MM/dd', 'add': {d: 0} } )] = true;
+
+                    return marker;
+                })()
             },
             formatter: {
                 pattern: 'date'
@@ -127,95 +143,51 @@ $(document).ready(function() {
         }
     });
 	
-});
-
-function popNoticeInit() {
-	
+	$('#dateStD').val(ax5.util.date(new Date(), {'return': 'yyyy/MM/dd', 'add': {d: 0} } ));
+	$('#dateEdD').val(ax5.util.date(new Date(), {'return': 'yyyy/MM/dd', 'add': {d: 0} } ));
 }
 
-function confirm() {
-	parent.listData();
-	parent.setUserName(dataObj);
-	parent.popNoticeClose();
+function popClose(){
+	window.parent.fileLength = 0;
+	window.parent.fileUploadModal.close();
+	window.parent.modal.close();
 }
 
-function getNoticeInfo(){ //selectHandler
-	var ajaxReturnData = null;
-	
-	var tmpData = {
-			requestType : 'Cmm2101',
-			UserId : userid,
-			dataObj : JSON.stringify(dataObj)
-	}
-	
-	ajaxReturnData = ajaxCallWithJson('/webPage/modal/PopNotice', tmpData, 'json');
-	
-	if(ajaxReturnData !== 'ERR') {
-		result_dp = ajaxReturnData;
-		
-		if(result_dp(0).CM_EDITOR == dataObj.user_id){
-			SBUxMethod.show('btnReg');
-			SBUxMethod.show('btnRem');
-			SBUxMethod.show('btnFile1');
-			editUser = true;
-			editUser = true;
-			SBUxMethod.attr('txtTitle', 'disabled', 'false');
-			SBUxMethod.attr('textareaContents', 'disabled', 'false');
-		} else {
-			if(Number(result_dp(0).filecnt) < 1){
-				SBUxMethod.hide('btnFile1');
-			} else {
-				SBUxMethod.show('btnFile1');
-			}
-			SBUxMethod.hide('btnReg');
-			SBUxMethod.hide('btnRem');
-			
-			SBUxMethod.attr('txtTitle', 'disabled', 'true');
-			SBUxMethod.attr('textareaContents', 'disabled', 'true');
-		}
-		SBUxMethod.set('chkNotice', 'false');
-		if(result_dp(0).CM_NOTIYN == "Y"){
-			SBUxMethod.set('chkNotice', 'true');
-		}
-		changeChkNotice();
-		
-		$("#textareaContents").val(result_dp(0).CM_CONTENTS);
-		$("#txtTitle").val(result_dp(0).CM_TITLE);
+function notiClick() {
+	if($("#exampleCheck1").is(":checked")){
+		$('#divPicker').css('display','');
+	}else {
+		$('#divPicker').css('display','none');
 	}
 }
 
-function replaceAllString(source, find, replacement){ //StringReplaceAll
-	return source.split( find ).join( replacement );
-}
-
-function update(){ //공지사항 등록
+//공지사항 등록 및 수정
+function update(){
 	var TODATE = "";
 	var monthStr = "";
 	var dayStr = "";
-	var stDate = "";
-	var edDate = "";
-	if($('#chkNotice').prop("checked")){
-		monthStr = (now.month + 1).toString();
-		if((now.month + 1).toString().length <2) monthStr = "0" + (now.month+1).toString();
-		datStr = now.date.toString();
-		if(now.date.toString().length <2) dayStr = "0" + now.date.toString();
-		TODATE = now.fullYear.toString()+monthStr+dayStr;
+	if($("#exampleCheck1").is(":checked")){
 		stDate = replaceAllString($("#dateStD").val(), "/", "");
-		stDate = replaceAllString($("#dateStD").val(), "-", "");
 		edDate = replaceAllString($("#dateEdD").val(), "/", "");
-		edDate = replaceAllString($("#dateEdD").val(), "-", "");
 	}
 	
 	if(document.getElementById("txtTitle").value == ""){
-		alert("제목을 입력하십시오.");
+		dialog.alert('제목을 입력하십시오.', function () {});
 	} else {
 		if($("#textareaContents").val() == ""){
-			alert("내용을 입력하십시오.");
+			dialog.alert('내용을 입력하십시오.', function () {});
 		} else {
-			if($('#chkNotice').prop("checked") && (edDate<stDate)){
-				alert("날짜 등록이 잘못되었습니다.");
+			if($("#exampleCheck1").is(":checked") && (edDate<stDate)){
+				dialog.alert('날짜 등록이 잘못되었습니다.', function () {});
 			} else {
-				updateHandler();
+				confirmDialog.confirm({
+					msg: '등록하시겠습니까?',
+				}, function(){
+					if(this.key === 'ok') {
+						updateHandler();
+					}
+				});
+				
 			}
 		}
 	}
@@ -224,25 +196,84 @@ function update(){ //공지사항 등록
 function updateHandler(){
 	var ajaxReturnData = null;
 	var updateData = {};
-	updateData.memo_id = dataObj.memo_id;
-	updateData.user_id = dataObj.user_id;
+	if(noticeInfo === null) {
+		updateData.memo_id = '';
+		updateData.user_id = window.top.userId;
+	} else {
+		updateData.memo_id = noticeInfo.CM_ACPTNO;
+		updateData.user_id = noticeInfo.CM_EDITOR;
+	}
 	updateData.txtTitle = document.getElementById("txtTitle").value;
 	updateData.textareaContents = $("#textareaContents").val();
-	updateData.chkNotice = $('#chkNotice').prop("checked").toString();
+	updateData.chkNotice = $('#exampleCheck1').prop("checked").toString();
 	updateData.stDate = stDate;
 	updateData.edDate = edDate;
 	
 	var tmpData = {
 			requestType : 'Cmm2101_1',
-			UserId : userid,
+			UserId : window.top.userId,
 			dataObj : JSON.stringify(updateData)
 	}
 	
 	ajaxReturnData = ajaxCallWithJson('/webPage/modal/PopNotice', tmpData, 'json');
 	
 	if(ajaxReturnData !== 'ERR') {
-		if(upFiles.length > 0){
-			
+		
+		// 첨부파일 존재시
+		if(window.parent.fileLength > 1) {
+			window.parent.fileUploadModal.restore();
+			$('#btnStartUpload',window.parent.document.getElementsByName('ax5-modal-15-frame')[0].contentWindow.document).click();
 		}
+		dialog.alert('등록 되었습니다.', function () {
+			window.parent.fileLength = 0;
+			window.parent.fileUploadModal.close();
+			window.parent.modal.close();
+			window.parent.Search_click();
+		});
 	}
+}
+
+
+//파일첨부
+function fileOpen() {
+	if(window.parent.checkModalLength() > 1) window.parent.fileUploadModal.restore();
+	else window.parent.openFileUpload();
+}
+
+function del() {
+	confirmDialog.confirm({
+		msg: '공지사항을 삭제하시겠습니까?',
+	}, function(){
+		if(this.key === 'ok') {
+			
+			stDate = replaceAllString($("#dateStD").val(), "/", "");
+			edDate = replaceAllString($("#dateEdD").val(), "/", "");
+			
+			var delData = {};
+			delData.memo_id = noticeInfo.CM_ACPTNO;
+			delData.user_id = noticeInfo.CM_EDITOR;
+			delData.txtTitle = document.getElementById("txtTitle").value;
+			delData.textareaContents = $("#textareaContents").val();
+			delData.chkNotice = $('#exampleCheck1').prop("checked").toString();
+			delData.stDate = stDate;
+			delData.edDate = edDate;
+			console.log(delData);
+			var tmpData = {
+					requestType : 'Cmm2101_2',
+					UserId : window.top.userId,
+					dataObj : JSON.stringify(delData)
+			}
+			
+			ajaxReturnData = ajaxCallWithJson('/webPage/modal/PopNotice', tmpData, 'json');
+			
+			if(ajaxReturnData !== 'ERR') {
+				dialog.alert('공지사항이 삭제되었습니다.', function () {
+					window.parent.fileLength = 0;
+					window.parent.fileUploadModal.close();
+					window.parent.modal.close();
+					window.parent.Search_click();
+				});
+			}
+		}
+	});
 }

@@ -606,7 +606,7 @@ public class UserInfo{
 		
 		try {
 			
-			if (UserID.equals("") || UserID == null || UserID == ""){
+			if (UserID == null || UserID.equals("") ||  UserID == ""){
 				return false;
 			}
 			conn = connectionContext.getConnection();

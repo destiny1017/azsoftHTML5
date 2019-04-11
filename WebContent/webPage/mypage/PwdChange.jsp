@@ -16,79 +16,68 @@
 		<div id="divContent">
 			<div class="row-fluid">
 				<div class="row">
-					<div class="col-xs-12 col-sm-3">
-						<sbux-label id="lbUserId" name="lbUserId" uitype="normal" text="사용자ID" for-id="userId"></sbux-label>
-					</div>
-					<div class="col-xs-12 col-sm-1">
+					<div class="col-xs-12 col-sm-4">
+						<label id="lbUserId">사용자ID</label>
 					</div>
 					<div class="col-xs-12 col-sm-8">
-						<sbux-input id="txtUserId" name="txtUserId" uitype="text" readonly></sbux-input>
+						<input id="txtUserId" name="txtUserId" type="text" disabled="disabled"></input>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xs-12 col-sm-3">
-						<sbux-label id="lbUserName" name="lbUserName" uitype="normal" text="성명" for-id="txtUserName"></sbux-label>
-					</div>
-					<div class="col-xs-12 col-sm-1">
+					<div class="col-xs-12 col-sm-4">
+						<label id="lbUserName">성명</label>
 					</div>
 					<div class="col-xs-12 col-sm-8">
-						<sbux-input id="txtUserName" name="txtUserName" uitype="text" readonly></sbux-input>
+						<input id="txtUserName" name="txtUserName" type="text" disabled="disabled"></input>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xs-12 col-sm-3">
-						<sbux-label id="lbPw" name="lbPw" uitype="normal" text="변경전비밀번호" for-id="txtPw"></sbux-label>
-					</div>
-					<div class="col-xs-12 col-sm-1">
+					<div class="col-xs-12 col-sm-4">
+						<label id="lbPw" >변경전비밀번호</label>
 					</div>
 					<div class="col-xs-12 col-sm-8">
-						<sbux-input id="txtPw" name="txtPw" uitype="password" minlength="8" maxlength="12"></sbux-input>
+						<input id="txtPw" name="txtPw" type="password" minlength="8" maxlength="12" ></input>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xs-12 col-sm-3">
-						<sbux-label id="lbUpdatePw1" name="lbUpdatePw1" uitype="normal" text="변경후비밀번호" for-id="txtUpdatePw1"></sbux-label>
-					</div>
-					<div class="col-xs-12 col-sm-1">
+					<div class="col-xs-12 col-sm-4">
+						<label id="lbUpdatePw1">변경후비밀번호</label>
 					</div>
 					<div class="col-xs-12 col-sm-8">
-						<sbux-input id="txtUpdatePw1" name="txtUpdatePw1" uitype="password" minlength="8" maxlength="12"></sbux-input>
+						<input id="txtUpdatePw1" name="txtUpdatePw1" type="password" minlength="8" maxlength="12"></input>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-xs-12 col-sm-3">
-						<sbux-label id="lbUpdatePw2" name="lbUpdatePw2" uitype="normal" text="확인비밀번호" for-id="txtUpdatePw2"></sbux-label>
-					</div>
-					<div class="col-xs-12 col-sm-1">
+					<div class="col-xs-12 col-sm-4">
+						<label id="lbUpdatePw2">확인비밀번호</label>
 					</div>
 					<div class="col-xs-12 col-sm-8">
-						<sbux-input id="txtUpdatePw2" name="txtUpdatePw2" uitype="password" minlength="8" maxlength="12"></sbux-input>
+						<input id="txtUpdatePw2" name="txtUpdatePw2" type="password" minlength="8" maxlength="12"></input>
 					</div>
 				</div>
 				<div class="row margin-15-top">
 					<div class="col-xs-12 col-sm-2">
-						<sbux-label id="lb1" name="lb1" uitype="normal" text="TIP"></sbux-label>
+						<label id="lb1">TIP</label>
 					</div>
 					<div class="col-xs-12 col-sm-10">
-						<sbux-label id="lb2" name="lb2" uitype="normal" text="비밀번호는 숫자/영문/특수기호를 포함하는" style="color:#bdc0c4"></sbux-label>
+						<label id="lb2" style="color:#bdc0c4">비밀번호는 숫자/영문/특수기호를 포함하는</label>
 					</div>
 				</div>
 				<div class="row margin-10-top">
 					<div class="col-xs-12 col-sm-2">
 					</div>
 					<div class="col-xs-12 col-sm-10">
-						<sbux-label id="lb3" name="lb3" uitype="normal" text="8-12자리 이어야 합니다. (분기별 패스워드 변경)" style="color:#bdc0c4" ></sbux-label>
+						<label id="lb3" style="color:#bdc0c4" >8-12자리 이어야 합니다. (분기별 패스워드 변경)</label>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </section>
-
 <section>
 	<div id="divPw" class="margin-15-top" style="text-align:center">
-		<sbux-button id="btnPw" name="btnPw" uitype="normal" text="비밀번호변경" onclick="clickBtnPw()"></sbux-button>
+		<button id="btnPw" name="btnPw" class="btn btn-default" onclick="clickBtnPw()">비밀번호변경</button>
 	</div>
 </section>
-
+<c:import url="/js/ecams/common/commonscript.jsp" />
 <script type="text/javascript" src="<c:url value="/js/ecams/mypage/PwdChange.js"/>"></script>

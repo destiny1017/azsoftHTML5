@@ -46,6 +46,12 @@ function getSession() {
 	userName= ajaxUserData.userName;
 	userId 	= ajaxUserData.userId;
 	adminYN = ajaxUserData.adminYN;
+	
+	if(userId == undefined) {
+		window.location.replace('/webPage/login/ecamsLogin.jsp');
+		return;
+	}
+	
 	console.log('userid:'+userId);
 	console.log('userName:'+userName);
 	console.log('adminYN:'+adminYN);

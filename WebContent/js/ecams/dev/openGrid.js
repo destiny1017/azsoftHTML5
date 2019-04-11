@@ -6,6 +6,10 @@ var strReqCD = "";
 var request =  new Request();
 strReqCD = request.getParameter('reqcd');
 
+// 툴팁
+var title_;
+var class_;
+var imgTag;
 // grid 생성
 var firstGrid = new ax5.ui.grid();
 
@@ -42,7 +46,48 @@ $(document).ready(function(){
 	setPicker();
 	getUserInfo();
 	cboGbn_set();
+	
+
+	
 });
+
+
+$(document).on("mouseenter","[data-ax5grid-panel='body'] span",function(){
+	var i = 1;
+	//$("[data-ax5grid-panel='body'] span[data-ax5grid-cellholder]").hover(function(e) {
+		if(this.innerHTML == ""){
+			return;
+		}
+		
+		$(this).attr("title",this.innerHTML);
+		
+		title_ = $(this).attr("title");				// title을 변수에 저장
+		class_ = $(this).attr("class");				// class를 변수에 저장
+		$(this).attr("title","");							// title 속성 삭제 ( 기본 툴팁 기능 방지 )
+		
+		console.log(i);
+		$("body").append("<div id='tip'></div>");
+		if (class_ == "img") {
+			$("#tip").html(imgTag);
+			$("#tip").css("width","100px");
+		} else {
+			$("#tip").css("width","300px");
+			$("#tip").text(title_);
+		}
+
+		var pageX = $(this).offset().left -20;
+		var pageY = $(this).offset().top - $("#tip").innerHeight();
+		$("#tip").css({left : pageX + "px", top : pageY + "px"}).fadeIn(500);
+		i++;
+		return;
+	//console.log(this);
+	}).on('mouseleave',"[data-ax5grid-panel='body'] span",function(){
+
+		$(this).attr("title", title_);
+		$("#tip").remove();	
+		
+	});
+
 
 function setPicker(){
 	//default 오늘날짜 setting
@@ -325,7 +370,64 @@ function cmdQry_Proc(){
 }
 
 function setGrid(){
-	firstGrid.setConfig({
+	
+    
+    var menu =new ax5.ui.menu ({
+        iconWidth: 20,
+        acceleratorWidth: 100,
+        itemClickAndClose: false,
+        icons: {
+            'arrow': '<i class="fa fa-caret-right"></i>'
+        },
+        items: [
+            {type: 1, label: "변경신청상세"},
+            {type: 2, label: "결재정보"},
+            {type: 3, label: "전체회수"}
+        ],
+        popupFilter: function (item, param) {
+            //console.log(item, param);
+        	//param.item.qrycd2 -> 01,02,03,04,06,07,11,12,16
+        	
+        	/** 
+        	 * return 값에 따른 context menu filter
+        	 * 
+        	 * return true; -> 모든 context menu 보기
+        	 * return item.type == 1; --> type이 1인 context menu만 보기
+        	 * return item.type == 1 | item.type == 2; --> type 이 1,2인 context menu만 보기
+        	 * 
+        	 * ex)
+            	if(param.item.qrycd2 === '01'){
+            		return item.type == 1 | item.type == 2;
+            	}
+        	 */
+        	return true;
+        },
+        onClick: function (item) {
+            console.log(item);
+    		swal({
+                title: item.label+"팝업",
+                text: "신청번호 ["+gid1.getList("selected")[0].acptno2+"]"
+            });
+            close();//또는 return true;
+        },
+        onLoad: function(e){
+        	var selIndex = Object.values(gid1.focusedColumn);
+        	if(selIndex[0] == null || selIndex[0].dindex == null){
+        		gid1.focus(null);
+        		firstGrid.clearSelect();
+        		menu.close();//또는 return true;
+            	
+        	}
+        	else{
+        		firstGrid.clearSelect(); //기존선택된 row deselect 처리 (multipleSelect 할땐 제외해야함)
+            	firstGrid.select(selIndex[0].dindex);
+        	}
+        	//console.log(selIndex[0]);
+        	//console.log(this.self.selected);
+        }
+    });
+	
+	var gid1 = firstGrid.setConfig({
         target: $('[data-ax5grid="first-grid"]'),
         sortable: true, 
         multiSort: true,
@@ -370,45 +472,6 @@ function setGrid(){
         	    this.self.repaint();
         	}
         },
-        contextMenu: {
-            iconWidth: 20,
-            acceleratorWidth: 100,
-            itemClickAndClose: false,
-            icons: {
-                'arrow': '<i class="fa fa-caret-right"></i>'
-            },
-            items: [
-                {type: 1, label: "변경신청상세"},
-                {type: 2, label: "결재정보"},
-                {type: 3, label: "전체회수"}
-            ],
-            popupFilter: function (item, param) {
-                //console.log(item, param);
-            	//param.item.qrycd2 -> 01,02,03,04,06,07,11,12,16
-            	
-            	/** 
-            	 * return 값에 따른 context menu filter
-            	 * 
-            	 * return true; -> 모든 context menu 보기
-            	 * return item.type == 1; --> type이 1인 context menu만 보기
-            	 * return item.type == 1 | item.type == 2; --> type 이 1,2인 context menu만 보기
-            	 * 
-            	 * ex)
-	            	if(param.item.qrycd2 === '01'){
-	            		return item.type == 1 | item.type == 2;
-	            	}
-            	 */
-            	return true;
-            },
-            onClick: function (item, param) {
-                //console.log(item, param);
-        		swal({
-                    title: item.label+"팝업",
-                    text: "신청번호 ["+param.item.acptno2+"]"
-                });
-                firstGrid.contextMenu.close();//또는 return true;
-            }
-        },
         columns: [
             {key: "syscd", label: "시스템",  width: '10%'},
             {key: "spms", label: "SR-ID",  width: '10%'},
@@ -425,4 +488,15 @@ function setGrid(){
             {key: "sayu", label: "신청사유", width: '10%'}	//formatter: function(){	return "<button>" + this.value + "</button>"}, 	 
         ]
     });
+
+	$('[data-ax5grid="first-grid"]').bind("contextmenu",function(e){
+		menu.popup(e);
+		ax5.util.stopEvent(e);
+		if(e.target.outerHTML.match(/span/g).length != 2){
+    		gid1.focus(null);
+    		firstGrid.clearSelect();
+			menu.close();
+		}
+	});
+	
 }

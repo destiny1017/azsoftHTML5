@@ -5,36 +5,73 @@
 <c:import url="/webPage/common/common.jsp" />
 
 <section>
-	<sbux-label id="lbSub" name="lbSub" uitype="normal" text="제목"></sbux-label>
-	<sbux-input id="txtTitle" name="txtTitle" uitype="text"></sbux-input>
-<!-- 	CM_TITLE -->
-	<sbux-textarea id="textareaContents" name="textareaContents" uitype="normal"></sbux-textarea>
-<!-- 	CM_CONTENTS -->
-	<sbux-checkbox id="chkNotice" name="chkNotice" uitype="normal" text="팝업공지" onclick="Chk_NotiYN_Click()"></sbux-checkbox>
-<!-- 	Chk_NotiYN -->
-	<sbux-button id="btnFile" name="btnFile" uitype="normal" text="파일첨부" onclick="fileOpen()"></sbux-button>
-<!-- 	Cmd_Ip1 -->
-	<sbux-button id="btnFile1" name="btnFile1" uitype="normal" text="첨부파일" onclick="fileOpen()"></sbux-button>
-<!-- 	Cmd_Ip1_2 -->
-	<sbux-button id="btnRem" name="btnRem" uitype="normal" text="삭제" onclick="del()"></sbux-button>
-<!-- 	Cmd_Ip3 -->
-	<sbux-button id="btnReg" name="btnReg" uitype="normal" text="등록" onclick="update()"></sbux-button>
-<!-- 	Cmd_Ip2 -->
-	<sbux-button id="btnClo" name="btnClo" uitype="normal" text="닫기" onclick="parentfun()"></sbux-button>
-	<sbux-picker id="dateStD" name="dateStD" uitype="date" mode="popup" date-format="YYYY-MM-DD"></sbux-picker>
-<!-- 	CM_STDATE -->
-	<sbux-label id="lbFrom" name="lbFrom" uitype="normal" text="~"></sbux-label>
-<!-- 	Lal_wave -->
-	<sbux-picker id="dateEdD" name="dateEdD" uitype="date" mode="popup" date-format="YYYY-MM-DD"></sbux-picker>
-<!-- 	CM_EDDATE -->
 
-	<sbux-label id="lbTo" name="lbTo" uitype="normal" text="까지"></sbux-label>
-<!-- 	Lal_util -->
+	<div class="pop-header">
+		<div class="col-xs-4">
+			<label id="lbSub">공지사항 등록</label>
+		</div>
+		<div class="col-xs-4"></div>
+		<div class="col-xs-4">
+			<button type="button" class="close" aria-label="닫기" onclick="popClose()">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		</div> 
+	</div>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-12 col-xs-12">
+				<label id="lbSub">제목</label>
+				<input id="txtTitle" name="txtTitle" class="form-control" type="text"></input>
+			</div>
+		</div>
+		<!-- 	CM_TITLE -->
+		<div class="row">
+			<div class="col-sm-12 col-xs-12">
+				<textarea id="textareaContents" name="textareaContents" class="form-control margin-15-top" rows="12"></textarea>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-2 col-xs-2">
+				<div class="form-check margin-5-top" id="chkNotice">
+					<input type="checkbox" class="form-check-input" id="exampleCheck1" onclick="notiClick()">
+		    		<label class="form-check-label" for="exampleCheck1" >팝업공지</label>
+				</div>
+			</div>
+			<div class="col-sm-6 col-xs-6">
+				<div id="divPicker" class="input-group" data-ax5picker="basic">
+		            <input id="dateStD" name="dateStD" type="text" class="form-control" placeholder="yyyy/mm/dd">
+					<span class="input-group-addon">~</span>
+					<input id="dateEdD" name="dateEdD" type="text" class="form-control" placeholder="yyyy/mm/dd">
+		            <span class="input-group-addon"><i class="fa fa-calendar-o"></i></span>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-sm-2 col-xs-2">
+				<button id="btnFile" name="btnFile" class="btn btn-default margin-15-top" onclick="fileOpen()">파일첨부</button>
+			</div>
+			<div class="col-sm-5 col-xs-5"></div>
+			<div class="col-sm-5 col-xs-5">
+				<div class="col-sm-4 col-xs-4 no-padding">
+					<button id="btnRem" name="btnRem" class="btn btn-default margin-15-top width-100" onclick="del()">삭제</button>
+				</div>
+				<div class="col-sm-4 col-xs-4 no-padding">
+					<button id="btnReg" name="btnReg" class="btn btn-default margin-15-top width-100" onclick="update()">등록</button>
+				</div>
+				<div class="col-sm-4 col-xs-4 no-padding">
+					<button id="btnClo" name="btnClo" class="btn btn-default margin-15-top width-100" onclick="popClose()">닫기</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
-<sbux-modal id="modalFileUp" name="modalFileUp" uitype="middle" header-title="공지사항 등록" body-html-id="modalBody">
-</sbux-modal>
+<!-- <modal id="modalFileUp" name="modalFileUp" uitype="middle" header-title="공지사항 등록" body-html-id="modalBody">
+</modal> 
 <div id="modalBody">
 	<IFRAME id="popFileUp" src="<c:url value="/webPage/modal/FileUp.jsp"/>" width="564" height="480"></IFRAME>
 </div>
-				
+	-->			
+<c:import url="/js/ecams/common/commonscript.jsp" />	
+<script type="text/javascript" src="<c:url value="/js/ecams/modal/FileUp.js"/>"></script>
 <script type="text/javascript" src="<c:url value="/js/ecams/modal/PopNotice.js"/>"></script>
