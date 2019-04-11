@@ -6,6 +6,10 @@ var strReqCD = "";
 var request =  new Request();
 strReqCD = request.getParameter('reqcd');
 
+// 툴팁
+var title_;
+var class_;
+var imgTag;
 // grid 생성
 var firstGrid = new ax5.ui.grid();
 
@@ -42,6 +46,44 @@ $(document).ready(function(){
 	setPicker();
 	getUserInfo();
 	cboGbn_set();
+	
+
+	
+});
+
+
+$(document).on("mouseenter","[data-ax5grid-panel='body'] span",function(){
+	
+	$("[data-ax5grid-panel='body'] span").hover(function(e) {
+		if(this.innerHTML == ""){
+			return;
+		}
+		$(this).attr("title",this.innerHTML);
+		
+		title_ = $(this).attr("title");				// title을 변수에 저장
+		class_ = $(this).attr("class");				// class를 변수에 저장
+		$(this).attr("title","");							// title 속성 삭제 ( 기본 툴팁 기능 방지 )
+		
+		$("body").append("<div id='tip'></div>");
+			if (class_ == "img") {
+				$("#tip").html(imgTag);
+				$("#tip").css("width","100px");
+			} else {
+				$("#tip").css("width","300px");
+				$("#tip").text(title_);
+			}
+
+			var pageX = $(this).offset().left -20;
+			var pageY = $(this).offset().top - $("#tip").innerHeight();
+			$("#tip").css({left : pageX + "px", top : pageY + "px"}).fadeIn(500);
+		
+		//console.log(this);
+	}, function() {
+		$(this).attr("title", title_);
+		$("#tip").remove();	
+
+	});
+
 });
 
 function setPicker(){
@@ -453,4 +495,5 @@ function setGrid(){
 			menu.close();
 		}
 	});
+	
 }
