@@ -51,7 +51,9 @@ $(document).ready(function(){
 	
 });
 
-
+$(document).on('contextmenu', function() {
+	  return false;
+});
 $(document).on("mouseenter","[data-ax5grid-panel='body'] span",function(){
 	var i = 1;
 	//$("[data-ax5grid-panel='body'] span[data-ax5grid-cellholder]").hover(function(e) {
@@ -411,8 +413,10 @@ function setGrid(){
             close();//또는 return true;
         },
         onLoad: function(e){
-        	var selIndex = Object.values(gid1.focusedColumn);
-        	if(selIndex[0] == null || selIndex[0].dindex == null){
+        	var gridkey = Object.keys(gid1.focusedColumn); // ie 에서 object.value 함수가 안먹히므로 key 값을 object.keys 으로 가져와서 사용
+        	var selIndex = gid1.focusedColumn;
+        	
+        	if(selIndex[gridkey] == null || selIndex[gridkey].dindex == null){
         		gid1.focus(null);
         		firstGrid.clearSelect();
         		menu.close();//또는 return true;
@@ -420,7 +424,7 @@ function setGrid(){
         	}
         	else{
         		firstGrid.clearSelect(); //기존선택된 row deselect 처리 (multipleSelect 할땐 제외해야함)
-            	firstGrid.select(selIndex[0].dindex);
+            	firstGrid.select(selIndex[gridkey].dindex);
         	}
         	//console.log(selIndex[0]);
         	//console.log(this.self.selected);
