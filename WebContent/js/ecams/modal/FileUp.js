@@ -1,10 +1,6 @@
 var dialog = new ax5.ui.dialog({title: "확인"});
 var uploadCnt = 0;
-
-$(function(){
-  
-});
-
+var fileArr = [];
 /*
  * For the sake keeping the code clean and the examples simple this file
  * contains only the plugin configuration & callbacks.
@@ -21,7 +17,7 @@ $('#drag-and-drop-zone').dmUploader({
 	queue: false,						//	위에서부터 순서대로 파일 업로드 여부
 	extraData: function() {				//	서블릿에 보낼 데이터
 			return {
-				"noticeid": '2019032701'
+				"noticeAcptno": window.parent.uploadAcptno
 			};
 	},
 	onDragEnter: function(){
@@ -66,11 +62,18 @@ $('#drag-and-drop-zone').dmUploader({
 		ui_multi_update_file_controls(id, false, false);  // change control buttons status
 		--uploadCnt;
 		console.log("data : "+JSON.stringify(data));
+		//m_acptno,cm_gbncd,cm_seqno,cm_attfile,cm_svfile
+		/*var fileMeta = new Object();
+		fileMeta.cm_svfile = */
+		
+		fileArr.push(data[0]);
+		
 		if(uploadCnt === 0 ) {
 			dialog.alert('파일 업로드 완료.', function () {
 				window.parent.fileUploadModal.close();
 				
 				//DB에 업로드 파일 정보 저장.
+				window.parent.fileInfoInsert(fileArr);
 				
 	    		window.parent.modal.close();
 	    		window.parent.Search_click();

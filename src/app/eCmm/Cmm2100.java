@@ -239,15 +239,15 @@ public class Cmm2100{
 
 		} catch (SQLException sqlexception) {
 			sqlexception.printStackTrace();
-			ecamsLogger.error("## Cmm2101.sql_Qry() SQLException START ##");
+			ecamsLogger.error("## Cmm2100.getFileList() SQLException START ##");
 			ecamsLogger.error("## Error DESC : ", sqlexception);
-			ecamsLogger.error("## Cmm2101.sql_Qry() SQLException END ##");
+			ecamsLogger.error("## Cmm2100.getFileList() SQLException END ##");
 			throw sqlexception;
 		} catch (Exception exception) {
 			exception.printStackTrace();
-			ecamsLogger.error("## Cmm2101.sql_Qry() Exception START ##");
+			ecamsLogger.error("## Cmm2100.getFileList() Exception START ##");
 			ecamsLogger.error("## Error DESC : ", exception);
-			ecamsLogger.error("## Cmm2101_Qry() Exception END ##");
+			ecamsLogger.error("## Cmm2100.getFileList() Exception END ##");
 			throw exception;
 		}finally{
 			if (strQuery != null) 	strQuery = null;
@@ -258,10 +258,11 @@ public class Cmm2100{
 				try{
 					ConnectionResource.release(conn);
 				}catch(Exception ex3){
-					ecamsLogger.error("## Cmm2101.sql_Qry() connection release exception ##");
+					ecamsLogger.error("## Cmm2100.getFileList() connection release exception ##");
 					ex3.printStackTrace();
 				}
 			}
 		}
-	}//end of sql_Qry() method statement
+	}//end of getFileList() method statement
+    
 }//end of Cmm2100 class statement

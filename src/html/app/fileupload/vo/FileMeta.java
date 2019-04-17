@@ -13,8 +13,8 @@ public class FileMeta {
 	private String fileName;
 	private String fileSize;
 	private String fileType;
-	private String twitter;
-
+	private String noticeAcptno;
+	
 	
 	private InputStream content;
 	
@@ -44,19 +44,17 @@ public class FileMeta {
 	public void setContent(InputStream content){
 		this.content = content;
 	}
-	public String getTwitter(){
-		return this.twitter;
+	public String getNoticeAcptno() {
+		return noticeAcptno;
 	}
-	public void setTwitter(String twitter){
-		this.twitter = twitter;
+	public void setNoticeAcptno(String noticeAcptno) {
+		this.noticeAcptno = noticeAcptno;
 	}
-	
 	@Override
 	public String toString() {
-		return "FileMeta [fileName=" + fileName + ", fileSize=" + fileSize
-				+ ", fileType=" + fileType + "]";
+		return "FileMeta [fileName=" + fileName + ", fileSize=" + fileSize + ", fileType=" + fileType
+				+ ", noticeAcptno=" + noticeAcptno + ", content=" + content + "]";
 	}
-	
 	
 	
 }

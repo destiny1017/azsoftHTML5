@@ -12,13 +12,16 @@ var strAdmin = "";
 var combo_dp1;
 var strStD = "";
 var strEdD = "";
-var userid = window.parent.userId;
+var userid = window.top.userId;
 var noticePopData = null;
 var picker = new ax5.ui.picker();
 var divGrid1 = new ax5.ui.grid();
 var mask = new ax5.ui.mask();
 var modal = new ax5.ui.modal();
 var fileLength = 0 ;
+var uploadAcptno = null;
+var downAcptno = null;
+var downFileCnt = 0;
 
 var fileUploadModal = new ax5.ui.modal({
 	theme: "warning",
@@ -43,6 +46,32 @@ var fileUploadModal = new ax5.ui.modal({
         }
     }
 });
+
+var fileDownloadModal = new ax5.ui.modal({
+	theme: "warning",
+    header: {
+        title: '<i class="glyphicon glyphicon-file" aria-hidden="true"></i> [첨부파일]',
+        btns: {
+            minimize: {
+                label: '<i class="fa fa-minus-circle" aria-hidden="true"></i>', onClick: function(){
+                	fileDownloadModal.minimize('bottom-right');
+                }
+            },
+            restore: {
+                label: '<i class="fa fa-plus-circle" aria-hidden="true"></i>', onClick: function(){
+                	fileDownloadModal.restore();
+                }
+            },
+            close: {
+                label: '<i class="fa fa-times-circle" aria-hidden="true"></i>', onClick: function(){
+                	fileDownloadModal.close();
+                }
+            }
+        }
+    }
+});
+
+
 
 function checkModalLength() {
 	return $("div[id*='modal']").length;
@@ -100,8 +129,7 @@ function createGrid() {
             {key: "CM_NOTIYN", label: "팝업",  width: '8%'},
             {key: "fileCnt", label: "첨부파일",  width: '8%',
              formatter: function(){
-            	 var htmlStr = this.value > 0 ? "<button class='btn-ecams-grid' >첨부파일다운</button>" : '';
-            	 console.log(this.value);
+            	 var htmlStr = this.value > 0 ? "<button class='btn-ecams-grid' onclick='openFileDownload("+this.item.CM_ACPTNO+","+this.item.fileCnt+")' >첨부파일다운</button>" : '';
             	 return htmlStr;
              }
             }
@@ -228,9 +256,7 @@ function Search_click() {
 }
 
 function doubleClickGrid1() {
-	console.log('check double click grid');
 	noticePopData =divGrid1.list[divGrid1.selectedDataIndexs];
-	
 	modal.open({
         width: 600,
         height: 440,
@@ -301,6 +327,10 @@ var fileUploadModalCallBack = function() {
 	fileUploadModal.close();
 }
 
+var fileDownloadModalCallBack = function() {
+	fileDownloadModal.close();
+}
+
 function new_Click(){
 	noticePopData = null;
     modal.open({
@@ -344,6 +374,42 @@ function openFileUpload() {
     });
 }
 
+function openFileDownload(acptno,fileCnt) {
+	if(acptno !== '') {
+		downAcptno = acptno;
+		downFileCnt = fileCnt;
+	}
+	fileDownloadModal.open({
+        width: 600,
+        height: 360,
+        iframe: {
+            method: "get",
+            url: 	"../modal/FileDownload.jsp",
+            param: "callBack=fileDownloadModalCallBack"
+        },
+        onStateChanged: function () {
+            if (this.state === "open") {
+            }
+            else if (this.state === "close") {
+            }
+        }
+    }, function () {
+    });
+}
+
 function sysPathButton_Click() { //완성
 	DataToExcel_Handler();
+}
+
+function fileInfoInsert(data) {
+	var testArr = []
+	testArr.push(data[0]);
+	var ajaxReturnData = null;
+	//[{"noticeAcptno":"1234","fileName":"11.exe"}]
+	var tmpData = {
+		requestType : 'insertNoticeFileInfo',
+		fileInfo : JSON.stringify(data),
+	}
+	
+	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', tmpData, 'json');
 }

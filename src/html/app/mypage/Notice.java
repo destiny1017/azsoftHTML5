@@ -2,6 +2,8 @@ package html.app.mypage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,8 +17,9 @@ import app.common.UserInfo;
 import app.common.CodeInfo;
 import app.common.SystemPath;
 import app.eCmm.Cmm2100;
-
+import app.eCmm.Cmm2101;
 import html.app.common.ParsingCommon;
+import sun.security.ssl.HandshakeMessage;
 
 @WebServlet("/webPage/mypage/Notice")
 public class Notice extends HttpServlet {
@@ -29,6 +32,7 @@ public class Notice extends HttpServlet {
 	CodeInfo codeinfo = new CodeInfo();
 	SystemPath systempath = new SystemPath();
 	Cmm2100 cmm2100 = new Cmm2100();
+	Cmm2101 cmm2101 = new Cmm2101();
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -58,6 +62,18 @@ public class Notice extends HttpServlet {
 					break;
 				case "SystemPath" :
 					response.getWriter().write( getSysPass(request) );
+					break;
+				case "insertNoticeFileInfo" :
+					response.getWriter().write( insertNoticeFileInfo(request) );
+					break;
+				case "getFileList" :
+					response.getWriter().write( getFileList(request) );
+					break;
+				case "getNoticeFolderPath" :
+					response.getWriter().write( getNoticeFolderPath(request) );
+					break;
+				case "deleteNoticeFile" :
+					response.getWriter().write( deleteNoticeFile(request) );
 					break;
 				default:
 					break;
@@ -94,6 +110,36 @@ public class Notice extends HttpServlet {
 	
 	private String getSysPass(HttpServletRequest request) throws SQLException, Exception {
 		return gson.toJson(systempath.getTmpDir("99"));
+	}
+	
+	private String insertNoticeFileInfo(HttpServletRequest request) throws SQLException, Exception {
+		ArrayList<HashMap<String, String>> tmpList = ParsingCommon.parsingRequestJsonParamToArrayList(request, "fileInfo");
+		
+		ArrayList<HashMap<String, String>> fileList = new  ArrayList<HashMap<String,String>>();
+		for(int i=0; i<tmpList.size(); i++) {
+			HashMap<String, String> addMap = new HashMap<>();
+			addMap.put("acptno", tmpList.get(i).get("noticeAcptno"));
+			addMap.put("filegb", "1");
+			addMap.put("realName", tmpList.get(i).get("fileName"));
+			addMap.put("saveName", tmpList.get(i).get("noticeAcptno")+"."+(i + 1));
+			fileList.add(addMap);
+		}
+		return gson.toJson(cmm2101.setDocFile(fileList));
+	}
+	
+	private String getFileList(HttpServletRequest request) throws SQLException, Exception {
+		String acptno = ParsingCommon.parsingRequestJsonParamToString(request, "acptno");
+		return gson.toJson(cmm2100.getFileList(acptno));
+	}
+	
+	
+	private String getNoticeFolderPath(HttpServletRequest request) throws SQLException, Exception {
+		return gson.toJson(systempath.getTmpDir("01"));
+	}
+
+	private String deleteNoticeFile(HttpServletRequest request) throws SQLException, Exception {
+		HashMap<String, String> fileData = ParsingCommon.parsingRequestJsonParamToHashMap(request, "fileData");
+		return gson.toJson(cmm2101.removeDocFileHtml(fileData));
 	}
 	
 }
