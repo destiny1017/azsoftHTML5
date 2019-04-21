@@ -222,3 +222,13 @@ function replaceAllString(source, find, replacement){
 	return source.split( find ).join( replacement );
 }
 
+
+
+// window load 되기 전까지 마우스 커서 wait 로 나타나게 처리
+$('html').css({'cursor':'wait'});
+$('body').css({'cursor':'wait'});
+$(window).on('load',function(){
+	$('html').css({'cursor':'auto'});
+	$('body').css({'cursor':'auto'});
+	
+});
