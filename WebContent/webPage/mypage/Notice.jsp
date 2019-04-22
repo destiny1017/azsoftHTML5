@@ -5,9 +5,17 @@
 <c:import url="/webPage/common/common.jsp" />
 
 <style>
+#tip {
+	position:absolute;
+  	color:#FFFFFF;
+	padding:5px;
+	display:none;
+	background:#FFA200;
+  	border-radius: 5px;
+}
 </style>
 
-<section>
+<section class="test-print" id="landscape">
 	<div class="container-fluid padding-40-top">
 		<div  class="border-style-black">
 			<div class="row">
@@ -35,7 +43,6 @@
 					</div>
 					<div class="col-sm-5 no-padding">
 						<button class="btn btn-default" data-grid-control="excel-export">엑셀저장</button>
-			      		<!-- <button id="sysPath" name="sysPath"  class="btn btn-default width-100" onclick="sysPathButton_Click()">Excel저장</button> -->
 					</div>
 					<div class="col-sm-2 no-padding">
 			      		<label id="lbCnt" class="margin-10-top" style="float: right;">총 0건</label>
@@ -52,12 +59,6 @@
 		<div data-ax5grid="divGrid1" data-ax5grid-config="{showLineNumber: true, lineNumberColumnWidth: 40}" style="height: 80%"></div>
 	</div>
 </section>
-
-<%-- <modal id="modalPopWin" name="modalPopWin" uitype="middle" header-title="공지사항 등록" body-html-id="popupBody">
-   			</modal>
-   			<div id="popupBody">
-				<IFRAME id="popWin" src="<c:url value="/webPage/modal/PopNotice.jsp"/>" width="564" height="480"></IFRAME>
-			</div>  --%>
 
 <c:import url="/js/ecams/common/commonscript.jsp" />
 <script type="text/javascript" src="<c:url value="/js/ecams/mypage/Notice.js"/>"></script>

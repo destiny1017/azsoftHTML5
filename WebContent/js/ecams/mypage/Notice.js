@@ -22,6 +22,8 @@ var fileLength = 0 ;
 var uploadAcptno = null;
 var downAcptno = null;
 var downFileCnt = 0;
+var title_;
+var class_;
 
 var fileUploadModal = new ax5.ui.modal({
 	theme: "warning",
@@ -234,14 +236,62 @@ function grid_resultHandler() {
 
 	if(ajaxReturnData !== 'ERR') {
 		grid_dp1 = ajaxReturnData;
-		
 		divGrid1.setData(grid_dp1);
-		
 		$('#lbCnt').text('총 '+grid_dp1.length+'건');
-
 		//제목에 툴팁달기  !!
 	}
 }
+
+// 그리드에 마우스 툴팁 달기
+$(document).on("mouseenter","[data-ax5grid-panel='body'] span",function(event){
+	if(this.innerHTML == ""){
+		return;
+	}
+	
+	//첫번째 컬럼에만 툴팁 달기
+	if($(this).closest("td").index() > 0) return;
+	
+	//그리드 정보 가져오기
+	var gridRowInfo = divGrid1.list[$(this).closest("td").closest("tr").index()];
+	var contents = gridRowInfo.CM_CONTENTS;
+	
+	console.log(contents.length);
+	
+	if(contents.length > 500 ) {
+		contents = contents.substring(0,500) + '....';
+	}
+	
+	$(this).attr("title",contents);
+	
+	// title을 변수에 저장
+	title_ = $(this).attr("title");
+	// class를 변수에 저장
+	class_ = $(this).attr("class");
+	// title 속성 삭제 ( 기본 툴팁 기능 방지 )
+	$(this).attr("title","");
+	
+	$("body").append("<div id='tip'></div>");
+	if (class_ == "img") {
+		$("#tip").html(imgTag);
+		$("#tip").css("width","100px");
+	} else {
+		$("#tip").css("width","300px");
+		$("#tip").text(title_);
+	}
+	
+	//var pageX = $(this).offset().left -20;
+	//var pageY = $(this).offset().top - $("#tip").innerHeight();
+	var pageX = event.pageX;
+	var pageY = event.pageY;
+	
+	$("#tip").css({left : pageX + "px", top : pageY + "px"}).fadeIn(500);
+	return;
+}).on('mouseleave',"[data-ax5grid-panel='body'] span",function(){
+
+	$(this).attr("title", title_);
+	$("#tip").remove();	
+	
+});
 
 function Search_click1() {
 	Search_click();
@@ -402,10 +452,11 @@ function sysPathButton_Click() { //완성
 }
 
 function fileInfoInsert(data) {
+	//data = [{"noticeAcptno":"1234","fileName":"11.exe"}];
+	
 	var testArr = []
 	testArr.push(data[0]);
 	var ajaxReturnData = null;
-	//[{"noticeAcptno":"1234","fileName":"11.exe"}]
 	var tmpData = {
 		requestType : 'insertNoticeFileInfo',
 		fileInfo : JSON.stringify(data),
@@ -413,3 +464,17 @@ function fileInfoInsert(data) {
 	
 	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', tmpData, 'json');
 }
+
+function onPrint() {
+	var html = document.querySelector('html');
+	var printContents = document.querySelector('.test-print').innerHTML;
+	var printDiv = document.createElement('div');
+	printDiv.className ='print-div';
+
+	html.appendChild(printDiv);
+	printDiv.innerHTML = printContents;
+	document.body.style.display = 'none';
+	window.print();
+	document.body.style.display = 'block';
+	printDiv.style.display = 'none';
+	}
