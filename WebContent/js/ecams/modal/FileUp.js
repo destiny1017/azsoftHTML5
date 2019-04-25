@@ -1,10 +1,6 @@
 var dialog = new ax5.ui.dialog({title: "확인"});
 var uploadCnt = 0;
-
-$(function(){
-  
-});
-
+var fileArr = [];
 /*
  * For the sake keeping the code clean and the examples simple this file
  * contains only the plugin configuration & callbacks.
@@ -21,7 +17,7 @@ $('#drag-and-drop-zone').dmUploader({
 	queue: false,						//	위에서부터 순서대로 파일 업로드 여부
 	extraData: function() {				//	서블릿에 보낼 데이터
 			return {
-				"noticeid": '2019032701'
+				"noticeAcptno": window.parent.uploadAcptno
 			};
 	},
 	onDragEnter: function(){
@@ -66,11 +62,18 @@ $('#drag-and-drop-zone').dmUploader({
 		ui_multi_update_file_controls(id, false, false);  // change control buttons status
 		--uploadCnt;
 		console.log("data : "+JSON.stringify(data));
+		//m_acptno,cm_gbncd,cm_seqno,cm_attfile,cm_svfile
+		/*var fileMeta = new Object();
+		fileMeta.cm_svfile = */
+		
+		fileArr.push(data[0]);
+		
 		if(uploadCnt === 0 ) {
 			dialog.alert('파일 업로드 완료.', function () {
 				window.parent.fileUploadModal.close();
 				
 				//DB에 업로드 파일 정보 저장.
+				window.parent.fileInfoInsert(fileArr);
 				
 	    		window.parent.modal.close();
 	    		window.parent.Search_click();
@@ -278,158 +281,3 @@ function ui_multi_update_file_controls(id, start, cancel, wasError)
   });
 });*/
 
-
-/*    $(function () {
-        var API_SERVER = "api/fileUpload.php";ax5.info.urlUtil().baseUrl + "/upload";
-        var DIALOG = new ax5.ui.dialog({
-            title: "첨부파일"
-        });
-        var UPLOAD = new ax5.ui.uploader({
-            //debug: true,
-            target: $('[data-ax5uploader="upload1"]'),
-            form: {
-                action: API_SERVER,
-                fileName: "file"
-            },
-            multiple: true,
-            manualUpload: false,
-            progressBox: true,
-            progressBoxDirection: "left",
-            dropZone: {
-                target: $('[data-uploaded-box="upload1"]')
-            },
-            uploadedBox: {
-                target: $('[data-uploaded-box="upload1"]'),
-                icon: {
-                    "download": '<i class="fa fa-download" aria-hidden="true"></i>',
-                    "delete": '<i class="fa fa-minus-circle" aria-hidden="true"></i>'
-                },
-                columnKeys: {
-                    name: "fileName",
-                    type: "ext",
-                    size: "fileSize",
-                    uploadedName: "saveName",
-                    uploadedPath: "",
-                    downloadPath: "",
-                    previewPath: "",
-                    thumbnail: ""
-                },
-                lang: {
-                    supportedHTML5_emptyListMsg: '<div class="text-center" style="padding-top: 30px;">Drop files here or click to upload.</div>',
-                    emptyListMsg: '<div class="text-center" style="padding-top: 30px;">Empty of List.</div>'
-                },
-                onchange: function () {
- 
-                },
-                onclick: function () {
-                    // console.log(this.cellType);
-                    var fileIndex = this.fileIndex;
-                    var file = this.uploadedFiles[fileIndex];
-                    switch (this.cellType) {
-                        case "delete":
-                            DIALOG.confirm({
-                                title: "AX5UI",
-                                msg: "Are you sure you want to delete it?"
-                            }, function () {
-                                if (this.key == "ok") {
-                                    $.ajax({
-                                        contentType: "application/json",
-                                        method: "post",
-                                        url: API_SERVER,
-                                        data: JSON.stringify([{
-                                            id: file.id
-                                        }]),
-                                        success: function (res) {
-                                            if (res.error) {
-                                                alert(res.error.message);
-                                                return;
-                                            }
-                                            UPLOAD.removeFile(fileIndex);
-                                        }
-                                    });
-                                }
-                            });
-                            break;
- 
-                        case "download":
-                            if (file.download) {
-                                location.href = API_SERVER + file.download;
-                            }
-                            break;
-                    }
-                }
-            },
-            validateSelectedFiles: function () {
-                console.log(this);
-                // 10개 이상 업로드 되지 않도록 제한.
-                if (this.uploadedFiles.length + this.selectedFiles.length > 10) {
-                    alert("파일을 10개이상 업로드 할수 없습니다.");
-                    return false;
-                }
- 
-                return true;
-            },
-            onprogress: function () {
- 
-            },
-            onuploaderror: function () {
-                console.log(this.error);
-                DIALOG.alert(this.error.message);
-            },
-            onuploaded: function () {
- 
-            },
-            onuploadComplete: function () {
- 
-            }
-        });
- 
-        // 파일 목록 가져오기
-        $.ajax({
-            method: "GET",
-            url: API_SERVER,
-            success: function (res) {
- 
-                console.log(res);
-                UPLOAD.setUploadedFiles(res);
-            }
-        });
-        
-        function uploadFile() {
-        	var files = ax5.util.deepCopy(UPLOAD.uploadedFiles);
-            console.log(files);
-            DIALOG.alert(JSON.stringify(files));
-        }
-        
-        function removeFile() {
-        	DIALOG.confirm({
-                title: "첨부파일",
-                msg: "삭제하시겠습니까?"
-            }, function () {
-
-                if (this.key == "ok") {
-
-                    var deleteFiles = [];
-                    UPLOAD.uploadedFiles.forEach(function (f) {
-                        deleteFiles.push({id: f.id});
-                    });
-
-                    $.ajax({
-                        contentType: "application/json",
-                        method: "post",
-                        url: API_SERVER,
-                        data: JSON.stringify(deleteFiles),
-                        success: function (res) {
-                            if (res.error) {
-                                alert(res.error.message);
-                                return;
-                            }
-
-                            UPLOAD.removeFileAll();
-                        }
-                    });
-
-                }
-            });
-        }
-    });*/

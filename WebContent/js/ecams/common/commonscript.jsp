@@ -2,21 +2,6 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!-- Vendor scripts -->
-
-<!-- 미사용 주석처리
-<script src="<c:url value="/vendor/jquery/dist/jquery.min.js"/>"></script>
-<script src="<c:url value="/vendor/jquery-ui/jquery-ui.min.js"/>"></script>
-<script src="<c:url value="/vendor/slimScroll/jquery.slimscroll.min.js"/>"></script>
-<script src="<c:url value="/vendor/bootstrap/dist/js/bootstrap.min.js"/>"></script>
-<script src="<c:url value="/vendor/jquery-flot/jquery.flot.resize.js"/>"></script>
-<script src="<c:url value="/vendor/jquery-flot/jquery.flot.pie.js"/>"></script>
-<script src="<c:url value="/vendor/flot.curvedlines/curvedLines.js"/>"></script>
-<script src="<c:url value="/vendor/jquery.flot.spline/index.js"/>"></script>
-<script src="<c:url value="/vendor/iCheck/icheck.min.js"/>"></script>
-<script src="<c:url value="/vendor/peity/jquery.peity.min.js"/>"></script>
-<script src="<c:url value="/vendor/sparkline/index.js"/>"></script>
--->
-
 <script src="<c:url value="/scripts/jquery-3.3.1.min.js"/>" type="text/javascript"></script>
 <script src="<c:url value="/vendor/jquery-flot/jquery.flot.js"/>"></script>
 <script src="<c:url value="/vendor/nestable/jquery.nestable.js"/>"></script>
@@ -41,6 +26,16 @@
 <!-- fileupload script -->
 <script src="<c:url value="/scripts/fileupload/jquery.dm-uploader.min.js"/>"></script>
 <script src="<c:url value="/scripts/fileupload/demo-ui.js"/>"></script>
-<%-- <script src="<c:url value="/scripts/fileupload/demo-config.js"/>"></script> --%>
+
+<!-- FILE TREE -->
+<script src="<c:url value="/scripts/filetree/jquery.ztree.all.js"/>"></script>
+<script src="<c:url value="/scripts/filetree/jquery.ztree.core.js"/>"></script>
+<script src="<c:url value="/scripts/filetree/jquery.ztree.excheck.js"/>"></script>
+<script src="<c:url value="/scripts/filetree/jquery.ztree.exedit.js"/>"></script>
+<script src="<c:url value="/scripts/filetree/jquery.ztree.exhide.js"/>"></script>
+
+<!-- C3 chart -->
+<script src="https://d3js.org/d3.v5.js"></script>
+<script src="<c:url value="/scripts/chart/c3.js"/>"></script>
 
 <script src="<c:url value="/js/ecams/common/common.js" />" type="text/javascript"></script>

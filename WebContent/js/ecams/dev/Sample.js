@@ -23,6 +23,51 @@ $(document).ready(function() {
     });
     
     
+    var zNodes =[
+        { id : "1", name:"최상위1" },
+        { id : "11", pId : "1", name:"최상위1의 하위1"},
+        { id : "12", pId : "1", name:"최상위1의 하위2"},
+        { id : "2", name:"최상위2" },
+        { id : "21", pId : "2", name:"최상위2의 하위1"},
+        { id : "22", pId : "2", name:"최상위2의 하위2"},
+    ];
+    
+    var nodeTest = [
+    	{ id : "1", name:"첫번째"},
+    	{ id : "1-1", pId : "1", name:"hihi"},
+    	{ id : "1-2", pId : "1", name:"hihi2"},
+    	{ id : "1-3", pId : "1", name:"hihi3"},
+    	{ id : "1-4", pId : "1", name:"hihi4"},
+    	{ id : "2", name:"두번째"},
+    	{ id : "2-1", pId : "2", name:"hello"},
+    	{ id : "2-2", pId : "2", name:"hello2"},
+    	{ id : "2-3", pId : "2", name:"hello3"},
+    	{ id : "3", name:"세번째"},
+    	{ id : "4", name:"네번째"}
+    ];
+    
+    var setting = {
+        data: {
+            simpleData: {
+                enable: true,
+            }
+        }
+    }
+    
+    
+    var ajaxReturnData = null;
+	var treeInfo = {
+		treeInfoData: 	JSON.stringify(true),
+		requestType: 	'GET_ZTREE_INFO'
+	}
+	
+	ajaxReturnData = ajaxCallWithJson('/webPage/modal/TreeOrganization', treeInfo, 'json');
+	console.log(ajaxReturnData);
+	if(ajaxReturnData !== 'ERR') {
+		$.fn.zTree.init($("#treeDemo"), setting, nodeTest);
+	}
+
+    
 })
 
 var modal2 = new ax5.ui.modal({
@@ -163,5 +208,32 @@ function openConfirm2() {
 			alert('cancel');
 		}
 	});
+}
+
+function loadingTest() {
+	toast.push({
+        theme: 'info',
+        icon:  '<i class="fa fa-bell"></i>',
+        msg:   '대용량 데이터 처리중입니다.',
+        closeIcon: '<i class="fa fa-times"></i>'
+    });
+	
+	$('html').css({'cursor':'wait'});
+	$('body').css({'cursor':'wait'});
+	
+	
+	setTimeout(function(){
+		
+		toast.push({
+	        theme: 'info',
+	        icon:  '<i class="fa fa-bell"></i>',
+	        msg:   '대용량 데이터 처리완료.',
+	        closeIcon: '<i class="fa fa-times"></i>'
+	    });
+		
+		$('html').css({'cursor':'auto'});
+		$('body').css({'cursor':'auto'});
+	},3000);
+	
 }
 

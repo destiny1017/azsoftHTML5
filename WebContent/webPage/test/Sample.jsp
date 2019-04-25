@@ -8,6 +8,35 @@
 
 <c:import url="/webPage/common/common.jsp" />
 
+<style>
+	.filebox label { 
+		display: inline-block; 
+		padding: .5em .75em; 
+		color: #999; 
+		font-size: inherit; 
+		line-height: normal; 
+		background-color: #fdfdfd; 
+		cursor: pointer; 
+		border: 1px solid #ebebeb; 
+		border-bottom-color: #e2e2e2; 
+		border-radius: .25em; 
+		/*
+		vertical-align: middle; 
+		*/
+	} 
+	.filebox input[type="file"] { 
+		/* 파일 필드 숨기기 */ 
+		position: absolute; 
+		width: 1px; 
+		height: 1px; 
+		padding: 0; 
+		margin: -1px; 
+		overflow: hidden; 
+		clip:rect(0,0,0,0); /* 특정 부분만 나오게 할때  */ 
+		border: 0; 
+	}
+</style>
+
 <section>
 	<div class="container-fluid padding-40-top">
 		<div class="row">
@@ -99,49 +128,30 @@
 	</div>
 </section>
 
-
-
-
-
-<!-- 
 <section>
-	<div role="tabpanel">
-
-	  Nav tabs
-	  <ul class="nav nav-tabs" role="tablist" id="myTab">
-	    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a></li>
-	    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
-	    <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a></li>
-	    <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
-	  </ul>
-	
-	  Tab panes
-	  <div class="tab-content">
-	    <div role="tabpanel" class="tab-pane fade  active" id="home">...1</div>
-	    <div role="tabpanel" class="tab-pane fade " id="profile">...2</div>
-	    <div role="tabpanel" class="tab-pane fade " id="messages">...3</div>
-	    <div role="tabpanel" class="tab-pane fade " id="settings">...4</div>
-	  </div>
-	
+	<div class="container-fluid padding-40-top">
+		<div class="row">
+			<pre>
+			파일 트리입니다.
+			<ul id="treeDemo" class="ztree"></ul>				
+			</pre>
+			
+		</div>
 	</div>
-
 </section>
 
 <section>
-	<ul class="nav nav-tabs">
-		<li><a href="#a" data-toggle="tab">a</a></li>
-		<li><a href="#b" data-toggle="tab">b</a></li>
-		<li><a href="#c" data-toggle="tab">c</a></li>
-		<li><a href="#d" data-toggle="tab">d</a></li>
-	</ul>
-	
-	<div class="tab-content">
-	   <div class="tab-pane active" id="a">AAA</div>
-	   <div class="tab-pane" id="b">BBB</div>
-	   <div class="tab-pane" id="c">CCC</div>
-	   <div class="tab-pane" id="d">DDD</div>
+	<div class="container-fluid padding-40-top">
+		<div class="row">
+			<pre>
+			로딩중 마우스 커서 변경
+			<button id="btnAlert" name="btnAlert" class="btn btn-default" onclick="loadingTest()">클릭</button>				
+			</pre>
+			
+		</div>
 	</div>
-</section> -->
+</section>
+
 
 <c:import url="/js/ecams/common/commonscript.jsp" />
 <script type="text/javascript" src="<c:url value="/js/ecams/dev/Sample.js"/>"></script>

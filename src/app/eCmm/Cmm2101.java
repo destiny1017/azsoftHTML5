@@ -310,8 +310,20 @@ public class Cmm2101{
 		ConnectionContext connectionContext = new ConnectionResource();
 		try {
 			conn = connectionContext.getConnection();
-
-
+			
+			SystemPath systemPath = new SystemPath();
+			String noticeFileUplaodDir = systemPath.getTmpDir("01");
+			File deleteFolder = new File(noticeFileUplaodDir + "\\" + AcptNo);
+			File[] deleteFolderList = deleteFolder.listFiles();
+			
+			for(int i=0; i<deleteFolderList.length; i++) {
+				deleteFolderList[i].delete();
+			}
+			
+			deleteFolder.delete();
+			
+			
+	        strQuery.setLength(0);
 			strQuery.append("delete from CMM0220 where cm_acptno = ? and cm_gbncd= '1' \n");
 			pstmt = conn.prepareStatement(strQuery.toString());
 			pstmt.setString(1, AcptNo);
@@ -386,13 +398,29 @@ public class Cmm2101{
 	public String setDocFile(ArrayList<HashMap<String,String>> fileList) throws SQLException, Exception {
 		Connection        conn        = null;
 		PreparedStatement pstmt       = null;
+		ResultSet		  rs 		  = null;
 		StringBuffer      strQuery    = new StringBuffer();
 		ConnectionContext connectionContext = new ConnectionResource();
-
+		int maxSeq = 0;
 		try {
 			conn = connectionContext.getConnection();
 			conn.setAutoCommit(false);
-
+			
+			strQuery.setLength(0);
+			strQuery.append("SELECT nvl(max(cm_seqno) + 1,1) AS maxseq	\n");
+			strQuery.append("  FROM CMM0220					\n");
+			strQuery.append(" WHERE CM_ACPTNO=?				\n");
+			strQuery.append("   AND CM_GBNCD=1				\n");
+			pstmt = conn.prepareStatement(strQuery.toString());
+			pstmt.setString(1, fileList.get(0).get("acptno"));
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				maxSeq = rs.getInt("maxseq");
+			}
+			
+			rs.close();
+			pstmt.close();
+			
 			for (int i=0;i<fileList.size();i++){
 				strQuery.setLength(0);
 				strQuery.append("INSERT INTO CMM0220 (cm_acptno,cm_gbncd,cm_seqno,cm_attfile,cm_svfile) values ( \n");
@@ -402,7 +430,7 @@ public class Cmm2101{
 
 				pstmt.setString(1, fileList.get(i).get("acptno"));
 				pstmt.setString(2, fileList.get(i).get("filegb"));
-				pstmt.setInt(3, Integer.parseInt(fileList.get(i).get("seq")));
+				pstmt.setInt(3, maxSeq++);
 				pstmt.setString(4, fileList.get(i).get("realName"));
 				pstmt.setString(5, fileList.get(i).get("saveName"));
 	            pstmt.executeUpdate();
@@ -484,7 +512,7 @@ public class Cmm2101{
 			strQuery.append("delete from CMM0220 \n");
 			strQuery.append("where cm_acptno = ? \n");
 			strQuery.append("and cm_gbncd = '1' \n");
-			strQuery.append("and cm_seqno = ? \n");
+			strQuery.append("and cm_seqno = ? 	\n");
 
 			pstmt = conn.prepareStatement(strQuery.toString());
 
@@ -499,6 +527,99 @@ public class Cmm2101{
             realPath = gPath.getTmpDir_conn("23",conn);
             gPath = null;
             realPath = realPath + "/" + fileData.get("cm_acptno").substring(0, 4) + "/" + fileData.get("savename");
+
+            File delFile = new File(realPath);
+            delFile.delete();
+
+            conn.commit();
+            conn.close();
+			conn = null;
+			pstmt = null;
+
+
+    		return "ok";
+
+
+		} catch (SQLException sqlexception) {
+			sqlexception.printStackTrace();
+			if (pstmt != null)  try{pstmt.close();}catch (Exception ex2){ex2.printStackTrace();}
+			if (conn != null){
+				try{
+					conn.rollback();
+					ConnectionResource.release(conn);
+				}catch(Exception ex3){
+					ecamsLogger.error("## Cmm2101.removeDocFile() connection release exception ##");
+					ex3.printStackTrace();
+				}
+			}
+			ecamsLogger.error("## Cmm2101.removeDocFile() SQLException START ##");
+			ecamsLogger.error("## Error DESC : ", sqlexception);
+			ecamsLogger.error("## Cmm2101.removeDocFile() SQLException END ##");
+			throw sqlexception;
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			if (pstmt != null)  try{pstmt.close();}catch (Exception ex2){ex2.printStackTrace();}
+			if (conn != null){
+				try{
+					conn.rollback();
+					ConnectionResource.release(conn);
+				}catch(Exception ex3){
+					ecamsLogger.error("## Cmm2101.removeDocFile() connection release exception ##");
+					ex3.printStackTrace();
+				}
+			}
+			ecamsLogger.error("## Cmm2101.removeDocFile() Exception START ##");
+			ecamsLogger.error("## Error DESC : ", exception);
+			ecamsLogger.error("## Cmm2101.removeDocFile() Exception END ##");
+			throw exception;
+		}finally{
+			if (strQuery != null) 	strQuery = null;
+			if (pstmt != null)  try{pstmt.close();}catch (Exception ex2){ex2.printStackTrace();}
+			if (conn != null){
+				try{
+					ConnectionResource.release(conn);
+				}catch(Exception ex3){
+					ecamsLogger.error("## Cmm2101.removeDocFile() connection release exception ##");
+					ex3.printStackTrace();
+				}
+			}
+		}
+	}//end of SelectUserInfo() method statement
+	
+	
+	
+	public String removeDocFileHtml(HashMap<String,String> fileData) throws SQLException, Exception {
+		Connection        conn        = null;
+		PreparedStatement pstmt       = null;
+		StringBuffer      strQuery    = new StringBuffer();
+		ConnectionContext connectionContext = new ConnectionResource();
+		String			  realPath = "";
+
+
+		try {
+			SystemPath gPath = new SystemPath();
+			conn = connectionContext.getConnection();
+			conn.setAutoCommit(false);
+
+			strQuery.setLength(0);
+			strQuery.append("delete from CMM0220 \n");
+			strQuery.append("where cm_acptno = ? \n");
+			strQuery.append("and cm_gbncd = '1' \n");
+			strQuery.append("and cm_attfile = ? 	\n");
+
+			pstmt = conn.prepareStatement(strQuery.toString());
+
+
+			pstmt.setString(1, 	fileData.get("acptNo"));
+			pstmt.setString(2,	fileData.get("fileName"));
+
+            pstmt.executeUpdate();
+            pstmt.close();
+            pstmt = null;
+
+            realPath = gPath.getTmpDir_conn("01",conn);
+            gPath = null;
+            realPath = realPath + "\\" + fileData.get("acptNo") + "\\" + fileData.get("fileName");
 
             File delFile = new File(realPath);
             delFile.delete();

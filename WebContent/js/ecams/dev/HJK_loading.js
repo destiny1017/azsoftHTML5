@@ -16,6 +16,8 @@ var firstGrid = new ax5.ui.grid();
 // 달력 생성
 var picker = new ax5.ui.picker();
 
+var loading_div = "<div class='loding-div' style='display:none;'><div class='loding-img'><img alt='' src='/img/loading_gird.gif'></div></div>";
+
 // 이 부분 지우면 영어명칭으로 바뀜
 // ex) 월 -> MON
 ax5.info.weekNames = [
@@ -42,7 +44,7 @@ $(document).ready(function(){
                  break;
          }
      });
-
+	 
 	setPicker();
 	getUserInfo();
 	cboGbn_set();
@@ -319,6 +321,13 @@ function cboGbn_set(){
 
 
 function cmdQry_Proc(){
+
+	$('[data-ax5grid-container="body"]').append(loading_div);
+	$(".loding-div").show();	
+	$('.btn').css({'cursor':'wait'});
+	
+	
+	
 	var tmpObj = {};
 	var ajaxResultData = null;
 	
@@ -352,28 +361,28 @@ function cmdQry_Proc(){
 	
 	console.log(tmpObj);
 	
-	var tmpData = {
-			requestType : 'get_SelectList',
-			prjData: JSON.stringify(tmpObj)
-	}	
-	
-	
-	ajaxResultData = ajaxCallWithJson('/webPage/approval/RequestStatus', tmpData, 'json');
-	
-	//console.log("result" + ajaxResultData);
-	
-	var cnt = Object.keys(ajaxResultData).length;	
-	
-	$("#lbTotalCnt").text("총" + cnt + "건");
-	
-	firstGrid.setData(ajaxResultData);
-	
-	tmpObj = null;
+	setTimeout(function(){
+		var tmpData = {
+				requestType : 'get_SelectList',
+				prjData: JSON.stringify(tmpObj)
+		}
+		ajaxResultData = ajaxCallWithJson('/webPage/approval/RequestStatus', tmpData, 'json');
+		//console.log("result" + ajaxResultData);
+		
+		var cnt = Object.keys(ajaxResultData).length;	
+		
+		$("#lbTotalCnt").text("총" + cnt + "건");
+		
+		firstGrid.setData(ajaxResultData);
+
+		$(".loding-div").remove();
+		$('.btn').css({'cursor':'pointer'});
+		tmpObj = null;
+	}, 100);
 }
 
 function setGrid(){
-	
-    
+	    
     var menu =new ax5.ui.menu ({
         iconWidth: 20,
         acceleratorWidth: 100,
@@ -503,4 +512,6 @@ function setGrid(){
 		}
 	});
 	
+	// 초기 이미지 로딩
+	$('[data-ax5grid-container="body"]').append(loading_div);
 }

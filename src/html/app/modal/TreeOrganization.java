@@ -45,6 +45,9 @@ public class TreeOrganization extends HttpServlet {
 				case "GET_TREE_INFO" :
 					response.getWriter().write( getTreeInfo(request) );
 					break;
+				case "GET_ZTREE_INFO" :
+					response.getWriter().write( getTreeInfo_zTree(request) );
+					break;
 				default:
 					break;
 			}
@@ -58,6 +61,11 @@ public class TreeOrganization extends HttpServlet {
 	private String getTreeInfo(HttpServletRequest request) throws SQLException, Exception {
 		String treeInfoData = ParsingCommon.parsingRequestJsonParamToString(request, "treeInfoData");
 		return gson.toJson( teamInfo.getTeamInfoTree_new(Boolean.parseBoolean(treeInfoData)) );
+	}
+	
+	private String getTreeInfo_zTree(HttpServletRequest request) throws SQLException, Exception {
+		String treeInfoData = ParsingCommon.parsingRequestJsonParamToString(request, "treeInfoData");
+		return gson.toJson( teamInfo.getTeamInfoTree_zTree(Boolean.parseBoolean(treeInfoData)) );
 	}
 	
 	

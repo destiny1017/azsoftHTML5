@@ -12,13 +12,18 @@ var strAdmin = "";
 var combo_dp1;
 var strStD = "";
 var strEdD = "";
-var userid = window.parent.userId;
+var userid = window.top.userId;
 var noticePopData = null;
 var picker = new ax5.ui.picker();
 var divGrid1 = new ax5.ui.grid();
 var mask = new ax5.ui.mask();
 var modal = new ax5.ui.modal();
 var fileLength = 0 ;
+var uploadAcptno = null;
+var downAcptno = null;
+var downFileCnt = 0;
+var title_;
+var class_;
 
 var fileUploadModal = new ax5.ui.modal({
 	theme: "warning",
@@ -43,6 +48,32 @@ var fileUploadModal = new ax5.ui.modal({
         }
     }
 });
+
+var fileDownloadModal = new ax5.ui.modal({
+	theme: "warning",
+    header: {
+        title: '<i class="glyphicon glyphicon-file" aria-hidden="true"></i> [첨부파일]',
+        btns: {
+            minimize: {
+                label: '<i class="fa fa-minus-circle" aria-hidden="true"></i>', onClick: function(){
+                	fileDownloadModal.minimize('bottom-right');
+                }
+            },
+            restore: {
+                label: '<i class="fa fa-plus-circle" aria-hidden="true"></i>', onClick: function(){
+                	fileDownloadModal.restore();
+                }
+            },
+            close: {
+                label: '<i class="fa fa-times-circle" aria-hidden="true"></i>', onClick: function(){
+                	fileDownloadModal.close();
+                }
+            }
+        }
+    }
+});
+
+
 
 function checkModalLength() {
 	return $("div[id*='modal']").length;
@@ -100,8 +131,7 @@ function createGrid() {
             {key: "CM_NOTIYN", label: "팝업",  width: '8%'},
             {key: "fileCnt", label: "첨부파일",  width: '8%',
              formatter: function(){
-            	 var htmlStr = this.value > 0 ? "<button class='btn-ecams-grid' >첨부파일다운</button>" : '';
-            	 console.log(this.value);
+            	 var htmlStr = this.value > 0 ? "<button class='btn-ecams-grid' onclick='openFileDownload("+this.item.CM_ACPTNO+","+this.item.fileCnt+")' >첨부파일다운</button>" : '';
             	 return htmlStr;
              }
             }
@@ -206,14 +236,62 @@ function grid_resultHandler() {
 
 	if(ajaxReturnData !== 'ERR') {
 		grid_dp1 = ajaxReturnData;
-		
 		divGrid1.setData(grid_dp1);
-		
 		$('#lbCnt').text('총 '+grid_dp1.length+'건');
-
 		//제목에 툴팁달기  !!
 	}
 }
+
+// 그리드에 마우스 툴팁 달기
+$(document).on("mouseenter","[data-ax5grid-panel='body'] span",function(event){
+	if(this.innerHTML == ""){
+		return;
+	}
+	
+	//첫번째 컬럼에만 툴팁 달기
+	if($(this).closest("td").index() > 0) return;
+	
+	//그리드 정보 가져오기
+	var gridRowInfo = divGrid1.list[$(this).closest("td").closest("tr").index()];
+	var contents = gridRowInfo.CM_CONTENTS;
+	
+	console.log(contents.length);
+	
+	if(contents.length > 500 ) {
+		contents = contents.substring(0,500) + '....';
+	}
+	
+	$(this).attr("title",contents);
+	
+	// title을 변수에 저장
+	title_ = $(this).attr("title");
+	// class를 변수에 저장
+	class_ = $(this).attr("class");
+	// title 속성 삭제 ( 기본 툴팁 기능 방지 )
+	$(this).attr("title","");
+	
+	$("body").append("<div id='tip'></div>");
+	if (class_ == "img") {
+		$("#tip").html(imgTag);
+		$("#tip").css("width","100px");
+	} else {
+		$("#tip").css("width","300px");
+		$("#tip").text(title_);
+	}
+	
+	//var pageX = $(this).offset().left -20;
+	//var pageY = $(this).offset().top - $("#tip").innerHeight();
+	var pageX = event.pageX;
+	var pageY = event.pageY;
+	
+	$("#tip").css({left : pageX + "px", top : pageY + "px"}).fadeIn(500);
+	return;
+}).on('mouseleave',"[data-ax5grid-panel='body'] span",function(){
+
+	$(this).attr("title", title_);
+	$("#tip").remove();	
+	
+});
 
 function Search_click1() {
 	Search_click();
@@ -228,9 +306,7 @@ function Search_click() {
 }
 
 function doubleClickGrid1() {
-	console.log('check double click grid');
 	noticePopData =divGrid1.list[divGrid1.selectedDataIndexs];
-	
 	modal.open({
         width: 600,
         height: 440,
@@ -301,6 +377,10 @@ var fileUploadModalCallBack = function() {
 	fileUploadModal.close();
 }
 
+var fileDownloadModalCallBack = function() {
+	fileDownloadModal.close();
+}
+
 function new_Click(){
 	noticePopData = null;
     modal.open({
@@ -344,6 +424,57 @@ function openFileUpload() {
     });
 }
 
+function openFileDownload(acptno,fileCnt) {
+	if(acptno !== '') {
+		downAcptno = acptno;
+		downFileCnt = fileCnt;
+	}
+	fileDownloadModal.open({
+        width: 600,
+        height: 360,
+        iframe: {
+            method: "get",
+            url: 	"../modal/FileDownload.jsp",
+            param: "callBack=fileDownloadModalCallBack"
+        },
+        onStateChanged: function () {
+            if (this.state === "open") {
+            }
+            else if (this.state === "close") {
+            }
+        }
+    }, function () {
+    });
+}
+
 function sysPathButton_Click() { //완성
 	DataToExcel_Handler();
 }
+
+function fileInfoInsert(data) {
+	//data = [{"noticeAcptno":"1234","fileName":"11.exe"}];
+	
+	var testArr = []
+	testArr.push(data[0]);
+	var ajaxReturnData = null;
+	var tmpData = {
+		requestType : 'insertNoticeFileInfo',
+		fileInfo : JSON.stringify(data),
+	}
+	
+	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', tmpData, 'json');
+}
+
+function onPrint() {
+	var html = document.querySelector('html');
+	var printContents = document.querySelector('.test-print').innerHTML;
+	var printDiv = document.createElement('div');
+	printDiv.className ='print-div';
+
+	html.appendChild(printDiv);
+	printDiv.innerHTML = printContents;
+	document.body.style.display = 'none';
+	window.print();
+	document.body.style.display = 'block';
+	printDiv.style.display = 'none';
+	}

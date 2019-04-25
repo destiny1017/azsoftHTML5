@@ -221,6 +221,7 @@ function updateHandler(){
 		
 		// 첨부파일 존재시
 		if(window.parent.fileLength > 1) {
+			window.parent.uploadAcptno = ajaxReturnData;
 			window.parent.fileUploadModal.restore();
 			$('#btnStartUpload',window.parent.document.getElementsByName('ax5-modal-15-frame')[0].contentWindow.document).click();
 		}
@@ -236,8 +237,14 @@ function updateHandler(){
 
 //파일첨부
 function fileOpen() {
-	if(window.parent.checkModalLength() > 1) window.parent.fileUploadModal.restore();
-	else window.parent.openFileUpload();
+	if(noticeInfo !== null) {
+		window.parent.downAcptno = noticeInfo.CM_ACPTNO;
+		window.parent.downFileCnt = noticeInfo.fileCnt;
+		window.parent.openFileDownload('','');
+	} else {
+		if(window.parent.checkModalLength() > 1) window.parent.fileUploadModal.restore();
+		else window.parent.openFileUpload();
+	}
 }
 
 function del() {
@@ -257,7 +264,6 @@ function del() {
 			delData.chkNotice = $('#exampleCheck1').prop("checked").toString();
 			delData.stDate = stDate;
 			delData.edDate = edDate;
-			console.log(delData);
 			var tmpData = {
 					requestType : 'Cmm2101_2',
 					UserId : window.top.userId,

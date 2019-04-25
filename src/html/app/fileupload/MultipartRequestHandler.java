@@ -13,12 +13,14 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import app.common.SystemPath;
 import html.app.fileupload.vo.FileMeta;
 
 // 요청 객체에서 업로드 된 파일을 가져옵니다.
 public class MultipartRequestHandler {
 
-	
+	private static String noticeAcptno = "";
+	private static SystemPath systemPath = new SystemPath();
 	// Servlet API를 사용하여 업로드 된 모든 파일을 가져옵니다. 
 	// 참고로 Servlet 3.0과 함께 작동합니다.
 	public static List<FileMeta> uploadByJavaServletAPI(HttpServletRequest request) throws IOException, ServletException{
@@ -28,11 +30,8 @@ public class MultipartRequestHandler {
 		// 1. Get all parts
 		Collection<Part> parts = request.getParts();
 		
-		System.out.print("parts : ");
-		System.out.println(parts);
-		
 		// 2. Get paramter "twitter"
-		String twitter = request.getParameter("twitter");
+		String noticeAcptno = request.getParameter("noticeAcptno");
 		// 3. Go over each part
 		FileMeta temp = null;
 		for(Part part:parts){	
@@ -46,7 +45,7 @@ public class MultipartRequestHandler {
 				temp.setFileSize(part.getSize()/1024 +" Kb");
 				temp.setFileType(part.getContentType());
 				temp.setContent(part.getInputStream());
-				temp.setTwitter(twitter);
+				temp.setNoticeAcptno(noticeAcptno);
 				// 3.3 Add created FileMeta object to List<FileMeta> files
 				files.add(temp);
 			}
@@ -74,21 +73,34 @@ public class MultipartRequestHandler {
 			}
 			factory.setRepository(tmpFolder);*/
 			ServletFileUpload upload = new ServletFileUpload(factory);
-
+			upload.setHeaderEncoding("utf-8");
 			// 2.2 Parse the request
 			try {
 				
 				// 2.3 Get all uploaded FileItem
 				List<FileItem> items = upload.parseRequest(request);
-				String twitter = "";
+				
+				
+				for(FileItem item:items) {
+			        if(item.getFieldName().equals("noticeAcptno")) {
+			        	noticeAcptno = item.getString();
+			        }
+				}
+				
 				
 				// 2.4 Go over each FileItem
 				for(FileItem item:items){
 					// 2.5 if FileItem is not of type "file"
 				    if (item.isFormField()) {
 				    	// 2.6 Search for "twitter" parameter
-				        if(item.getFieldName().equals("noticeid"))
-				        	twitter = item.getString();
+				        /*if(item.getFieldName().equals("noticeAcptno")) {
+				        	if(!noticeAcptno.equals(item.getString())) {
+				        		fileIndex = 0;
+				        	}
+				        	noticeAcptno = item.getString();
+				        	System.out.println("noticeAcptno : " + noticeAcptno);
+				        }*/
+				        	
 				        
 				    } else {
 				       
@@ -99,9 +111,23 @@ public class MultipartRequestHandler {
 						temp.setFileType(item.getContentType());
 						temp.setFileSize(item.getSize()/1024+ "Kb");
 						
-						String fileName = "C:\\fileupload\\" + item.getName();
+						// 파일 올라가는 디렉토리 없으면 생성
+						String fileUploadDir = systemPath.getTmpDir("01");
+						
+						File fileUploadFolder = new File(fileUploadDir + "\\" + noticeAcptno);	
+						if(!fileUploadFolder.exists()) {
+							fileUploadFolder.mkdirs();
+						}
+						
+						String fileName = item.getName();
+						if(fileName.indexOf("\\") > 0) {
+							fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
+						}
+						System.out.println("fileName : " + fileName);
+						// 경로 나중에 db에서 받아와서 셋팅
+						String fileFullName = fileUploadDir + "\\" + noticeAcptno + "\\" + fileName;
 						// 파일 저장
-						item.write(new File(fileName));
+						item.write(new File(fileFullName));
 						
 				    	// 2.7 Add created FileMeta object to List<FileMeta> files
 						files.add(temp);
@@ -111,9 +137,8 @@ public class MultipartRequestHandler {
 				
 				// 2.8 Set "twitter" parameter 
 				for(FileMeta fm:files){
-					fm.setTwitter(twitter);
+					fm.setNoticeAcptno(noticeAcptno);
 				}
-				
 			} catch (FileUploadException e) {
 				e.printStackTrace();
 			}
@@ -123,7 +148,6 @@ public class MultipartRequestHandler {
 
 	
 	// this method is used to get file name out of request headers
-	// 
 	private static String getFilename(Part part) {
 	    for (String cd : part.getHeader("content-disposition").split(";")) {
 	        if (cd.trim().startsWith("filename")) {
