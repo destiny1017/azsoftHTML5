@@ -23,29 +23,6 @@ $(document).ready(function() {
     });
     
     
-    var zNodes =[
-        { id : "1", name:"최상위1" },
-        { id : "11", pId : "1", name:"최상위1의 하위1"},
-        { id : "12", pId : "1", name:"최상위1의 하위2"},
-        { id : "2", name:"최상위2" },
-        { id : "21", pId : "2", name:"최상위2의 하위1"},
-        { id : "22", pId : "2", name:"최상위2의 하위2"},
-    ];
-    
-    var nodeTest = [
-    	{ id : "1", name:"첫번째"},
-    	{ id : "1-1", pId : "1", name:"hihi"},
-    	{ id : "1-2", pId : "1", name:"hihi2"},
-    	{ id : "1-3", pId : "1", name:"hihi3"},
-    	{ id : "1-4", pId : "1", name:"hihi4"},
-    	{ id : "2", name:"두번째"},
-    	{ id : "2-1", pId : "2", name:"hello"},
-    	{ id : "2-2", pId : "2", name:"hello2"},
-    	{ id : "2-3", pId : "2", name:"hello3"},
-    	{ id : "3", name:"세번째"},
-    	{ id : "4", name:"네번째"}
-    ];
-    
     var setting = {
         data: {
             simpleData: {
@@ -64,11 +41,44 @@ $(document).ready(function() {
 	ajaxReturnData = ajaxCallWithJson('/webPage/modal/TreeOrganization', treeInfo, 'json');
 	console.log(ajaxReturnData);
 	if(ajaxReturnData !== 'ERR') {
-		$.fn.zTree.init($("#treeDemo"), setting, nodeTest);
+		$.fn.zTree.init($("#treeDemo"), setting, ajaxReturnData);
 	}
-
+	
+	
+	
+	
+/*	_promise(false)
+	.then(function(text){
+		console.log(text);
+	}, function(err) {
+		console.error(err);
+	});*/
+	
+	
+	_promise(false)
+		.then(function(text){
+			window.alert(text);
+		},function(err){
+			window.alert(err);
+		});
     
-})
+	
+	
+});
+
+
+var _promise = function(flag){
+	return new Promise(function(resoleve,reject){
+		window.setTimeout(function(){
+			if(flag){
+				resoleve('해결됨!!');
+			}else {
+				reject(Error('실패!!'));
+			}
+		},1000);
+	});
+};
+
 
 var modal2 = new ax5.ui.modal({
     /*테마
@@ -211,29 +221,148 @@ function openConfirm2() {
 }
 
 function loadingTest() {
-	toast.push({
-        theme: 'info',
-        icon:  '<i class="fa fa-bell"></i>',
-        msg:   '대용량 데이터 처리중입니다.',
-        closeIcon: '<i class="fa fa-times"></i>'
-    });
+	/*changeMouseCursor(true)
+	.then(showToast('대용량 데이터 처리중입니다.'))
+	.then(getBigData())
+	.then(showToast('대용량 데이터 처리 완료 되었습니다.'))
+	.then(changeMouseCursor)
+	.then(console.log);*/
 	
+	/*.then(getBigData(true))
+	.then(showToastMsg(false))
+	.then(changeMouseCursor(false))
+	.then(console.log);*/
+	
+	loading.then(getBigData);
+};
+
+var loading = new Promise(function(resolve,reject){
+	
+	//1. 토스트 메세지 띄울거야
+	//2. 마우스 커서 변환 시킬거야
+	
+	showToast('대용량 데이터 처리 시작합니다.');
 	$('html').css({'cursor':'wait'});
 	$('body').css({'cursor':'wait'});
 	
+	resolve();
 	
-	setTimeout(function(){
+});
+
+
+function showToast(msg){
+	toast.push({
+        theme: 'info',
+        icon:  '<i class="fa fa-bell"></i>',
+        msg:   msg,
+        closeIcon: '<i class="fa fa-times"></i>'
+    });
+}
+
+function getBigData() {
+	var ajaxReturnData = null;
+	var info = {
+		requestType: 	'BIG_DATA_LOADING_TEST'
+	}
+	
+	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', info, 'json');
+	if(ajaxReturnData !== 'ERR') {
+		console.log('get success Big Data...');
+	} 
+	
+	if(ajaxReturnData === 'ERR' ) console.log(Error('ajaxCall Error : ' + ajaxReturnData));
+}
+
+var changeMouseCursor = function(param) {
+	return new Promise(function(changeCursor,removeCursor){
+		if(param) {
+			$('html').css({'cursor':'wait'});
+			$('body').css({'cursor':'wait'});
+			changeCursor('change Cursor wait....');
+		} else {
+			$('html').css({'cursor':'auto'});
+			$('body').css({'cursor':'auto'});
+			removeCursor('remove Cursor event...');
+		}
+	});
+};
+
+var _showToastMsg = function(param) {
+	return new Promise(function(loadMsg,endMsg){
+		if(param) {
+			/*toast.push({
+		        theme: 'info',
+		        icon:  '<i class="fa fa-bell"></i>',
+		        msg:   '대용량 데이터 처리중입니다.',
+		        closeIcon: '<i class="fa fa-times"></i>'
+		    });*/
+			loadMsg('show Toast loading message...');
+		} else {
+			/*toast.push({
+		        theme: 'info',
+		        icon:  '<i class="fa fa-bell"></i>',
+		        msg:   '대용량 데이터 처리완료.',
+		        closeIcon: '<i class="fa fa-times"></i>'
+		    });*/
+			endMsg('show Toast end message...');
+		}
+		
+	});
+}
+
+/*var _getBigData = function() {
+	return new Promise(function(resolve,reject){
+		var ajaxReturnData = null;
+		var info = {
+			requestType: 	'BIG_DATA_LOADING_TEST'
+		}
+		
+		ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', info, 'json');
+		if(ajaxReturnData !== 'ERR') {
+			resolve('get success Big Data...');
+		} 
+		
+		if(ajaxReturnData === 'ERR' ) reject(Error('ajaxCall Error : ' + ajaxReturnData));
+	});
+}
+*/
+	
+
+
+var getLoadingTest = function() {
+	return new Promise(function(resolve,reject){
 		
 		toast.push({
 	        theme: 'info',
 	        icon:  '<i class="fa fa-bell"></i>',
-	        msg:   '대용량 데이터 처리완료.',
+	        msg:   '대용량 데이터 처리중입니다.',
 	        closeIcon: '<i class="fa fa-times"></i>'
 	    });
 		
-		$('html').css({'cursor':'auto'});
-		$('body').css({'cursor':'auto'});
-	},3000);
-	
+		var ajaxReturnData = null;
+		var info = {
+			requestType: 	'BIG_DATA_LOADING_TEST'
+		}
+		
+		ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', info, 'json');
+		if(ajaxReturnData !== 'ERR') {
+			resolve(function(){
+				toast.push({
+			        theme: 'info',
+			        icon:  '<i class="fa fa-bell"></i>',
+			        msg:   '대용량 데이터 처리완료.',
+			        closeIcon: '<i class="fa fa-times"></i>'
+			    });
+				
+				$('html').css({'cursor':'auto'});
+				$('body').css({'cursor':'auto'});
+			});
+		} 
+		
+		if(ajaxReturnData === 'ERR' ) reject(Error('ajaxCall Error : ' + ajaxReturnData));
+		
+	});
 }
+
+
 

@@ -75,6 +75,9 @@ public class Notice extends HttpServlet {
 				case "deleteNoticeFile" :
 					response.getWriter().write( deleteNoticeFile(request) );
 					break;
+				case "BIG_DATA_LOADING_TEST" :
+					response.getWriter().write( getBigDataTest(request) );
+					break;
 				default:
 					break;
 			}
@@ -140,6 +143,16 @@ public class Notice extends HttpServlet {
 	private String deleteNoticeFile(HttpServletRequest request) throws SQLException, Exception {
 		HashMap<String, String> fileData = ParsingCommon.parsingRequestJsonParamToHashMap(request, "fileData");
 		return gson.toJson(cmm2101.removeDocFileHtml(fileData));
+	}
+	
+	private String getBigDataTest(HttpServletRequest request) throws SQLException, Exception {
+		
+		
+		for(long i=0; i<1000000000; i++) {
+			if(i%10000 ==0 ) System.out.println("TEST  [i] = " + i);
+		}
+		
+		return gson.toJson("OK");
 	}
 	
 }
