@@ -43,41 +43,10 @@ $(document).ready(function() {
 	if(ajaxReturnData !== 'ERR') {
 		$.fn.zTree.init($("#treeDemo"), setting, ajaxReturnData);
 	}
-	
-	
-	
-	
-/*	_promise(false)
-	.then(function(text){
-		console.log(text);
-	}, function(err) {
-		console.error(err);
-	});*/
-	
-	
-	_promise(false)
-		.then(function(text){
-			window.alert(text);
-		},function(err){
-			window.alert(err);
-		});
-    
-	
-	
+
+
 });
 
-
-var _promise = function(flag){
-	return new Promise(function(resoleve,reject){
-		window.setTimeout(function(){
-			if(flag){
-				resoleve('해결됨!!');
-			}else {
-				reject(Error('실패!!'));
-			}
-		},1000);
-	});
-};
 
 
 var modal2 = new ax5.ui.modal({
@@ -220,44 +189,6 @@ function openConfirm2() {
 	});
 }
 
-function loadingTest() {
-	/*changeMouseCursor(true)
-	.then(showToast('대용량 데이터 처리중입니다.'))
-	.then(getBigData())
-	.then(showToast('대용량 데이터 처리 완료 되었습니다.'))
-	.then(changeMouseCursor)
-	.then(console.log);*/
-	
-	/*.then(getBigData(true))
-	.then(showToastMsg(false))
-	.then(changeMouseCursor(false))
-	.then(console.log);*/
-	
-	loading.then(getBigData);
-};
-
-var loading = new Promise(function(resolve,reject){
-	
-	//1. 토스트 메세지 띄울거야
-	//2. 마우스 커서 변환 시킬거야
-	
-	showToast('대용량 데이터 처리 시작합니다.');
-	$('html').css({'cursor':'wait'});
-	$('body').css({'cursor':'wait'});
-	
-	resolve();
-	
-});
-
-
-function showToast(msg){
-	toast.push({
-        theme: 'info',
-        icon:  '<i class="fa fa-bell"></i>',
-        msg:   msg,
-        closeIcon: '<i class="fa fa-times"></i>'
-    });
-}
 
 function getBigData() {
 	var ajaxReturnData = null;
@@ -273,96 +204,18 @@ function getBigData() {
 	if(ajaxReturnData === 'ERR' ) console.log(Error('ajaxCall Error : ' + ajaxReturnData));
 }
 
-var changeMouseCursor = function(param) {
-	return new Promise(function(changeCursor,removeCursor){
-		if(param) {
-			$('html').css({'cursor':'wait'});
-			$('body').css({'cursor':'wait'});
-			changeCursor('change Cursor wait....');
-		} else {
-			$('html').css({'cursor':'auto'});
-			$('body').css({'cursor':'auto'});
-			removeCursor('remove Cursor event...');
-		}
+function loadingTest() {
+	_promise(500,beForAndAfterDataLoading('BEFORE'))
+	.then(function(){
+		return _promise(500,getBigData());
+	})
+	.then(function(){
+		return _promise(500,beForAndAfterDataLoading('AFTER'));
 	});
+	
 };
 
-var _showToastMsg = function(param) {
-	return new Promise(function(loadMsg,endMsg){
-		if(param) {
-			/*toast.push({
-		        theme: 'info',
-		        icon:  '<i class="fa fa-bell"></i>',
-		        msg:   '대용량 데이터 처리중입니다.',
-		        closeIcon: '<i class="fa fa-times"></i>'
-		    });*/
-			loadMsg('show Toast loading message...');
-		} else {
-			/*toast.push({
-		        theme: 'info',
-		        icon:  '<i class="fa fa-bell"></i>',
-		        msg:   '대용량 데이터 처리완료.',
-		        closeIcon: '<i class="fa fa-times"></i>'
-		    });*/
-			endMsg('show Toast end message...');
-		}
-		
-	});
-}
 
-/*var _getBigData = function() {
-	return new Promise(function(resolve,reject){
-		var ajaxReturnData = null;
-		var info = {
-			requestType: 	'BIG_DATA_LOADING_TEST'
-		}
-		
-		ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', info, 'json');
-		if(ajaxReturnData !== 'ERR') {
-			resolve('get success Big Data...');
-		} 
-		
-		if(ajaxReturnData === 'ERR' ) reject(Error('ajaxCall Error : ' + ajaxReturnData));
-	});
-}
-*/
-	
-
-
-var getLoadingTest = function() {
-	return new Promise(function(resolve,reject){
-		
-		toast.push({
-	        theme: 'info',
-	        icon:  '<i class="fa fa-bell"></i>',
-	        msg:   '대용량 데이터 처리중입니다.',
-	        closeIcon: '<i class="fa fa-times"></i>'
-	    });
-		
-		var ajaxReturnData = null;
-		var info = {
-			requestType: 	'BIG_DATA_LOADING_TEST'
-		}
-		
-		ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', info, 'json');
-		if(ajaxReturnData !== 'ERR') {
-			resolve(function(){
-				toast.push({
-			        theme: 'info',
-			        icon:  '<i class="fa fa-bell"></i>',
-			        msg:   '대용량 데이터 처리완료.',
-			        closeIcon: '<i class="fa fa-times"></i>'
-			    });
-				
-				$('html').css({'cursor':'auto'});
-				$('body').css({'cursor':'auto'});
-			});
-		} 
-		
-		if(ajaxReturnData === 'ERR' ) reject(Error('ajaxCall Error : ' + ajaxReturnData));
-		
-	});
-}
 
 
 

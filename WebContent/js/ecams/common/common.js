@@ -232,3 +232,42 @@ $(window).on('load',function(){
 	$('body').css({'cursor':'auto'});
 	
 });
+
+
+/*
+ * promise 입니다.
+ * 데이터의 처리 순서를 비동기로 처리해야 할시 사용하세요.
+ * 사용 예제는 Sample.js 페이지 하단에서 확인 가능
+ */
+var _promise = function(ms,action){
+	return new Promise(function(resolve,reject){
+		setTimeout(function(){
+			resolve(action);
+		},ms)
+	});
+}
+
+function beForAndAfterDataLoading(beForAndAfter){
+	if(beForAndAfter === 'BEFORE'){
+		$('html').css({'cursor':'wait'});
+		$('body').css({'cursor':'wait'});
+		showToast('대용량 데이터 처리를 시작합니다.');
+	}
+	
+	if(beForAndAfter === 'AFTER'){
+		$('html').css({'cursor':'auto'});
+		$('body').css({'cursor':'auto'});
+		showToast('대용량 데이터 처리가 완료 되었습니다.');
+	}
+	
+}
+
+function showToast(msg) {
+	toast.push({
+        theme: 'info',
+        icon:  '<i class="fa fa-bell"></i>',
+        msg:   msg,
+        closeIcon: '<i class="fa fa-times"></i>'
+    });
+}
+
