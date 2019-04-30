@@ -145,7 +145,7 @@
 		<div class="row">
 			<pre>
 			로딩중 마우스 커서 변경
-			<button id="btnAlert" name="btnAlert" class="btn btn-default" onclick="loadingTest()">클릭</button>
+			<button id="btnAlert" name="btnAlert" class="btn btn-default" onclick="loadingTest()">클릭 후 완료 전 위의 다른 컴포넌트도 눌러보세요.</button>
 			
 			대용량 데이터 처리시 기존 로직
 			function loadingTest() {
@@ -177,59 +177,26 @@
 			마우스커서 변경 > 대용량 데이터 가져옴 > 마우스 커서 기본으로 변경과 같이 되어야 하지만
 			마우스 커서가 변경되는 속도가 느리기 때문에 데이터를 모두 가져온 후 커서가 변경됨
 			
+			
 			* 변경 로직
-			
-			// promise 사용
-			function loading(ms,action){
-				return new Promise(function(resolve,reject){
-					setTimeout(function(){
-						resolve(action);
-					},ms)
-				});
-			}
-			
-			// 프로미즈 사용해서 0.5초 단위 처리
-			function loadingTest() {
-				loading(500,beForAndAfterDataLoading('BEFORE'))
-				.then(function(){
-					return loading(500,getBigData());
-				})
-				.then(function(){
-					return loading(500,beForAndAfterDataLoading('AFTER'));
-				});
-				
-			};
-			
-			// 마우스 커서 및 메세지 처리
-			function beForAndAfterDataLoading(beForAndAfter){
-				if(beForAndAfter === 'BEFORE'){
-					$('html').css({'cursor':'wait'});
-					$('body').css({'cursor':'wait'});
-					showToast('대용량 데이터 처리를 시작합니다.');
-				}
-				
-				if(beForAndAfter === 'AFTER'){
-					$('html').css({'cursor':'auto'});
-					$('body').css({'cursor':'auto'});
-					showToast('대용량 데이터 처리가 완료 되었습니다.');
-				}
-				
-			}
-			
-			// 데이터 가져오는 부분
 			function getBigData() {
+				console.log('getBigdata');
 				var ajaxReturnData = null;
 				var info = {
 					requestType: 	'BIG_DATA_LOADING_TEST'
 				}
-				
-				ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', info, 'json');
-				if(ajaxReturnData !== 'ERR') {
-					console.log('get success Big Data...');
-				} 
-				
-				if(ajaxReturnData === 'ERR' ) console.log(Error('ajaxCall Error : ' + ajaxReturnData));
+				ajaxAsync('/webPage/mypage/Notice', info, 'json',successGetBigData);
 			}
+			
+			function successGetBigData(data) {
+				console.log('get success Big Data... : '+data);
+				beForAndAfterDataLoading('AFTER');
+			}
+			
+			function loadingTest() {
+				beForAndAfterDataLoading('BEFORE');
+				getBigData();
+			};
 			
 								
 			</pre>
@@ -237,6 +204,7 @@
 		</div>
 	</div>
 </section>
+
 
 
 <c:import url="/js/ecams/common/commonscript.jsp" />

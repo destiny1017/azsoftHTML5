@@ -1,19 +1,28 @@
+import java.util.stream.Stream;
 
 public class Calcu {
 	
 	public static void main(String[] args) {
 		
-		int sumM = 0;
-		int startM = 9000;
-		int addM = 1000;
+		Stream.of("d2","a2","b1","b3","c")
+			.sorted((s1,s2)->{
+				System.out.printf("sort: %s; %s\n", s1,s2);
+				return s1.compareTo(s2);
+			})
+			.filter(s -> {
+				System.out.println("filter: "+s);
+				return s.startsWith("a");
+			})
+			.map(s -> {
+				System.out.println("map: "+s);
+				return s.toUpperCase();
+			})
+			.forEach(s -> System.out.println("forEach: "+s));
 		
-		for(int i=0; i<= 16 ; i++) {
-			sumM += startM + addM * (i+1);
-			System.out.println(i+10 + "ÁÖÂ÷ : " + (startM + addM * (i+1) ));
-		}
-		
-		
-		System.out.println(sumM);
+	}
+	
+	public static String printLine(){
+		return "=============================================";
 	}
 
 }

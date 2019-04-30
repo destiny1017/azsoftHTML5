@@ -149,7 +149,19 @@ public class Notice extends HttpServlet {
 		
 		
 		for(long i=0; i<1000000000; i++) {
-			if(i%10000 ==0 ) System.out.println("TEST  [i] = " + i);
+			if(i%10000 ==0 ) System.out.println("데이터가져오는중...  [i] = " + i);
+		}
+		for(long i=0; i<1000000000; i++) {
+			if(i%10000 ==0 ) System.out.println("데이터가져오는중...  [i] = " + i);
+		}
+		for(long i=0; i<1000000000; i++) {
+			if(i%10000 ==0 ) System.out.println("데이터가져오는중...  [i] = " + i);
+		}
+		for(long i=0; i<1000000000; i++) {
+			if(i%10000 ==0 ) System.out.println("데이터가져오는중...  [i] = " + i);
+		}
+		for(long i=0; i<1000000000; i++) {
+			if(i%10000 ==0 ) System.out.println("데이터가져오는중...  [i] = " + i);
 		}
 		
 		return gson.toJson("OK");

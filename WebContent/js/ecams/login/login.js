@@ -27,7 +27,6 @@ function setInput() {
 }
 
 var loginSubmitAction = function(e) {
-	console.log('loginSubmitAction');
 	e.preventDefault();
     e.stopPropagation();
     
@@ -37,6 +36,7 @@ var loginSubmitAction = function(e) {
     var authCode 			= null;
     var userId 				= null;
     var sessionID			= null;
+    
     if( ! validationCheckFlag ) return;
 
     if(selectedRemember) {
@@ -62,6 +62,8 @@ var loginSubmitAction = function(e) {
 	*/    
     if ( authCode === '0' || authCode === '3' || authCode === '9') {
     	sessionID = setSessionLoginUser(userId);
+    	//setSessionLoginUser2(userId);
+    	console.log('sessionId check : ' + sessionID);
     	if( sessionID !== null && sessionID !== undefined ) {
     		
     		//location.replace('../main/eCAMSBase.jsp?sessionID='+sessionID);

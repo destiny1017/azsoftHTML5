@@ -77,6 +77,10 @@ function meneSet() {
 	}   
 	ajaxUserData = ajaxCallWithJson('/webPage/main/eCAMSBaseServlet', userInfo, 'json');
 	
+	
+	console.log("menudata!!!1");
+	console.log(ajaxUserData);
+	
 	var menuHtmlStr = '';
 	ajaxUserData.forEach(function(menuItem, menuItemIndex) {
 		if(menuItem.link === undefined || menuItem.link === null) {

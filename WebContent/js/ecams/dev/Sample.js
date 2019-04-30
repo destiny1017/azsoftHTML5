@@ -191,31 +191,21 @@ function openConfirm2() {
 
 
 function getBigData() {
+	console.log('getBigdata');
 	var ajaxReturnData = null;
 	var info = {
 		requestType: 	'BIG_DATA_LOADING_TEST'
 	}
+	ajaxAsync('/webPage/mypage/Notice', info, 'json',successGetBigData);
 	
-	ajaxReturnData = ajaxCallWithJson('/webPage/mypage/Notice', info, 'json');
-	if(ajaxReturnData !== 'ERR') {
-		console.log('get success Big Data...');
-	} 
-	
-	if(ajaxReturnData === 'ERR' ) console.log(Error('ajaxCall Error : ' + ajaxReturnData));
+}
+
+function successGetBigData(data) {
+	console.log('get success Big Data... : '+data);
+	beForAndAfterDataLoading('AFTER');
 }
 
 function loadingTest() {
-	_promise(500,beForAndAfterDataLoading('BEFORE'))
-	.then(function(){
-		return _promise(500,getBigData());
-	})
-	.then(function(){
-		return _promise(500,beForAndAfterDataLoading('AFTER'));
-	});
-	
+	beForAndAfterDataLoading('BEFORE');
+	getBigData();
 };
-
-
-
-
-
