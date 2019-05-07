@@ -160,6 +160,9 @@ div[class^="row"] {
 				<div class="col-sm-1">
 					<label  id="lbTotalCnt" name="lbTotalCnt" style="width: 100%; text-align: right;">총0건</label>
 				</div>
+				<div class="col-sm-1 col-sm-offset-1">
+					<button class="btn btn-default" onclick="printGrid();" javascript:;>프&nbsp;&nbsp;린&nbsp;&nbsp;트</button>
+				</div>
 			</div>		
 		</div>
 	</div>

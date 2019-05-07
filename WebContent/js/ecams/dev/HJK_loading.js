@@ -48,11 +48,10 @@ $(document).ready(function(){
 	setPicker();
 	getUserInfo();
 	cboGbn_set();
-	
 
-	
 });
 
+//컨텍스트 메뉴 비활성화
 $(document).on('contextmenu', function() {
 	  return false;
 });
@@ -367,6 +366,7 @@ function cmdQry_Proc(){
 				prjData: JSON.stringify(tmpObj)
 		}
 		ajaxResultData = ajaxCallWithJson('/webPage/approval/RequestStatus', tmpData, 'json');
+		 
 		//console.log("result" + ajaxResultData);
 		
 		var cnt = Object.keys(ajaxResultData).length;	
@@ -514,4 +514,92 @@ function setGrid(){
 	
 	// 초기 이미지 로딩
 	$('[data-ax5grid-container="body"]').append(loading_div);
+}
+
+//프린트 
+function printGrid(){
+	
+	var myObj, txt = "";
+	
+	myObj = firstGrid.getList(); // 그리드 에서 데이터를 가져온다
+	
+    txt += "<!DOCTYPE html><html><head><META http-equiv='Content-Type' content='text/html; charset=UTF-8'><meta http-equiv='X-UA-Compatible' content='IE=edge' /><style type='text/css'>" +
+    		"body {margin: 0;padding: 0;}" +
+    		"* {box-sizing: border-box;-moz-box-sizing: border-box;}" +
+    		".page {width: 297mm;height: 210mm;padding: 2cm;margin: 0 auto;background:#eee;}" +
+    		".subpage {border: 2px red solid;background:#fff;height: 257mm;}" +
+    		"@page {size: A4;margin: 15px;}" +
+    		"@media print {html, body {width: 297mm;height: 210mm;}" +
+    		".page {margin: 0;border: initial;width: initial;min-height: initial;box-shadow: initial;background: initial;page-break-after: always;}}" +
+    		"</style></head><body><table border='1'>";
+    
+    //그리드에서 사용한 key 값 출력할 데이터 설정
+    var myObjkey = [
+    {key: "syscd", label: "시스템"},
+    {key: "spms", label: "SR-ID"},
+    {key: "acptno", label: "신청번호"},
+    {key: "editor", label: "신청자"},
+    {key: "qrycd", label: "신청종류"},
+    {key: "passok", label: "처리구분"},
+    {key: "acptdate", label: "신청일시"},
+    {key: "sta", label: "진행상태"},
+    {key: "pgmid", label: "프로그램명"},
+    {key: "prcdate", label: "완료일시"},
+    {key: "prcreq", label: "적용예정일시"},
+    {key: "Sunhang", label: "선후행"},
+    {key: "sayu", label: "신청사유"}]
+    ;
+    
+    
+    for(var i=0; i<myObjkey.length; i++){
+    	// i가 0 처음에만 실행 컬럼명 뽑기
+		if(i==0){
+			txt +="<tr>";
+		}
+		
+		txt +='<th>'+myObjkey[i].label+'</th>';
+		
+		if(i+1 == myObjkey.length){
+			txt +="</tr>";
+		}
+    }
+	
+	for(var i=0; i<myObj.length; i++){
+		
+		var myObj_sub = myObj[i];
+		
+		var col_group = Object.keys(myObj_sub);
+		
+		for(var j=0; j<myObjkey.length; j++){
+			
+			var tdText = myObj_sub[myObjkey[j].key];
+			if(tdText == "" || tdText == null || tdText == undefined){
+				tdText = "";
+			}else if (tdText.length > 25){
+				tdText = tdText.substring(0,25) + "...";
+			}
+			
+			if(j==0){
+				txt+="<tr>";
+			}
+			
+			if(col_group[j] != "__index" || col_group[j] != "__original_index" ){
+				txt +='<td>'+tdText+'</td>';
+			}
+			
+			if(j+1 == col_group.length){
+				txt +="</tr>";
+			}
+		
+		}
+		
+	}
+    
+    txt += "</table></body></html>"
+    
+    var wnd = window.open("프린트페이지", "", "_blank");
+    wnd.document.write(txt);
+    wnd.document.close();
+    wnd.print();
+	wnd.close();
 }
