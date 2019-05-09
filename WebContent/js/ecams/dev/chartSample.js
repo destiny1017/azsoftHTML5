@@ -24,6 +24,12 @@ $(document).ready(function() {
 	bubble_chart();				// line 794
 	scatter_chart();			// line 968
 	pie_chart();				// line 1538
+	semi_circle_dount();		// line 1608
+	combo_chart();				// line 1686
+	pie_donut_chart();			// line 1764
+	radial_chart();				// line 1898
+	boxplot_chart();			// line 1960
+	bullet_chart();				// line 2029
 })
 
 function bar_chart(){
@@ -1573,6 +1579,7 @@ function pie_chart(){
 	        title: 'Usage share of web browsers'
 	    },
 	    series: {
+	    	//radiusRange: ['40%', '100%'],	// pie 차트 도넛차트로 변경하는 옵션(앞에 숫자를 조절하면 내부 원 크기 변경)
 	        showLegend: true,
 	        showLabel: true,
 	        labelAlign: 'center'
@@ -1583,12 +1590,10 @@ function pie_chart(){
 	};
 	var theme = {
 	    series: {
-	        series: {
 	            colors: [
 	                '#83b14e', '#458a3f', '#295ba0', '#2a4175', '#289399',
-	                '#289399', '#617178', '#8a9a9a', '#516f7d', '#dddddd'
-	            ]
-	        },
+	                '#FF0000', '#617178', '#8a9a9a', '#516f7d', '#dddddd'
+	            ],
 	        label: {
 	            color: '#fff',
 	            fontFamily: 'sans-serif'
@@ -1601,4 +1606,484 @@ function pie_chart(){
 	options.theme = 'myTheme';
 
 	tui.chart.pieChart(container, data, options);
+}
+
+function semi_circle_dount(){
+	var container = document.getElementById('semi-pie');
+	var data = {
+	    categories: ['Browser'],
+	    series: [
+	        {
+	            name: 'Chrome',
+	            data: 46.02
+	        },
+	        {
+	            name: 'IE',
+	            data: 20.47
+	        },
+	        {
+	            name: 'Firefox',
+	            data: 17.71
+	        },
+	        {
+	            name: 'Safari',
+	            data: 5.45
+	        },
+	        {
+	            name: 'Opera',
+	            data: 3.10
+	        },
+	        {
+	            name: 'Etc',
+	            data: 7.25
+	        }
+	    ]
+	};
+	var options = {
+	    chart: {
+	        width: 700,
+	        height: 400,
+	        title: 'Usage share of web browsers',
+	        format: function(value, chartType, areaType, valuetype, legendName) {
+	            if (areaType === 'makingSeriesLabel') { // formatting at series area
+	                value = value + '%';
+	            }
+
+	            return value;
+	        }
+	    },
+	    series: {
+	        startAngle: -90,	// 시작 각도
+	        endAngle: 90,		// 종료 각도
+	        radiusRange: ['80%', '100%'],	// 도넛 차트로 보여주기 위한 옵션
+	        showLabel: true,
+	        showLegend: true
+	    },
+	    tooltip: {
+	        suffix: '%'
+	    },
+	    legend: {
+	        align: 'top'
+	    }
+	};
+
+	var theme = {
+	    series: {
+            colors: [
+	                '#83b14e', '#458a3f', '#295ba0', '#2a4175', '#289399',
+	                '#FF0000', '#617178', '#8a9a9a', '#516f7d', '#dddddd'
+	            ],
+	        label: {
+	            color: '#fff',
+	            fontFamily: 'sans-serif'
+	        }
+	    }
+	};
+
+	// 원하는 색상으로 변경할 수 있습니다.
+	tui.chart.registerTheme('myTheme', theme);
+	options.theme = 'myTheme';
+
+	tui.chart.pieChart(container, data, options);
+}
+
+function combo_chart(){
+	var container = document.getElementById('combo-chart');
+	var data = {
+	    categories: ['Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct'],
+	    series: {
+	        column: [
+	            {
+	                name: 'Seoul',
+	                data: [11.3, 17.0, 21.0, 24.4, 25.2, 20.4, 13.9]
+	            },
+	            {
+	                name: 'NewYork',
+	                data: [9.9, 16.0, 21.2, 24.2, 23.2, 19.4, 13.3]
+	            },
+	            {
+	                name: 'Sydney',
+	                data: [18.3, 15.2, 12.8, 11.8, 13.0, 15.2, 17.6]
+	            },
+	            {
+	                name: 'Moskva',
+	                data: [4.4, 12.2, 16.3, 18.5, 16.7, 10.9, 4.2]
+	            }
+	        ],
+	        line: [
+	            {
+	                name: 'Average',
+	                data: [11, 15.1, 17.8, 19.7, 19.5, 16.5, 12.3]
+	            }
+	        ]
+	    }
+	};
+	var options = {
+	    chart: {
+	        width: 1160,
+	        height: 540,
+	        title: '24-hr Average Temperature'
+	    },
+	    yAxis: [{
+	       title: 'Temperature (Celsius)',
+	       chartType: 'column',
+	       labelMargin: 15
+	    }, {
+	       title: 'Average',
+	       chartType: 'line',
+	       labelMargin: 15
+	    }],
+	    xAxis: {
+	        title: 'Month'
+	    },
+	    series: {
+	        line: {
+	            showDot: true
+	        }
+	    },
+	    tooltip: {
+	        grouped: true,
+	        suffix: '°C'
+	    }
+	};
+	var theme = {
+	    series: {
+	        column: {
+	            colors: [
+	                '#83b14e', '#458a3f', '#295ba0', '#2a4175', '#289399'
+	            ]
+	        },
+	        line: {
+	            colors: ['#333']
+	        }
+	    }
+	};
+	// 원하는 색상으로 변경 가능
+	// tui.chart.registerTheme('myTheme', theme);
+	// options.theme = 'myTheme';
+	tui.chart.comboChart(container, data, options);
+}
+
+function pie_donut_chart(){
+	var container = document.getElementById('pie-donut-chart');
+	var data = {
+	    categories: ['Browser'],
+	    seriesAlias: {
+	        pie1: 'pie',
+	        pie2: 'pie'
+	    },
+	    series: {
+	        pie1: [		//	첫번째 pie 차트 데이터
+	            {
+	                name: 'Chrome',
+	                data: 46.02
+	            },
+	            {
+	                name: 'IE',
+	                data: 20.47
+	            },
+	            {
+	                name: 'Firefox',
+	                data: 17.71
+	            },
+	            {
+	                name: 'Safari',
+	                data: 5.45
+	            },
+	            {
+	                name: 'Opera',
+	                data: 3.10
+	            },
+	            {
+	                name: 'Etc',
+	                data: 7.25
+	            }
+	        ],
+	        pie2: [		//	두번째 pie 차트 데이터
+	            {
+	                name: 'Chrome 1',
+	                data: 26.02
+	            },
+	            {
+	                name: 'Chrome 2',
+	                data: 20
+	            },
+	            {
+	                name: 'IE 1',
+	                data: 5.47
+	            },
+	            {
+	                name: 'IE1 2',
+	                data: 7
+	            }, {
+	                name: 'IE 3',
+	                data: 8
+	            },
+	            {
+	                name: 'Firefox 1',
+	                data: 7.71
+	            },
+	            {
+	                name: 'Firefox 2',
+	                data: 10
+	            },
+	            {
+	                name: 'Safari 1',
+	                data: 5.45
+	            },
+	            {
+	                name: 'Opera 1',
+	                data: 3.10
+	            },
+	            {
+	                name: 'Etc 1',
+	                data: 7.25
+	            }
+	        ]
+	    }
+	};
+	var options = {
+	    chart: {
+	        width: 700,
+	        height: 700,
+	        title: 'Usage share of web browsers'
+	    },
+	    series: {
+	        pie1: {
+	            radiusRange: ['57%'],
+	            labelAlign: 'center',	// 데이터의 이름 값이 차트 가운데 위치
+	            showLegend: true		// label의 visual 유무 
+	        },
+	        pie2: {
+	            radiusRange: ['70%', '100%'],
+	            labelAlign: 'outer',
+	            showLegend: true
+	        }
+	    },
+	    legend: {
+	        visible: false
+	    },
+	    tooltip: {	
+	        suffix: '%'	
+	    },
+	    theme: 'newTheme'
+	};
+	
+	// 색상을 마음대로 적용
+	tui.chart.registerTheme('newTheme', {
+	    series: {
+	        pie1: {
+	            colors: ['#00a9ff', '#ffb840', '#ff5a46', '#00bd9f', '#785fff', '#f28b8c', '#989486', '#516f7d', '#29dbe3', '#dddddd'],
+	            label: {
+	                color: '#fff',
+	                fontFamily: 'sans-serif'
+	            }
+	        },
+	        pie2: {
+	            colors: [
+	                '#33baff', '#66ccff',
+	                '#ffc666', '#ffd48c', '#FFDB9F',
+	                '#ff7b6b', '#ff9c90',
+	                '#33cab2',
+	                '#937fff', '#f5a2a3'],
+	            label: {
+	                color: '#fff',
+	                fontFamily: 'sans-serif'
+	            }
+	        }
+	    }
+	});
+
+	tui.chart.comboChart(container, data, options);
+}
+
+function radial_chart(){
+	var container = document.getElementById('radial-chart');
+	var data = {
+	    categories: ["June", "July", "Aug", "Sep", "Oct", "Nov"],
+	    series: [
+	        {
+	            name: 'Budget',
+	            data: [5000, 3000, 5000, 7000, 6000, 4000]
+	        },
+	        {
+	            name: 'Income',
+	            data: [8000, 8000, 7000, 2000, 5000, 3000]
+
+	        },
+	        {
+	            name: 'Expenses',
+	            data: [4000, 4000, 6000, 3000, 4000, 5000]
+	        },
+	        {
+	            name: 'Debt',
+	            data: [6000, 3000, 3000, 1000, 2000, 4000]
+	        },
+	        {
+	        	name: '한글',
+	        	data: [7000, 6000, 4000, 5000, 7000, 9000]
+	        }
+	    ]
+	};
+	var options = {
+	    chart: {
+	        title: 'Annual Incomes',
+	        width: 700,
+	        height: 700
+	    },
+	    series: {
+	        showDot: false,
+	        showArea: true
+	    },
+	    plot: {
+	        //type: 'circle'
+	    	type: 'spiderweb'
+	    },
+	    legend: {
+	        align: 'bottom'
+	    }
+	};
+	var theme = {
+	    series: {
+	        colors: [
+	            '#E0F8F7', '#F2F5A9', '#F6CECE', '#F6CEF5', '#9F81F7',
+	            '#289399', '#617178', '#8a9a9a', '#516f7d', '#dddddd'
+	        ]
+	    }
+	};
+
+	// 원하는 색상으로 적용 가능
+	//tui.chart.registerTheme('myTheme', theme);
+	//options.theme = 'myTheme';
+
+	tui.chart.radialChart(container, data, options);
+}
+
+function boxplot_chart(){
+	var container = document.getElementById('boxplot-chart');
+	var data = {
+			categories: ['예산', '수입', '지출', '빛'],
+			series: [{
+				name: '2015',
+				data: [
+					[1000, 2500, 3714, 5500, 7000],
+					[1000, 2750, 4571, 5250, 8000],
+					[3000, 4000, 4714, 6000, 7000],
+					[1000, 2250, 3412, 4750, 6000]
+				],
+				outliers: [
+					[0, 14000],
+					[2, 10000],
+					[3, 9600]
+				]
+			}, {
+				name: '2016',
+				data: [
+					[2000, 4500, 6714, 11500, 13000],
+					[3000, 5750, 7571, 8250, 9000],
+					[5000, 8000, 8714, 9000, 10000],
+					[7000, 9250, 10142, 11750, 12000]
+				],
+				outliers: [
+					[1,14000]
+				]
+			}]
+	};
+	
+	var options = {
+			chart: {
+				width: 900,
+				height: 540,
+				title: 'Monthly Revenue',
+				format: '1,000'
+			},
+			yAxis: {
+				title: 'Amount',
+				min: 0,
+				max: 15000
+			},
+			xAxis: {
+				title: 'Month'
+			},
+			legend: {
+				align: 'bottom'
+			}
+	};
+	
+	var theme = {
+		series: {
+				colors: [
+					'#83b14e', '#458a3f', '#295ba0', '#2a4175', '#289399',
+			        '#289399', '#617178', '#8a9a9a', '#516f7d', '#dddddd'
+				]
+			}
+	};
+	
+	// 원하는 색상으로 적용가능
+	// tui.chart.registerTheme('myTheme', theme);
+	// options.theme = 'myTheme';
+	
+	tui.chart.boxplotChart(container, data, options);
+}
+
+function bullet_chart(){
+	var container = document.getElementById('bullet-chart');
+	var data = {
+			categories: ['July', 'August'],
+			series: [{
+				name: 'Budget',
+				data: 25,
+				markers: [28, 2, 15],
+				ranges: [[-1, 10], [10, 20], [20, 30]]
+			},{
+				name: 'Hello',
+				data: 11,
+				markers: [20],
+				ranges: [[0, 8], [8, 15]]
+			},{
+				name: 'World',
+				data: 30,
+				markers:[25],
+				ranges: [[0, 10], [10, 19], [19, 28]]
+			},{
+				name: 'Income',
+				data: 23,
+				markers: [],
+				ranges: [[19, 25], [13, 19], [0, 13]]
+			}]
+	};
+	
+	var options = {
+		chart: {
+			width: 1160,
+			height: 500,
+			title: 'Monthly Revenue',
+			format: '1,000'
+		},
+		legend: {
+			visible: true
+		},
+		xAxis: {
+			max: 35
+		},
+		series: {
+			showLabel: true,
+			vertical: false
+		}
+	};
+	
+	var theme = {
+			series: {
+				ranges: [{color: 'gray', opacity: 0.7},
+					null,
+					{color: 'purple'}
+				]
+			}
+	};
+	
+	// 원하는 색상으로 변경 가능
+	tui.chart.registerTheme('myTheme', theme);
+	options.theme = 'myTheme';
+	
+	tui.chart.bulletChart(container, data, options);
 }

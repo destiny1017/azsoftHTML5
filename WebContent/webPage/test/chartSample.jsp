@@ -19,13 +19,6 @@
 옵션에서 타이틀명, X축과 Y축에 붙여줄 이름 등을 설정합니다.
 			
 > 엑셀파일 저장의 경우 차트는 저장되지 않고 입력된 데이터만 저장됩니다.
-<b>tooltip 글씨가 현재 기본 테마로 적용되 있어서 색상이 검정색입니다.
-theme관련된 소스부분의 주석처리를 제거하고 
-label: {
-	color: '#fff',
-	fontFamily: 'sans-serif'
-	}
-      로 추가해주면 툴팁 글자 색상이 흰색으로 변경됩니다.</b>
 			</pre>
 		</div>
 	</div>
@@ -256,7 +249,95 @@ pieChart()에 넣어서 불러주면 됩니다.
  pie chart내부에 글자를 보여줘서 알아보기 쉽게 만들어 줍니다.
 <b>> series옵션에서 labelAlign: 'outer'로 입력하면 해당 컨텐츠의 label이 원 밖으로 이동합니다.</b>
 > data에 수치를 입력할 때는 퍼센트로 계산해서 넣지 않아도 자동으로 전체의 퍼센트를 구해서 차트를 그려줍니다.
+> series옵션에서 radiusRange 옵션을 주면 pie 차트가 donut 차트로 변경됩니다.
 			</pre>
+		</div>
+	</div>
+</section>
+
+<section>
+	<div class="container-fluid padding-40-top">
+		<div class="row">
+			<pre>
+<b>Semi Circle Pie chart</b>
+			<div id="semi-pie"></div>
+반원으로 보여주는 chart 입니다.
+> 기본구성은 pie 차트와 동일합니다.
+> series 옵션에서 startAngle, endAngle만 넣어주면 됩니다.
+> Semi Circle pie chart 역시 도넛 차트로 보여줄수 있습니다.(pie chart와 동일하게 radiusRange 사용)
+			</pre>
+		</div>
+	</div>
+</section>
+
+<section>
+	<div class="container-fluid padding-40-top">
+		<div class="row">
+			<pre>
+<b>Combo Chart</b>
+			<div id="combo-chart"></div>
+column chart + line chart가 합쳐진 차트입니다.
+> colum chart와 line chart를 구성할 때와 동일하게 data를 입력합니다.
+  마지막에 comboChart()에 넣어서 불러주면 콤보차트가 그려집니다.
+			</pre>
+		</div>
+	</div>
+</section>
+
+<section>
+	<div class="container-fluid padding-40-top">
+		<div class="row">
+			<pre>
+<b>Pie and Donut chart</b>
+				<div id="pie-donut-chart"></div>
+Pie chart + donut chart가 합쳐진 차트입니다.
+> data를 입력하기 전에 같은 하나의 pie 차트를그리는 것이기 때문에 seriesAlias를 통해 pie1, pie2 이런식으로
+사용할 이름을 선언합니다.
+> 그 다음 각각의 종료에 이름과 수치값을 입력하고, pie 차트는 지름의 길이만 적으면 되고,
+donut 차트는 비어있게 만들 원의 지름의 길이와 전체 원의 지름의 길이를 입력해주면 됩니다.
+예) pie차트 : radiusRange: ['57%']    /  donut차트 : radiusRange: ['70%', '100%']
+<b>> pie차트 마다 데이터 개수가 달라도 됩니다.</b>
+			</pre>
+		</div>
+	</div>
+</section>
+
+<section>
+	<div class="container-fluid padding-40-top">
+		<div class="row">
+			<pre>
+<b>Radial Chart</b>
+				<div id="radial-chart"></div>
+데이터의 분포를 보여주는 차트입니다.
+> 카테고리와 데이터의 수치를 입력하고 radiaChart()에 넣어주면 차트가 그리집니다.
+> option에서 showDot : true 를 주면 꼭지점마다 점이 표현됩니다.
+> option에서 showArea : true 를 주면 범위 내부가 같은 색으로 연하게 채워집니다.
+			</pre>
+		</div>
+	</div>
+</section>
+
+<section>
+	<div class="container-fluid padding-40-top">
+		<div class="row">
+			<pre>
+<b>Boxplot Chart</b>
+				<div id="boxplot-chart"></div>
+Boxplot Chart입니다.
+> 입력된 종류의 최대값, 최소값, 평균치 등등의 값을 표현합니다.
+> 데이터를 형식에 맞게 입력 후 boxplotChart()를 이용해서 차트를 그리면 됩니다.
+			</pre> 
+		</div>
+	</div>
+</section>
+
+<section>
+	<div class="container-fluid padding-40-top">
+		<div class="row">
+			<pre>
+<b>Bullet chart</b>
+				<div id="bullet-chart"></div>
+			</pre>		
 		</div>
 	</div>
 </section>
