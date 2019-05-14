@@ -6,12 +6,14 @@
  * 	버전 : 1.0
  *  수정일 : 2019-01-29
  */
-var userId 	= null;
-var userName= null;
-var adminYN = null;
-var request = new Request();
-var sessionID = null;
-var iframeHeight = 0;
+var userId 		= null;
+var userName	= null;
+var adminYN 	= null;
+var userDeptName= null;
+var userDeptCd 	= null;
+var request 	= new Request();
+var sessionID 	= null;
+var iframeHeight= 0;
 
 $(document).ready(function() {
 	screenInit();
@@ -50,20 +52,19 @@ function getSession() {
 		sessionID 	: sessionID
 	}   
 	ajaxUserData = ajaxCallWithJson('/webPage/main/eCAMSBaseServlet', sessionInfo, 'json');
-	userName= ajaxUserData.userName;
-	userId 	= ajaxUserData.userId;
-	adminYN = ajaxUserData.adminYN;
+	
+	userName		= ajaxUserData.userName;
+	userId 			= ajaxUserData.userId;
+	adminYN 		= ajaxUserData.adminYN;
+	userDeptCd 		= ajaxUserData.deptCd;
+	userDeptName	= ajaxUserData.deptName;
 	
 	if(userId == undefined) {
 		window.location.replace('/webPage/login/ecamsLogin.jsp');
 		return;
 	}
 	
-	console.log('userid:'+userId);
-	console.log('userName:'+userName);
-	console.log('adminYN:'+adminYN);
-	
-	$('#loginUserName').html(userName);
+	$('#loginUserName').html(userName + '님 로그인');
 	
 	meneSet();
 }
@@ -76,10 +77,6 @@ function meneSet() {
 		UserId 	: userId
 	}   
 	ajaxUserData = ajaxCallWithJson('/webPage/main/eCAMSBaseServlet', userInfo, 'json');
-	
-	
-	console.log("menudata!!!1");
-	console.log(ajaxUserData);
 	
 	var menuHtmlStr = '';
 	ajaxUserData.forEach(function(menuItem, menuItemIndex) {

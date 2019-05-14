@@ -76,6 +76,9 @@ public class eCAMSBaseServlet extends HttpServlet {
 		userInfoMap.put("userId", 	loginManager.getUserID(sessionID));
 		userInfoMap.put("userName", loginManager.getUserName(userInfoMap.get("userId")));
 		userInfoMap.put("adminYN",  userinfo.isAdmin(loginManager.getUserID(sessionID)).toString());
+		HashMap<String, String> deptInfoMap = loginManager.getUserTeam(userInfoMap.get("userId"));
+		userInfoMap.put("deptName",deptInfoMap.get("deptName"));
+		userInfoMap.put("deptCd",deptInfoMap.get("deptCd"));
 		return gson.toJson(userInfoMap);
 	}
 	

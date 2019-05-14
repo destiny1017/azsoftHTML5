@@ -76,9 +76,9 @@ output {
 	box-sizing: border-box;
 	display: block;
 	width: 100%;
-	height: 34px;
+	height: 28px;
 	padding: 6px 12px;
-	font-size: 14px;
+	font-size: 11px;
 	line-height: 1.42857;
 	color: #555;
 	background-color: #fff;
@@ -644,7 +644,7 @@ textarea.input-lg, .input-group-lg>textarea.form-control,
 	line-height: 1;
 	color: #555;
 	text-align: center;
-	background-color: #eee;
+	background-color: #ffecba;
 	border: 1px solid #ccc;
 	border-radius: 4px
 }

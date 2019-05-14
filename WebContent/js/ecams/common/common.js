@@ -72,7 +72,9 @@ function ajaxAsync(url, requestData, dataType,successFunction) {
 
 function defaultErrorFunction(err) {
 	console.log('ajax 통신중 error 발생');
-	console.log('Error message => ' +err);
+	console.log('Error message START');
+	console.log(err);
+	console.log('Error message END');
 }
 
 function Request(){
@@ -211,17 +213,17 @@ var _promise = function(ms,action){
 	});
 }
 
-function beForAndAfterDataLoading(beForAndAfter){
+function beForAndAfterDataLoading(beForAndAfter,msg){
 	if(beForAndAfter === 'BEFORE'){
 		$('html').css({'cursor':'wait'});
 		$('body').css({'cursor':'wait'});
-		showToast('대용량 데이터 처리를 시작합니다.');
+		showToast(msg);
 	}
 	
 	if(beForAndAfter === 'AFTER'){
 		$('html').css({'cursor':'auto'});
 		$('body').css({'cursor':'auto'});
-		showToast('대용량 데이터 처리가 완료 되었습니다.');
+		showToast(msg);
 	}
 	
 }
@@ -231,7 +233,9 @@ function showToast(msg) {
         theme: 'info',
         icon:  '<i class="fa fa-bell"></i>',
         msg:   msg,
-        closeIcon: '<i class="fa fa-times"></i>'
+        closeIcon: '<i class="fa fa-times"></i>',
+        displayTime : 100
     });
 }
+
 

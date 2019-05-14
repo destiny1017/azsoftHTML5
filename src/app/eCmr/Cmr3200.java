@@ -175,11 +175,11 @@ public class Cmr3200{
 				}
 			}
 			if (pTeamCd != null && pTeamCd != "")  {
-				strQuery.append("and a.cr_teamcd in (select cm_deptcd from (select * from cmm0100 where cm_useyn='Y')  \n");
-				strQuery.append("                      start with cm_updeptcd=?                   \n");
-				strQuery.append("                      connect by prior cm_deptcd=cm_updeptcd     \n");
-				strQuery.append("                     union    \n");
-				strQuery.append("                     select ? from dual) \n");
+				strQuery.append("and a.cr_teamcd in (select cm_deptcd from (select * from cmm0100 where cm_useyn='Y')  	\n");
+				strQuery.append("                      start with cm_updeptcd=?                   						\n");
+				strQuery.append("                      connect by prior cm_deptcd=cm_updeptcd     						\n");
+				strQuery.append("                     union    															\n");
+				strQuery.append("                     select ? from dual) 												\n");
 			}
 			if (pReqUser != null && pReqUser.length() > 0) {
 					strQuery.append("and a.cr_editor in (select cm_userid from cmm0040\n");
@@ -643,7 +643,363 @@ public class Cmr3200{
 			}
 		}
 	}//end of SelectList() method statement
+    
+    
+    
+    public Object[] get_SelectList_HtmlMain(HashMap<String, String> applyInfo) throws SQLException, Exception {
+		Connection        	conn        = null;
+		PreparedStatement 	pstmt       = null;
+		ResultSet         	rs          = null;
+		StringBuffer      	strQuery    = new StringBuffer();
+		int 				pstmtCnt 	= 1;
+		String	 		  	deptList	= null;
+		HashMap<String, String>			  	rst	 	= null;
+		ConnectionContext connectionContext = new ConnectionResource();
+		ArrayList<HashMap<String, String>>  rtList	= new ArrayList<HashMap<String, String>>();
+		
+		try {
 
+			conn = connectionContext.getConnection();
+			
+			if(applyInfo.get("appliSw").equals("teamAppli")) {
+				strQuery.setLength(0);
+				strQuery.append("SELECT LISTAGG( '''' || CM_DEPTCD || '''' ,',') WITHIN GROUP(ORDER BY CM_DEPTCD) AS DEPTCDLIST		\n");
+				strQuery.append("  FROM   CMM0100                                                                   \n");
+				strQuery.append(" WHERE CM_USEYN = 'Y'                                                              \n");
+				strQuery.append(" START WITH CM_DEPTCD = (SELECT NVL(CM_PROJECT,CM_PROJECT2)						\n");
+				strQuery.append("						   FROM CMM0040												\n");
+				strQuery.append("						  WHERE CM_USERID = ?)										\n");
+				strQuery.append("CONNECT BY PRIOR CM_DEPTCD = CM_UPDEPTCD											\n");
+				
+				pstmt = conn.prepareStatement(strQuery.toString());
+				pstmt.setString(pstmtCnt++, applyInfo.get("userId"));
+				rs = pstmt.executeQuery();
+				if(rs.next()) {
+					deptList = rs.getString("DEPTCDLIST");
+				}
+				rs.close();
+				pstmt.close();
+			}
+            
+			pstmtCnt = 1;
+			strQuery.setLength(0);
+			strQuery.append("SELECT  B.CM_SYSMSG                                                                                                \n");
+			strQuery.append("		,C.CC_SRID                                                                                                  \n");
+			strQuery.append("		,C.CC_REQTITLE                                                                                              \n");
+			strQuery.append("		,A.CR_ACPTNO                                                                                                \n"); 
+			strQuery.append("		,D.CM_USERNAME                                                                                              \n");
+			strQuery.append("		,TO_CHAR(A.CR_ACPTDATE,'YYYY/MM/DD HH24:MI') AS CR_ACPTDATE                                                 \n");
+			strQuery.append("		,TO_CHAR(A.CR_PRCDATE,'YYYY/MM/DD HH24:MI') AS CR_PRCDATE                                                   \n");
+			strQuery.append("		,NVL(E.CM_CODENAME,'신청종류 없음') AS REQUESTNAME                                                           	\n");
+			strQuery.append("		,NVL(F.CM_CODENAME,'처리구분없음') AS PASSOK                                                                 	\n");
+			strQuery.append("		,GETCONFNAME(A.CR_ACPTNO,'CONF') AS CONFNAME                                                                \n");
+			strQuery.append("		,GETCONFNAME(A.CR_ACPTNO,'COLOR') AS COLORSW                                                                \n");
+			strQuery.append("		,GETCONFNAME(A.CR_ACPTNO,'PRG') AS PRGNAME                                                                	\n");
+			strQuery.append("		,GETCONFNAME(A.CR_ACPTNO,'PRGLIST') AS PRGLIST                                                              \n");
+			strQuery.append("  FROM	 CMR1000 A                                                                                              	\n");
+			strQuery.append("  		,CMM0030 B                                                                                                  \n");
+			strQuery.append("  		,CMC0100 C                                                                                                  \n");
+			strQuery.append("  		,CMM0040 D                                                                                                  \n");
+			strQuery.append("  		,CMM0020 E                                                                                                  \n");
+			strQuery.append("  		,CMM0020 F                                                                                                  \n");
+			strQuery.append(" WHERE A.CR_ACPTDATE BETWEEN ? AND ?					                                                            \n");
+			if(applyInfo.get("appliSw").equals("myAppli"))
+				strQuery.append("AND A.CR_EDITOR = ?                                                                                      		\n");
+			if(applyInfo.get("appliSw").equals("teamAppli")) 
+				strQuery.append("AND A.CR_TEAMCD IN ("+deptList+")		                                                            			\n");
+			strQuery.append("   AND A.CR_SYSCD = B.CM_SYSCD                                                                                     \n");
+			strQuery.append("   AND A.CR_ITSMID = C.CC_SRID(+)                                                                                  \n");
+			strQuery.append("   AND A.CR_EDITOR = D.CM_USERID                                                                                   \n");
+			strQuery.append("   AND E.CM_MACODE = 'REQUEST'                                                                                     \n");
+			strQuery.append("   AND E.CM_USEYN = 'Y'                                                                                            \n");
+			strQuery.append("   AND A.CR_QRYCD = E.CM_MICODE(+)                                                                                 \n");
+			strQuery.append("   AND F.CM_MACODE = 'REQPASS'                                                                                     \n");
+			strQuery.append("   AND F.CM_USEYN = 'Y'                                                                                            \n");
+			strQuery.append("   AND A.CR_PASSOK = F.CM_MICODE                                                                                   \n");
+			strQuery.append(" ORDER BY A.CR_ACPTDATE DESC                                                                                       \n");
+			
+			pstmt = conn.prepareStatement(strQuery.toString());
+			pstmt.setString(pstmtCnt++, applyInfo.get("startDate"));
+			pstmt.setString(pstmtCnt++, applyInfo.get("endDate"));
+			if(applyInfo.get("appliSw").equals("myAppli"))
+				pstmt.setString(pstmtCnt++, applyInfo.get("userId"));
+            rs = pstmt.executeQuery();
+             
+			while (rs.next()){
+	            rst = new HashMap<String, String>();
+        		rst.put("CM_SYSMSG",    rs.getString("CM_SYSMSG"));
+        		rst.put("CC_SRID",rs.getString("CC_SRID"));
+        		rst.put("CC_REQTITLE",rs.getString("CC_REQTITLE"));
+        		rst.put("CR_ACPTNO",rs.getString("CR_ACPTNO"));
+        		rst.put("CM_USERNAME",rs.getString("CM_USERNAME"));
+        		rst.put("REQUESTNAME",rs.getString("REQUESTNAME"));
+        		rst.put("PASSOK",rs.getString("PASSOK"));
+        		rst.put("CONFNAME",rs.getString("CONFNAME"));
+        		rst.put("COLORSW",rs.getString("COLORSW"));
+        		rst.put("CR_ACPTDATE",rs.getString("CR_ACPTDATE"));
+        		rst.put("CR_PRCDATE",rs.getString("CR_PRCDATE"));
+        		rst.put("PRGNAME",rs.getString("PRGNAME"));
+        		rst.put("PRGLIST",rs.getString("PRGLIST"));
+        		
+    			rtList.add(rst);
+        		rst = null;
+			}
+
+			rs.close();
+			pstmt.close();
+			conn.close();
+			
+			rs = null;
+			pstmt = null;
+			conn = null;
+
+			return rtList.toArray();
+
+		} catch (SQLException sqlexception) {
+			sqlexception.printStackTrace();
+			ecamsLogger.error("## Cmr3200.get_SelectList_HtmlMain() SQLException START ##");
+			ecamsLogger.error("## Error DESC : ", sqlexception);
+			ecamsLogger.error("## Cmr3200.get_SelectList_HtmlMain() SQLException END ##");
+			throw sqlexception;
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			ecamsLogger.error("## Cmr3200.get_SelectList_HtmlMain() Exception START ##");
+			ecamsLogger.error("## Error DESC : ", exception);
+			ecamsLogger.error("## Cmr3200.get_SelectList_HtmlMain() Exception END ##");
+			throw exception;
+		}finally{
+			if (strQuery != null) 	strQuery = null;
+			if (rtList != null)	rtList = null;
+			if (rs != null)     try{rs.close();}catch (Exception ex){ex.printStackTrace();}
+			if (pstmt != null)  try{pstmt.close();}catch (Exception ex2){ex2.printStackTrace();}
+			if (conn != null){
+				try{
+					conn.close();
+				}catch(Exception ex3){
+					ecamsLogger.error("## Cmr3200.get_SelectList_HtmlMain() connection release exception ##");
+					ex3.printStackTrace();
+				}
+			}
+		}
+	}//end of SelectList() method statement
+
+    
+    
+    public Object[] getMainAppiPie(HashMap<String, String> applyInfo, boolean closeSw) throws SQLException, Exception {
+		Connection        	conn        = null;
+		PreparedStatement 	pstmt       = null;
+		ResultSet         	rs          = null;
+		StringBuffer      	strQuery    = new StringBuffer();
+		int 				pstmtCnt 	= 1;
+		String	 		  	deptList	= null;
+		HashMap<String, String>			  	rst	 	= null;
+		ConnectionContext connectionContext = new ConnectionResource();
+		ArrayList<HashMap<String, String>>  rtList	= new ArrayList<HashMap<String, String>>();
+		
+		try {
+
+			conn = connectionContext.getConnection();
+			
+			if(applyInfo.get("appliSw").equals("teamAppli")) {
+				strQuery.setLength(0);
+				strQuery.append("SELECT LISTAGG( '''' || CM_DEPTCD || '''' ,',') WITHIN GROUP(ORDER BY CM_DEPTCD) AS DEPTCDLIST		\n");
+				strQuery.append("  FROM   CMM0100                                                                   \n");
+				strQuery.append(" WHERE CM_USEYN = 'Y'                                                              \n");
+				strQuery.append(" START WITH CM_DEPTCD = (SELECT NVL(CM_PROJECT,CM_PROJECT2)						\n");
+				strQuery.append("						   FROM CMM0040												\n");
+				strQuery.append("						  WHERE CM_USERID = ?)										\n");
+				strQuery.append("CONNECT BY PRIOR CM_DEPTCD = CM_UPDEPTCD											\n");
+				
+				pstmt = conn.prepareStatement(strQuery.toString());
+				pstmt.setString(pstmtCnt++, applyInfo.get("userId"));
+				rs = pstmt.executeQuery();
+				if(rs.next()) {
+					deptList = rs.getString("DEPTCDLIST");
+				}
+				rs.close();
+				pstmt.close();
+			}
+				
+			pstmtCnt = 1;
+			strQuery.setLength(0);
+			strQuery.append("SELECT  COUNT(B.CM_MICODE) AS ALLPLIKINDSCNT                                                                       	\n");
+			strQuery.append("		,NVL(B.CM_CODENAME,'신청종류 없음') AS APPLIKINDSNAME                                                          		\n");
+			strQuery.append("  FROM	 CMR1000 A                                                                                              		\n");
+			strQuery.append("  		,CMM0020 B                                                                                                  	\n");
+			strQuery.append(" WHERE A.CR_ACPTDATE BETWEEN ? AND ?					                                                            	\n");
+			if(applyInfo.get("appliSw").equals("myAppli"))
+				strQuery.append("AND A.CR_EDITOR = ?                                                                                      			\n");
+			if(applyInfo.get("appliSw").equals("teamAppli")) 
+				strQuery.append("AND A.CR_TEAMCD IN ("+deptList+")		                                                            				\n");
+			if(closeSw)
+				strQuery.append("AND A.CR_STATUS <> '3'				                                                            					\n");
+			strQuery.append("   AND B.CM_MACODE = 'REQUEST'                                                                                     	\n");
+			strQuery.append("   AND A.CR_QRYCD = B.CM_MICODE(+)                                                                                  	\n");
+			strQuery.append(" GROUP BY B.CM_MICODE, B.CM_CODENAME                                                                                	\n");
+			
+			pstmt = conn.prepareStatement(strQuery.toString());
+			pstmt.setString(pstmtCnt++, applyInfo.get("startDate"));
+			pstmt.setString(pstmtCnt++, applyInfo.get("endDate"));
+			if(applyInfo.get("appliSw").equals("myAppli"))
+				pstmt.setString(pstmtCnt++, applyInfo.get("userId"));
+            rs = pstmt.executeQuery();
+             
+			while (rs.next()){
+	            rst = new HashMap<String, String>();
+        		rst.put("data",	rs.getString("ALLPLIKINDSCNT"));
+        		rst.put("name",	rs.getString("APPLIKINDSNAME"));
+        		
+    			rtList.add(rst);
+        		rst = null;
+			}
+
+			rs.close();
+			pstmt.close();
+			conn.close();
+			
+			rs = null;
+			pstmt = null;
+			conn = null;
+
+			return rtList.toArray();
+
+		} catch (SQLException sqlexception) {
+			sqlexception.printStackTrace();
+			ecamsLogger.error("## Cmr3200.getMainAppiPie() SQLException START ##");
+			ecamsLogger.error("## Error DESC : ", sqlexception);
+			ecamsLogger.error("## Cmr3200.getMainAppiPie() SQLException END ##");
+			throw sqlexception;
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			ecamsLogger.error("## Cmr3200.getMainAppiPie() Exception START ##");
+			ecamsLogger.error("## Error DESC : ", exception);
+			ecamsLogger.error("## Cmr3200.getMainAppiPie() Exception END ##");
+			throw exception;
+		}finally{
+			if (strQuery != null) 	strQuery = null;
+			if (rtList != null)	rtList = null;
+			if (rs != null)     try{rs.close();}catch (Exception ex){ex.printStackTrace();}
+			if (pstmt != null)  try{pstmt.close();}catch (Exception ex2){ex2.printStackTrace();}
+			if (conn != null){
+				try{
+					conn.close();
+				}catch(Exception ex3){
+					ecamsLogger.error("## Cmr3200.getMainAppiPie() connection release exception ##");
+					ex3.printStackTrace();
+				}
+			}
+		}
+	}//end of SelectList() method statement
+    
+    public Object[] getMainPrgPie(HashMap<String, String> applyInfo, boolean closeSw) throws SQLException, Exception {
+		Connection        	conn        = null;
+		PreparedStatement 	pstmt       = null;
+		ResultSet         	rs          = null;
+		StringBuffer      	strQuery    = new StringBuffer();
+		int 				pstmtCnt 	= 1;
+		String	 		  	deptList	= null;
+		HashMap<String, String>			  	rst	 	= null;
+		ConnectionContext connectionContext = new ConnectionResource();
+		ArrayList<HashMap<String, String>>  rtList	= new ArrayList<HashMap<String, String>>();
+		
+		try {
+
+			conn = connectionContext.getConnection();
+			
+			if(applyInfo.get("appliSw").equals("teamAppli")) {
+				strQuery.setLength(0);
+				strQuery.append("SELECT LISTAGG( '''' || CM_DEPTCD || '''' ,',') WITHIN GROUP(ORDER BY CM_DEPTCD) AS DEPTCDLIST		\n");
+				strQuery.append("  FROM   CMM0100                                                                   \n");
+				strQuery.append(" WHERE CM_USEYN = 'Y'                                                              \n");
+				strQuery.append(" START WITH CM_DEPTCD = (SELECT NVL(CM_PROJECT,CM_PROJECT2)						\n");
+				strQuery.append("						   FROM CMM0040												\n");
+				strQuery.append("						  WHERE CM_USERID = ?)										\n");
+				strQuery.append("CONNECT BY PRIOR CM_DEPTCD = CM_UPDEPTCD											\n");
+				
+				pstmt = conn.prepareStatement(strQuery.toString());
+				pstmt.setString(pstmtCnt++, applyInfo.get("userId"));
+				rs = pstmt.executeQuery();
+				if(rs.next()) {
+					deptList = rs.getString("DEPTCDLIST");
+				}
+				rs.close();
+				pstmt.close();
+			}
+				
+			pstmtCnt = 1;
+			strQuery.setLength(0);
+			strQuery.append("SELECT  COUNT(B.CR_ITEMID) AS PRGKINDSCNT																				\n");
+			strQuery.append("		,C.CM_CODENAME																									\n");
+			strQuery.append("  FROM CMR1000 A, cmr1010 b, cmm0020 c																					\n");
+			strQuery.append(" WHERE a.cr_acptdate BETWEEN ? AND ?																					\n");
+			strQuery.append("   AND a.cR_acptno = b.cr_Acptno																						\n");
+			strQuery.append("   AND (b.cr_itemid = b.CR_BASEITEM OR (b.cr_itemid IS NULL AND b.cr_baseitem IS NULL))								\n");
+			if(applyInfo.get("appliSw").equals("myAppli"))
+				strQuery.append("AND A.CR_EDITOR = ?                                                                                      			\n");
+			if(applyInfo.get("appliSw").equals("teamAppli")) 
+				strQuery.append("AND A.CR_TEAMCD IN ("+deptList+")		                                                            				\n");
+			if(closeSw)
+				strQuery.append("AND B.CR_STATUS <> '3'				                                                            					\n");
+			strQuery.append("   AND C.CM_MACODE = 'JAWON'                                                                                     		\n");
+			strQuery.append("   AND B.CR_RSRCCD = C.CM_MICODE(+)                                                                                  	\n");
+			strQuery.append(" GROUP BY b.cr_rsrccd, c.cm_codename                                                                                	\n");
+			
+			pstmt = conn.prepareStatement(strQuery.toString());
+			pstmt.setString(pstmtCnt++, applyInfo.get("startDate"));
+			pstmt.setString(pstmtCnt++, applyInfo.get("endDate"));
+			if(applyInfo.get("appliSw").equals("myAppli"))
+				pstmt.setString(pstmtCnt++, applyInfo.get("userId"));
+            rs = pstmt.executeQuery();
+             
+			while (rs.next()){
+	            rst = new HashMap<String, String>();
+        		rst.put("data",	rs.getString("PRGKINDSCNT"));
+        		rst.put("name",	rs.getString("CM_CODENAME"));
+        		
+    			rtList.add(rst);
+        		rst = null;
+			}
+
+			rs.close();
+			pstmt.close();
+			conn.close();
+			
+			rs = null;
+			pstmt = null;
+			conn = null;
+
+			return rtList.toArray();
+
+		} catch (SQLException sqlexception) {
+			sqlexception.printStackTrace();
+			ecamsLogger.error("## Cmr3200.getMainAppiPie() SQLException START ##");
+			ecamsLogger.error("## Error DESC : ", sqlexception);
+			ecamsLogger.error("## Cmr3200.getMainAppiPie() SQLException END ##");
+			throw sqlexception;
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			ecamsLogger.error("## Cmr3200.getMainAppiPie() Exception START ##");
+			ecamsLogger.error("## Error DESC : ", exception);
+			ecamsLogger.error("## Cmr3200.getMainAppiPie() Exception END ##");
+			throw exception;
+		}finally{
+			if (strQuery != null) 	strQuery = null;
+			if (rtList != null)	rtList = null;
+			if (rs != null)     try{rs.close();}catch (Exception ex){ex.printStackTrace();}
+			if (pstmt != null)  try{pstmt.close();}catch (Exception ex2){ex2.printStackTrace();}
+			if (conn != null){
+				try{
+					conn.close();
+				}catch(Exception ex3){
+					ecamsLogger.error("## Cmr3200.getMainAppiPie() connection release exception ##");
+					ex3.printStackTrace();
+				}
+			}
+		}
+	}//end of SelectList() method statement
+    
+    
+    
     public static String allTrim(String s)
     {
         if (s == null)

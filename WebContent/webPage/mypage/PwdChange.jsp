@@ -36,7 +36,7 @@
 						<label id="lbPw" >변경전비밀번호</label>
 					</div>
 					<div class="col-xs-12 col-sm-8">
-						<input id="txtPw" name="txtPw" type="password" minlength="8" maxlength="12" ></input>
+						<input id="txtPw" name="txtPw" type="password" minlength="8" maxlength="12" required="required"></input>
 					</div>
 				</div>
 				<div class="row">

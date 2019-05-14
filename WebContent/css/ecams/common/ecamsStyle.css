@@ -688,3 +688,7 @@
     margin: 0 0 10px 20px;
     border-radius: 2px;
 }
+
+.fontStyle-error {
+	color: #BE81F7;
+}

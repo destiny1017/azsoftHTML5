@@ -202,10 +202,10 @@ function getBigData() {
 
 function successGetBigData(data) {
 	console.log('get success Big Data... : '+data);
-	beForAndAfterDataLoading('AFTER');
+	beForAndAfterDataLoading('AFTER','대용량 데이터 처리가 완료 되었습니다.');
 }
 
 function loadingTest() {
-	beForAndAfterDataLoading('BEFORE');
+	beForAndAfterDataLoading('BEFORE','대용량 데이터 처리를 시작합니다.');
 	getBigData();
 };

@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 import com.ecams.common.base.Encryptor;
@@ -623,6 +624,61 @@ public class LoginManager implements HttpSessionBindingListener
 		}finally{
 			if (pstmt != null)  try{pstmt.close();}catch (Exception ex2){ex2.printStackTrace();}
 			if (conn != null){
+				try{
+					ConnectionResource.release(conn);
+				}catch(Exception ex3){
+					ex3.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	//해당 ID에 부서명,부서코드 가져오기
+	public HashMap<String, String> getUserTeam(String UserId) throws SQLException, Exception {
+		Connection        conn        = null;
+		PreparedStatement pstmt       = null;
+		ResultSet         rs          = null;
+		StringBuffer      strQuery    = new StringBuffer();
+		HashMap<String, String> rtMap = new HashMap<String, String>();
+		ConnectionContext connectionContext = new ConnectionResource();
+		try {
+			conn = connectionContext.getConnection();
+			
+			strQuery.append("SELECT  B.CM_DEPTCD				\n");
+			strQuery.append("		,B.CM_DEPTNAME				\n");
+			strQuery.append("  FROM CMM0040 A, CMM0100 B 		\n");
+			strQuery.append(" WHERE A.CM_USERID = ? 			\n");
+			strQuery.append("   AND A.CM_PROJECT = B.CM_DEPTCD 	\n");
+			
+            pstmt = conn.prepareStatement(strQuery.toString());
+            pstmt.setString(1, UserId);
+            rs = pstmt.executeQuery();
+            
+			if (rs.next()){
+				rtMap.put("deptName", rs.getString("CM_DEPTNAME"));
+				rtMap.put("deptCd", rs.getString("CM_DEPTCD"));
+			}
+			rs.close();
+			pstmt.close();
+			conn.close();
+			
+			rs = null;
+			pstmt = null;
+			conn = null;
+			
+			return rtMap;
+			
+		} catch (SQLException sqlexception) {
+			sqlexception.printStackTrace();
+			throw sqlexception;
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			throw exception;
+		}finally{
+			if (rtMap != null) rtMap = null;
+			if (rs 	  != null) try{rs.close();}catch (Exception ex){ex.printStackTrace();}
+			if (pstmt != null) try{pstmt.close();}catch (Exception ex2){ex2.printStackTrace();}
+			if (conn  != null){
 				try{
 					ConnectionResource.release(conn);
 				}catch(Exception ex3){

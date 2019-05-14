@@ -252,7 +252,7 @@ $(document).on("mouseenter","[data-ax5grid-panel='body'] span",function(event){
 	if($(this).closest("td").index() > 0) return;
 	
 	//그리드 정보 가져오기
-	var gridRowInfo = divGrid1.list[$(this).closest("td").closest("tr").index()];
+	var gridRowInfo = divGrid1.list[parseInt($(this).closest("td").closest("tr").attr("data-ax5grid-tr-data-index"))];
 	var contents = gridRowInfo.CM_CONTENTS;
 	
 	console.log(contents.length);
