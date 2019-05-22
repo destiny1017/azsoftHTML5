@@ -38,9 +38,16 @@
 		    	</div>
 		    	<div class="col-lg-7 col-md-12 col-sm-12 col-12">
 		    		<div class="float-left">
-			    		<input type="checkbox" class="checkbox-pie" id="chkOpen" data-label="신규"  />
+			    		
+		    		</div>
+		    		<div class="row">
+		    			<div class="col-md-4">
+			    			<input type="checkbox" class="checkbox-pie" id="chkOpen" data-label="신규"  />
+		    			</div>
+		    			<div class="col-md-6">
+					    	<input type="checkbox" class="checkbox-pie" id="chkSelf" data-label="시스템코드수동부여"  />
+		    			</div>
 			    		<div id="chkSelfDiv">
-				    		<input type="checkbox" class="checkbox-pie" id="chkSelf" data-label="시스템코드수동부여"  />
 			    		</div>
 		    		</div>
 		    	</div>
