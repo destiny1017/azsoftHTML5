@@ -962,14 +962,14 @@ public class SysInfo{
 				}
 			}
 			strQuery.append("order by a.cm_sysmsg \n");
-            pstmt = conn.prepareStatement(strQuery.toString());
-            //pstmt = new LoggableStatement(conn,strQuery.toString());
+            //pstmt = conn.prepareStatement(strQuery.toString());
+            pstmt = new LoggableStatement(conn,strQuery.toString());
             if (SysCd != null && SysCd != "") pstmt.setString(1, SysCd);
             else
 	            if (secuYn == false){
 	            	pstmt.setString(1, UserId);
 	            }
-            //ecamsLogger.error(((LoggableStatement)pstmt).getQueryString());
+            ecamsLogger.error(((LoggableStatement)pstmt).getQueryString());
             rs = pstmt.executeQuery();
 
             rtList.clear();

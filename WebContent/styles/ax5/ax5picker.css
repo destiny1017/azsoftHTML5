@@ -644,7 +644,7 @@ textarea.input-lg, .input-group-lg>textarea.form-control,
 	line-height: 1;
 	color: #555;
 	text-align: center;
-	background-color: #ffecba;
+	background-color: #ccc;
 	border: 1px solid #ccc;
 	border-radius: 4px
 }

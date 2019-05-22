@@ -22,13 +22,8 @@ var request =  new Request();
 var memo_date = null;
 var noticeInfo = null;
 var dialog = new ax5.ui.dialog({title: "확인"});
-var confirmDialog = new ax5.ui.dialog();	//알럿,확인창
 
 $(document).ready(function() {
-	confirmDialog.setConfig({
-        title: "공지사항",
-        theme: "info"
-    });
 	popNoticeInit();
 });
 

@@ -74,7 +74,7 @@
 		<div class="hpanel">
 			<div class="panel-heading">
 	               <div class="panel-tools">
-					<input type="checkbox" tabindex="61" class="checkbox-pie" id="checkbox-pieP" data-label="반려 제외" checked="checked" />
+						<input type="checkbox" tabindex="61" class="checkbox-pie" id="checkbox-pieP" data-label="반려 제외" checked="checked" />
 	               </div>
 	               <label id="pieTLabel_P">프로그램별 종류</label>
 	           </div>
@@ -88,14 +88,10 @@
 	<div class="col-lg-4 col-md-12 col-sm-12">
 		<div class="hpanel">
 			<div class="panel-heading">
-	               <div class="panel-tools">
-					<input type="checkbox" tabindex="61" class="checkbox-bar" id="checkbox-bar" data-label="demo" checked="checked" />
-	               </div>
-	               <label id="pieTLabel_P">demo</label>
-	           </div>
-		
+            	<label id="barTLabel">관리자님 바차트</label>
+            </div>
 		    <div class="panel-body text-center" id="barDiv">
-		    	<div id="barChart" tooltip="demo bar chart~" flow="down"></div>
+		    	<div id="barChart" tooltip="시스템별 신청건수입니다(폐기 시스템제외)" flow="down"></div>
 		    </div>
 		</div>	
 	</div>

@@ -708,6 +708,7 @@ public class Cmr3200{
 			if(applyInfo.get("appliSw").equals("teamAppli")) 
 				strQuery.append("AND A.CR_TEAMCD IN ("+deptList+")		                                                            			\n");
 			strQuery.append("   AND A.CR_SYSCD = B.CM_SYSCD                                                                                     \n");
+			strQuery.append("   AND B.CM_CLOSEDT IS NULL	                                                                                    \n");
 			strQuery.append("   AND A.CR_ITSMID = C.CC_SRID(+)                                                                                  \n");
 			strQuery.append("   AND A.CR_EDITOR = D.CM_USERID                                                                                   \n");
 			strQuery.append("   AND E.CM_MACODE = 'REQUEST'                                                                                     \n");
@@ -826,6 +827,7 @@ public class Cmr3200{
 			strQuery.append("		,NVL(B.CM_CODENAME,'신청종류 없음') AS APPLIKINDSNAME                                                          		\n");
 			strQuery.append("  FROM	 CMR1000 A                                                                                              		\n");
 			strQuery.append("  		,CMM0020 B                                                                                                  	\n");
+			strQuery.append("  		,CMM0030 C                                                                                                  	\n");
 			strQuery.append(" WHERE A.CR_ACPTDATE BETWEEN ? AND ?					                                                            	\n");
 			if(applyInfo.get("appliSw").equals("myAppli"))
 				strQuery.append("AND A.CR_EDITOR = ?                                                                                      			\n");
@@ -835,6 +837,8 @@ public class Cmr3200{
 				strQuery.append("AND A.CR_STATUS <> '3'				                                                            					\n");
 			strQuery.append("   AND B.CM_MACODE = 'REQUEST'                                                                                     	\n");
 			strQuery.append("   AND A.CR_QRYCD = B.CM_MICODE(+)                                                                                  	\n");
+			strQuery.append("   AND A.CR_SYSCD = C.CM_SYSCD                                                                                  		\n");
+			strQuery.append("   AND C.CM_CLOSEDT IS NULL                                                                                  			\n");
 			strQuery.append(" GROUP BY B.CM_MICODE, B.CM_CODENAME                                                                                	\n");
 			
 			pstmt = conn.prepareStatement(strQuery.toString());
@@ -930,7 +934,7 @@ public class Cmr3200{
 			strQuery.setLength(0);
 			strQuery.append("SELECT  COUNT(B.CR_ITEMID) AS PRGKINDSCNT																				\n");
 			strQuery.append("		,C.CM_CODENAME																									\n");
-			strQuery.append("  FROM CMR1000 A, cmr1010 b, cmm0020 c																					\n");
+			strQuery.append("  FROM CMR1000 A, cmr1010 b, cmm0020 c, CMM0030 D																					\n");
 			strQuery.append(" WHERE a.cr_acptdate BETWEEN ? AND ?																					\n");
 			strQuery.append("   AND a.cR_acptno = b.cr_Acptno																						\n");
 			strQuery.append("   AND (b.cr_itemid = b.CR_BASEITEM OR (b.cr_itemid IS NULL AND b.cr_baseitem IS NULL))								\n");
@@ -942,6 +946,8 @@ public class Cmr3200{
 				strQuery.append("AND B.CR_STATUS <> '3'				                                                            					\n");
 			strQuery.append("   AND C.CM_MACODE = 'JAWON'                                                                                     		\n");
 			strQuery.append("   AND B.CR_RSRCCD = C.CM_MICODE(+)                                                                                  	\n");
+			strQuery.append("   AND A.CR_SYSCD = D.CM_SYSCD                                                                                  		\n");
+			strQuery.append("   AND D.CM_CLOSEDT IS NULL	                                                                                  		\n");
 			strQuery.append(" GROUP BY b.cr_rsrccd, c.cm_codename                                                                                	\n");
 			
 			pstmt = conn.prepareStatement(strQuery.toString());
@@ -997,6 +1003,215 @@ public class Cmr3200{
 			}
 		}
 	}//end of SelectList() method statement
+    
+    
+    public HashMap<String,  Object> getMainBar(HashMap<String, String> applyInfo) throws SQLException, Exception {
+		Connection        	conn        = null;
+		PreparedStatement 	pstmt       = null;
+		ResultSet         	rs          = null;
+		StringBuffer      	strQuery    = new StringBuffer();
+		int 				pstmtCnt 	= 1;
+		String	 		  	deptList	= null;
+		ConnectionContext connectionContext = new ConnectionResource();
+		
+		//hash				series					= new Object();
+		//ArrayList<Integer>	data					= new ArrayList<Integer>();
+		
+		
+		ArrayList<Object>   categoriesArr			= new ArrayList<Object>();
+		ArrayList<HashMap<String, Object>> 	seriesArr = new ArrayList<HashMap<String,Object>>();
+		HashMap<String,Object> series				= new HashMap<>();
+		HashMap<String,  Object>	barData	= new HashMap<String, Object>();
+		
+		
+		
+		
+		try {
+
+			conn = connectionContext.getConnection();
+			
+			if(applyInfo.get("appliSw").equals("teamAppli")) {
+				strQuery.setLength(0);
+				strQuery.append("SELECT LISTAGG( '''' || CM_DEPTCD || '''' ,',') WITHIN GROUP(ORDER BY CM_DEPTCD) AS DEPTCDLIST		\n");
+				strQuery.append("  FROM   CMM0100                                                                   \n");
+				strQuery.append(" WHERE CM_USEYN = 'Y'                                                              \n");
+				strQuery.append(" START WITH CM_DEPTCD = (SELECT NVL(CM_PROJECT,CM_PROJECT2)						\n");
+				strQuery.append("						   FROM CMM0040												\n");
+				strQuery.append("						  WHERE CM_USERID = ?)										\n");
+				strQuery.append("CONNECT BY PRIOR CM_DEPTCD = CM_UPDEPTCD											\n");
+				
+				pstmt = conn.prepareStatement(strQuery.toString());
+				pstmt.setString(pstmtCnt++, applyInfo.get("userId"));
+				rs = pstmt.executeQuery();
+				if(rs.next()) {
+					deptList = rs.getString("DEPTCDLIST");
+				}
+				rs.close();
+				pstmt.close();
+			}
+			pstmtCnt = 1;
+			strQuery.setLength(0);
+			
+			
+			
+			strQuery.append("SELECT  COUNT(A.CR_QRYCD) AS REQCNT 										\n");
+			strQuery.append("		,C.CM_CODENAME 														\n");
+			strQuery.append("		,B.CM_SYSMSG 														\n");
+			strQuery.append("		,B.CM_SYSCD 														\n");
+			strQuery.append("  FROM  CMR1000 A 															\n");
+			strQuery.append("		,CMM0030 B 															\n");
+			strQuery.append("		,CMM0020 C 															\n");
+			strQuery.append(" WHERE A.CR_ACPTDATE BETWEEN ? AND ? 										\n");
+			strQuery.append("   AND A.CR_SYSCD IN (SELECT B.CM_SYSCD 									\n");
+			strQuery.append("						 FROM    CMM0102 A 									\n");
+			strQuery.append("								,CMM0034 B 									\n");
+			strQuery.append("								,CMM0030 C 									\n");
+			strQuery.append("						WHERE A.CM_JOBCD IN ( SELECT CM_JOBCD				\n");
+			strQuery.append("												FROM CMM0044				\n");
+			strQuery.append("											   WHERE CM_USERID = ?)			\n");
+			strQuery.append("						  AND A.CM_JOBCD = B.CM_JOBCD						\n");
+			strQuery.append("						  AND B.CM_SYSCD = C.CM_SYSCD						\n");
+			strQuery.append("						  AND C.CM_CLOSEDT IS NULL							\n");
+			strQuery.append("						GROUP BY B.CM_SYSCD)								\n");
+			strQuery.append("   AND A.CR_SYSCD = B.CM_SYSCD												\n");
+			strQuery.append("   AND C.CM_MACODE = 'REQUEST' 											\n");
+			strQuery.append("   AND A.CR_QRYCD = C.CM_MICODE 											\n");
+			strQuery.append(" GROUP BY 	 A.CR_QRYCD 													\n");
+			strQuery.append("			,C.CM_CODENAME 													\n");
+			strQuery.append("			,C.CM_MICODE 													\n");
+			strQuery.append("			,B.CM_SYSMSG 													\n");
+			strQuery.append("			,B.CM_SYSCD 													\n");
+			strQuery.append(" ORDER BY C.CM_MICODE 														\n");
+			
+			/*if(applyInfo.get("appliSw").equals("myAppli"))
+				strQuery.append("AND A.CR_EDITOR = ?                                                                                      			\n");
+			if(applyInfo.get("appliSw").equals("teamAppli")) 
+				strQuery.append("AND A.CR_TEAMCD IN ("+deptList+")		                                                            				\n");
+			*/
+			
+			
+			pstmt = conn.prepareStatement(strQuery.toString());
+			pstmt.setString(pstmtCnt++, applyInfo.get("startDate"));
+			pstmt.setString(pstmtCnt++, applyInfo.get("endDate"));
+			if(applyInfo.get("appliSw").equals("myAppli"))
+				pstmt.setString(pstmtCnt++, applyInfo.get("userId"));
+            rs = pstmt.executeQuery();
+            
+			while (rs.next()){
+				
+				if(!categoriesArr.contains(rs.getString("cm_codename"))) {
+					categoriesArr.add(rs.getString("cm_codename"));
+				}
+				
+				
+				boolean insertSw = true;
+				for(int k=0; k<seriesArr.size(); k++) {
+					if(seriesArr.get(k).get("cm_syscd").equals(rs.getString("cm_syscd"))) {
+						insertSw = false;
+					}
+				}
+				
+				if(insertSw || seriesArr.size() == 0) {
+					series = new HashMap<>();
+					series.put("name", rs.getString("cm_sysmsg"));
+					series.put("stack","acpt");
+					series.put("cm_syscd",rs.getString("cm_syscd"));
+					seriesArr.add(series);
+				}
+				
+				insertSw = true;
+				
+				for(int k=0; k<seriesArr.size(); k++) {
+					if(seriesArr.get(k).get("cm_syscd").equals(rs.getString("cm_syscd"))) {
+						int seriesIndex = k;
+						seriesArr.get(seriesIndex).put("data", 
+														makeDataArr(categoriesArr, 
+																	seriesArr.get(seriesIndex), 
+																	Integer.toString(rs.getInt("REQCNT")), 
+																	rs.getString("cm_codename").toString()));
+						break;
+					}
+				}
+				
+				
+			}
+			
+			
+			for(int i=0; i<seriesArr.size(); i++) {
+				ArrayList<Object> dataArr = (ArrayList<Object>) seriesArr.get(i).get("data");
+				if(dataArr.size() != categoriesArr.size()) {
+					for(int j=dataArr.size(); j<categoriesArr.size(); j++) {
+						dataArr.add(0);
+					}
+					
+					seriesArr.get(i).put("data", dataArr);
+				}
+			}
+			
+			barData.put("categories", categoriesArr);
+			barData.put("series", seriesArr);
+			
+			
+			rs.close();
+			pstmt.close();
+			conn.close();
+			
+			rs = null;
+			pstmt = null;
+			conn = null;
+
+			return barData;
+
+		} catch (SQLException sqlexception) {
+			sqlexception.printStackTrace();
+			ecamsLogger.error("## Cmr3200.getMainBar() SQLException START ##");
+			ecamsLogger.error("## Error DESC : ", sqlexception);
+			ecamsLogger.error("## Cmr3200.getMainBar() SQLException END ##");
+			throw sqlexception;
+		} catch (Exception exception) {
+			exception.printStackTrace();
+			ecamsLogger.error("## Cmr3200.getMainBar() Exception START ##");
+			ecamsLogger.error("## Error DESC : ", exception);
+			ecamsLogger.error("## Cmr3200.getMainBar() Exception END ##");
+			throw exception;
+		}finally{
+			if (strQuery != null) 	strQuery = null;
+			if (rs != null)     try{rs.close();}catch (Exception ex){ex.printStackTrace();}
+			if (pstmt != null)  try{pstmt.close();}catch (Exception ex2){ex2.printStackTrace();}
+			if (conn != null){
+				try{
+					conn.close();
+				}catch(Exception ex3){
+					ecamsLogger.error("## Cmr3200.getMainBar() connection release exception ##");
+					ex3.printStackTrace();
+				}
+			}
+		}
+	}//end of SelectList() method statement
+    
+    public static ArrayList<Object> makeDataArr(ArrayList<Object> categoriesArr, HashMap<String, Object> series, String cnt , String codename){
+		ArrayList<Object> dataArr = new ArrayList<>();
+		
+		if(series.containsKey("data")) dataArr = (ArrayList<Object>) series.get("data");
+		
+		if(dataArr.size() != categoriesArr.size()) {
+			for(int i=0; i<categoriesArr.size(); i++) {
+				if( (i+1) > dataArr.size()) {
+					dataArr.add(0);
+				}
+			}
+		}
+		
+		for(int i=0; i<categoriesArr.size(); i++) {
+			if(categoriesArr.get(i).equals(codename)) {
+				dataArr.remove(i);
+				dataArr.add(i,Integer.parseInt(cnt));
+				break;
+			}
+		}
+		
+		return dataArr;
+	}
     
     
     

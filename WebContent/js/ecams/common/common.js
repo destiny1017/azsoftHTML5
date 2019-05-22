@@ -27,6 +27,22 @@
  * 		 ===>  copyArr = copyReferenceNone(arr);
  * 
  */
+
+
+var toast 			= new ax5.ui.toast();
+var dialog 			= new ax5.ui.dialog({title: "확인"});
+var confirmDialog = new ax5.ui.dialog();	//알럿,확인창
+
+toast.setConfig({
+	containerPosition: "top-right",
+	displayTime:10000
+});
+
+confirmDialog.setConfig({
+    title: "선택창",
+    theme: "info"
+});
+
 function copyReferenceNone(copyArray){
 	return JSON.parse(JSON.stringify(copyArray));  // 
 }
@@ -71,10 +87,10 @@ function ajaxAsync(url, requestData, dataType,successFunction) {
 }
 
 function defaultErrorFunction(err) {
-	console.log('ajax 통신중 error 발생');
-	console.log('Error message START');
+	console.log('============================ajax 통신중 error 발생============================');
+	console.log('============================Error message START============================');
 	console.log(err);
-	console.log('Error message END');
+	console.log('============================Error message END============================');
 }
 
 function Request(){
@@ -238,4 +254,61 @@ function showToast(msg) {
     });
 }
 
+function defaultPickerInfo(dataAx5picker) {
+	return {
+		target: $('[data-ax5picker="'+dataAx5picker+'"]'),
+		direction: "bottom",
+		content: {
+			width: 220,
+			margin: 10,
+			type: 'date',
+			config: {
+				control: {
+					left: '<i class="fa fa-chevron-left"></i>',
+					yearTmpl: '%s',
+					monthTmpl: '%s',
+					right: '<i class="fa fa-chevron-right"></i>'
+				},
+				dateFormat: 'yyyy/MM/dd',
+				lang: {
+					yearTmpl: "%s년",
+					months: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+					dayTmpl: "%s"
+				},dimensions: {
+					height: 140,
+					width : 75,
+					colHeadHeight: 11,
+					controlHeight: 25,
+				}
+			},
+			formatter: {
+				pattern: 'date'
+			}
+		},
+		btns: {
+			today: {
+				label: "Today", onClick: function () {
+					var today = new Date();
+					this.self
+					.setContentValue(this.item.id, 0, ax5.util.date(today, {"return": "yyyy/MM/dd"}))
+					.setContentValue(this.item.id, 1, ax5.util.date(today, {"return": "yyyy/MM/dd"}))
+					.close();
+				}
+			},
+			thisMonth: {
+				label: "This Month", onClick: function () {
+					var today = new Date();
+					this.self
+					.setContentValue(this.item.id, 0, ax5.util.date(today, {"return": "yyyy/MM/01"}))
+					.setContentValue(this.item.id, 1, ax5.util.date(today, {"return": "yyyy/MM"})
+							+ '/'
+							+ ax5.util.daysOfMonth(today.getFullYear(), today.getMonth()))
+							.close();
+				}
+			},
+			ok: {label: "Close", theme: "default"}
+		}
+		
+	};
+}
 

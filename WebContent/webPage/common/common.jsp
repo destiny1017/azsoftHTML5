@@ -26,19 +26,18 @@
 <link rel="stylesheet" href="<c:url value="/styles/ax5/ax5dialog.css"/>">
 <link rel="stylesheet" href="<c:url value="/styles/ax5/ax5picker.css"/>">
 
+<!-- Toast UI Chart -->
+<link rel="stylesheet" href="<c:url value="/styles/tui-chart.css"/>" />
+
 <!-- FILE TREE -->
 <link rel="stylesheet" href="<c:url value="/styles/filetree/zTreeStyle.css"/>">
-
-<!-- C3 chart -->
-<link rel="stylesheet" href="<c:url value="/styles/chart/c3.css"/>">
-
-<!-- Toast UI Chart -->
-<link rel="stylesheet" href="<c:url value="/styles/tui-chart.min.css"/>" />
 
 <!-- eCAMS js, css -->
 <link rel="stylesheet" href="<c:url value="/css/ecams/common/ecamsStyle.css" />">
 <link rel="stylesheet" href="<c:url value="/css/ecams/common/toolTip2.css" />">
 <link rel="stylesheet" href="<c:url value="/css/ecams/login/loginPage.css" />">
 
+<!-- BootStrap TimePicker -->
+<link rel="stylesheet" href="<c:url value="/styles/bootstrap-timepicker.css"/>">
 
 <link rel="stylesheet" href="<c:url value="/styles/jquery-ui.css"/>">
