@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.MalformedInputException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -127,7 +128,7 @@ public class Cmr5300 {
 		} catch (IOException exception) {
 	        exception.printStackTrace();
 	        ecamsLogger.error("## Error IOException : ", exception);
-	        if (exception instanceof sun.io.MalformedInputException){
+	        if (exception instanceof MalformedInputException){
 				in1.close();
 				in1 = null;
 				return strQuery.toString();
@@ -504,7 +505,7 @@ public class Cmr5300 {
 		} catch (IOException exception) {
 	        exception.printStackTrace();
 	        ecamsLogger.error("## Error IOException : ", exception);
-	        if (exception instanceof sun.io.MalformedInputException){
+	        if (exception instanceof MalformedInputException){
 				in1.close();
 				in1 = null;
 				return strQuery.toString();
@@ -881,7 +882,7 @@ public class Cmr5300 {
 		} catch (IOException exception) {
 	        exception.printStackTrace();
 	        ecamsLogger.error("## Error IOException : ", exception);
-	        if (exception instanceof sun.io.MalformedInputException){
+	        if (exception instanceof MalformedInputException){
 				in1.close();
 				in1 = null;
 				return strQuery.toString();

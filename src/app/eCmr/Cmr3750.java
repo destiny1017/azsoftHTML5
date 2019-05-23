@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 //import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.MalformedInputException;
 //import java.io.OutputStreamWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -401,7 +402,7 @@ public class Cmr3750{
 		} catch (IOException exception) {
 	        exception.printStackTrace();
 	        ecamsLogger.error("## Error IOException : ", exception);
-	        if (exception instanceof sun.io.MalformedInputException){
+	        if (exception instanceof MalformedInputException){
 				in1.close();
 				in1 = null;
 				return strQuery.toString();

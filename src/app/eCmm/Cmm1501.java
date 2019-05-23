@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.MalformedInputException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -185,7 +186,7 @@ public class Cmm1501 {
 		} catch (Exception exception) {
 			chkFile = null;
 			in1.close();
-			if ((exception instanceof sun.io.MalformedInputException)){
+			if ((exception instanceof MalformedInputException)){
 				throw new Exception("로그확인 실패 하였습니다.");
 			}else{
 				exception.printStackTrace();

@@ -3,11 +3,11 @@ package com.ecams.common.dbconn;
 
 import javax.servlet.http.HttpServlet;
 
+import org.apache.commons.dbcp.ConnectionFactory;
+import org.apache.commons.dbcp.DriverManagerConnectionFactory;
+import org.apache.commons.dbcp.PoolableConnectionFactory;
+import org.apache.commons.pool.impl.GenericObjectPool;
 import org.apache.log4j.Logger;
-import org.apache.tomcat.dbcp.dbcp.ConnectionFactory;
-import org.apache.tomcat.dbcp.dbcp.DriverManagerConnectionFactory;
-import org.apache.tomcat.dbcp.dbcp.PoolableConnectionFactory;
-import org.apache.tomcat.dbcp.pool.impl.GenericObjectPool;
 
 import com.ecams.common.base.ConfigFactory;
 import com.ecams.common.logger.EcamsLogger;
@@ -60,7 +60,7 @@ public class ConnectionInitialize extends HttpServlet{
 		maxWait = Long.parseLong(ConfigFactory.getProperties("O_maxWait"));
 
 			try{
-				//jdbc driver�뜝�룞�삕 �뜝�룞�삕�� �뜝�룞�삕�뜝�떎紐뚯삕 �뜝�룞�삕�뜝�룞�삕�뜝�뙆�땲�뙋�삕.
+				//jdbc driver占쎈쐻占쎈짗占쎌굲 占쎈쐻占쎈짗占쎌굲占쏙옙 占쎈쐻占쎈짗占쎌굲占쎈쐻占쎈뼄筌뤿슣�굲 占쎈쐻占쎈짗占쎌굲占쎈쐻占쎈짗占쎌굲占쎈쐻占쎈솁占쎈빍占쎈솇占쎌굲.
 				setupDriver(driverClassName
 						  , url
 						  , username
