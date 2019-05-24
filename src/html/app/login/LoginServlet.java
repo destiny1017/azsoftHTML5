@@ -1,6 +1,9 @@
 package html.app.login;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,18 +32,22 @@ public class LoginServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
+		//requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		
+		System.out.println();
+		
 		try {
 			response.setContentType("text/plain");
 			response.setCharacterEncoding("UTF-8");
 			
 			switch (requestType) {
 				case "ISVALIDLOGIN" :
-					response.getWriter().write( isValidLoginUser(request) );
+					response.getWriter().write( isValidLoginUser(paramMap) );
 					break;
 				case "SETSESSION" :
-					response.getWriter().write( getUserName(request) );
+					response.getWriter().write( getUserName(paramMap, request)  );
 					break;	
 				default:
 					break;
@@ -52,15 +59,17 @@ public class LoginServlet extends HttpServlet {
 		
 	}
 	
-	private String isValidLoginUser(HttpServletRequest request) throws SQLException, Exception {
-		String userId = ParsingCommon.parsingRequestJsonParamToString(request, "userId");
-		String userPwd = ParsingCommon.parsingRequestJsonParamToString(request, "userPwd");
+	private String isValidLoginUser(HashMap paramMap) throws SQLException, Exception {
+		String userId  = (String) paramMap.get("userId");
+		String userPwd = (String) paramMap.get("userPwd");
 		return gson.toJson(loginManager.isValid(userId, userPwd));
 	}
 	
-	private String getUserName(HttpServletRequest request) throws SQLException, Exception {
+	private String getUserName(HashMap paramMap, HttpServletRequest request) throws SQLException, Exception {
 		
-		String userId = ParsingCommon.parsingRequestJsonParamToString(request, "userId");
+		
+		String userId  = (String) paramMap.get("userId");
+		
 		HttpSession session = request.getSession();
 		
 		session.setAttribute("userId", userId);

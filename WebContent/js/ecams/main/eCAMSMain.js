@@ -301,7 +301,7 @@ function getApplyList() {
 	
 	applyData = new Object();
 	applyData = {
-		applyInfo	: 	JSON.stringify(applyInfo),
+		applyInfo	: 	applyInfo,
 		requestType	: 	'GETAPPLYLIST'
 	}
 	

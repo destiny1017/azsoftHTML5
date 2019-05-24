@@ -37,7 +37,4 @@
 <link rel="stylesheet" href="<c:url value="/css/ecams/common/toolTip2.css" />">
 <link rel="stylesheet" href="<c:url value="/css/ecams/login/loginPage.css" />">
 
-<!-- BootStrap TimePicker -->
-<link rel="stylesheet" href="<c:url value="/styles/bootstrap-timepicker.css"/>">
-
 <link rel="stylesheet" href="<c:url value="/styles/jquery-ui.css"/>">

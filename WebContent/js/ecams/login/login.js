@@ -113,7 +113,7 @@ var loginSubmitAction = function(e) {
 
 function setSessionLoginUser(userId) {
 	var userInfo = {
-		userId		: 	JSON.stringify(userId),
+		userId		: 	userId,
 		requestType	: 	'SETSESSION'
 	}
 	return ajaxCallWithJson('/webPage/login/Login', userInfo, 'json');
@@ -123,8 +123,8 @@ function isValidLogin() {
 	var ajaxReturnData = null;
 	
 	var userInfo = {
-		userId		: 	JSON.stringify($('#idx_input_id').val()),
-		userPwd		: 	JSON.stringify($('#idx_input_pwd').val()),
+		userId		: 	$('#idx_input_id').val(),
+		userPwd		: 	$('#idx_input_pwd').val(),
 		requestType	: 	'ISVALIDLOGIN'
 	}
 	ajaxReturnData = ajaxCallWithJson('/webPage/login/Login', userInfo, 'json');

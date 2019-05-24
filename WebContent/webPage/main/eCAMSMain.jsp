@@ -3,17 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/webPage/common/common.jsp" />
 
-<style>
-#tip {
-	position:absolute;
-  	color:#FFFFFF;
-	padding:5px;
-	display:none;
-	background:#FFA200;
-  	border-radius: 5px;
-}
-</style>
-
 <div class="row" id="divMainUp">
 	<div class="col-lg-12 col-md-12">
 		<div class="hpanel">

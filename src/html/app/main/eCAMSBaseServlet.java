@@ -39,8 +39,9 @@ public class eCAMSBaseServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -48,16 +49,16 @@ public class eCAMSBaseServlet extends HttpServlet {
 			
 			switch (requestType) { 
 				case "MenuList":
-					response.getWriter().write( getMenu(request) );
+					response.getWriter().write( getMenu(paramMap) );
 					break;
 				case "UserInfo":
-					response.getWriter().write( getUserInfo(request) );
+					response.getWriter().write( getUserInfo(paramMap) );
 					break;	
 				case "GETSESSIONUSERDATA":
-					response.getWriter().write( getSessionUserData(request) );
+					response.getWriter().write( getSessionUserData(paramMap) );
 					break;
 				case "LOG_OUT":
-					response.getWriter().write( logOut(request) );
+					response.getWriter().write( logOut(paramMap) );
 					break;
 				default : 
 					break;
@@ -70,8 +71,9 @@ public class eCAMSBaseServlet extends HttpServlet {
 		
 	}
 	
-	private String getSessionUserData(HttpServletRequest request) throws SQLException, Exception {
-		String sessionID = ParsingCommon.parsingRequestJsonParamToString(request, "sessionID");
+	private String getSessionUserData(HashMap paramMap) throws SQLException, Exception {
+		String sessionID = (String) paramMap.get("sessionID");
+		
 		HashMap<String, String> userInfoMap = new HashMap<String, String>();
 		userInfoMap.put("userId", 	loginManager.getUserID(sessionID));
 		userInfoMap.put("userName", loginManager.getUserName(userInfoMap.get("userId")));
@@ -82,21 +84,21 @@ public class eCAMSBaseServlet extends HttpServlet {
 		return gson.toJson(userInfoMap);
 	}
 	
-	private String getMenu(HttpServletRequest request) throws SQLException, Exception {
-		String sysMap = null;
-		sysMap = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
-		return gson.toJson(menuList.secuMenuList(sysMap));
+	private String getMenu(HashMap paramMap) throws SQLException, Exception {
+		String userId = null;
+		userId = (String) paramMap.get("UserId");
+		return gson.toJson(menuList.secuMenuList(userId));
 	}
 	
-	private String getUserInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getUserInfo(HashMap paramMap) throws SQLException, Exception {
 		String userId = null;
-		userId = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		userId = (String) paramMap.get("UserId");
 		return gson.toJson(userinfo.isAdmin(userId));
 	}
 	
-	private String logOut(HttpServletRequest request) throws SQLException, Exception {
+	private String logOut(HashMap paramMap) throws SQLException, Exception {
 		String userId = null;
-		userId = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		userId = (String) paramMap.get("UserId");
 		if(msgDao.updateLogOut(userId) == 1) user.setDelUser(userId);
 		return gson.toJson( "LOG_OUT" );
 	}

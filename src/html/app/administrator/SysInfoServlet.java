@@ -37,8 +37,8 @@ public class SysInfoServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -46,22 +46,22 @@ public class SysInfoServlet extends HttpServlet {
 			
 			switch (requestType) {
 				case "GETSYSINFOCBO" :
-					response.getWriter().write(getSysInfoCbo(request));
+					response.getWriter().write(getSysInfoCbo(paramMap));
 					break;
 				case "GETJOBLIST" :
-					response.getWriter().write(getJobList(request));
+					response.getWriter().write(getJobList(paramMap));
 					break;
 				case "GETJOBINFO" :
-					response.getWriter().write(getJobInfo(request));
+					response.getWriter().write(getJobInfo(paramMap));
 					break;
 				case "GETSYSINFOLIST" :
-					response.getWriter().write(getSysInfoList(request));
+					response.getWriter().write(getSysInfoList(paramMap));
 					break;
 				case "FACTUP" :
-					response.getWriter().write(updateFactUp(request));
+					response.getWriter().write(updateFactUp(paramMap));
 					break;
 				case "CLOSESYS" :
-					response.getWriter().write(closeSystem(request));
+					response.getWriter().write(closeSystem(paramMap));
 					break;
 				default:
 					break;
@@ -73,43 +73,43 @@ public class SysInfoServlet extends HttpServlet {
 		
 	}
 	
-	private String getSysInfoCbo(HttpServletRequest request) throws SQLException, Exception {
+	private String getSysInfoCbo(HashMap paramMap) throws SQLException, Exception {
 		HashMap<String, String> sysInfoCbo = new HashMap<String, String>();
-		sysInfoCbo = ParsingCommon.parsingRequestJsonParamToHashMap(request, "sysInfoCbo");
+		sysInfoCbo = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("sysInfoCbo").toString());
 		return gson.toJson(sysInfo.getSysInfo_Rpt(sysInfoCbo.get("UserId"), 
 													sysInfoCbo.get("SelMsg"), 
 													sysInfoCbo.get("CloseYn"), 
 													sysInfoCbo.get("SysCd")));
 	}
 	
-	private String getJobList(HttpServletRequest request) throws SQLException, Exception {
+	private String getJobList(HashMap paramMap) throws SQLException, Exception {
 		HashMap<String, String> jobInfoCbo = new HashMap<String, String>();
-		jobInfoCbo = ParsingCommon.parsingRequestJsonParamToHashMap(request, "jobInfoCbo");
+		jobInfoCbo = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("jobInfoCbo").toString());
 		return gson.toJson(codeInfo.getJobCd(jobInfoCbo.get("SelMsg"), jobInfoCbo.get("closeYn")));
 	}
 	
-	private String getJobInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getJobInfo(HashMap paramMap) throws SQLException, Exception {
 		HashMap<String, String> sysJobInfo = new HashMap<String, String>();
-		sysJobInfo = ParsingCommon.parsingRequestJsonParamToHashMap(request, "sysJobInfo");
+		sysJobInfo = ParsingCommon.parsingRequestJsonParamToHashMap(paramMap.get("sysJobInfo").toString());
 		return gson.toJson(sysInfo.getJobInfo(sysJobInfo.get("UserID")
 												, sysJobInfo.get("SysCd")
 												, sysJobInfo.get("SecuYn")
 												, sysJobInfo.get("CloseYn")
-												, sysJobInfo.get("SelMsg")
+												, sysJobInfo.get("SelMsg") == null ? "" : sysJobInfo.get("SelMsg")
 												, sysJobInfo.get("sortCd"))	);
 	}
 	
-	private String getSysInfoList(HttpServletRequest request) throws SQLException, Exception {
+	private String getSysInfoList(HashMap paramMap) throws SQLException, Exception {
 		HashMap<String, String> sysInfo = new HashMap<String, String>();
-		sysInfo = ParsingCommon.parsingRequestJsonParamToHashMap(request, "sysInfo");
+		sysInfo = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("sysInfo").toString());
 		return gson.toJson(cmm0200.getSysInfo_List(Boolean.valueOf(sysInfo.get("clsSw")), sysInfo.get("SysCd")) );
 	}
-	private String closeSystem(HttpServletRequest request) throws SQLException, Exception {
+	private String closeSystem(HashMap paramMap) throws SQLException, Exception {
 		HashMap<String, String> sysInfo = new HashMap<String, String>();
-		sysInfo = ParsingCommon.parsingRequestJsonParamToHashMap(request, "sysInfo");
+		sysInfo = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("sysInfo").toString());
 		return gson.toJson(cmm0200.sysInfo_Close(sysInfo.get("SysCd"), sysInfo.get("UserId")));
 	}
-	private String updateFactUp(HttpServletRequest request) throws SQLException, Exception {
+	private String updateFactUp(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(	cmm0200.factUpdt() );
 	}
 }

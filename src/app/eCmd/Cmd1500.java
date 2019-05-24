@@ -38,7 +38,6 @@ import oracle.sql.BLOB;
 
 import org.apache.log4j.Logger;
 
-import sun.security.action.GetBooleanAction;
 import app.common.AutoSeq;
 import app.common.SysInfo;
 import app.common.SystemPath;

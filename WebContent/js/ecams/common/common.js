@@ -49,11 +49,12 @@ function copyReferenceNone(copyArray){
 
 
 function ajaxCallWithJson(url, requestData, dataType) {
+	var requestJson = JSON.stringify(requestData);
 	var successData = null;
 	$.ajax({
 		type 	: 'POST',
 		url 	: url,
-		data 	: requestData,
+		data 	: requestJson,
 		dataType: dataType,
 		async 	: false,
 		/**
@@ -77,10 +78,11 @@ function ajaxCallWithJson(url, requestData, dataType) {
 
 
 function ajaxAsync(url, requestData, dataType,successFunction) {
+	var requestJson = JSON.stringify(requestData);
 	var ajax = $.ajax({
 		type 	: 'POST',
 		url 	: url,
-		data 	: requestData,
+		data 	: requestJson,
 		dataType: dataType,
 		async 	: true
 	}).then(successFunction,defaultErrorFunction);
@@ -185,6 +187,12 @@ function getDate(dateSeparator, increaseDecreaseNumber) {
 	if(dateSeparator === 'FIRSTDATE') calcuDate.setDate(1);
 	
 	return changeDateToYYYYMMDD(calcuDate);
+}
+
+function getTime() {
+	var d = new Date();
+	var currentTime = d.getHours() + '' + d.getMinutes();
+	return currentTime;
 }
 
 /*
@@ -311,4 +319,18 @@ function defaultPickerInfo(dataAx5picker) {
 		
 	};
 }
+/*
+function getRegexp(type) {
+	if( type === 'NUM')
+		return /[^0-9]/g;
+	if( type === 'KOR')
+		return /[a-z0-9]|[ \[\]{}()<>?|`~!@#$%^&*-_+=,.;:\"'\\]/g;
+	if( type === 'NUM')
+		return /[^0-9]/g;
+	if( type === 'NUM')
+		return /[^0-9]/g;
+	if( type === 'NUM')
+		return /[^0-9]/g;
+}
 
+*/

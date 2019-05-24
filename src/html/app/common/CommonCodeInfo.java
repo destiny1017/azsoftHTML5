@@ -40,8 +40,8 @@ public class CommonCodeInfo extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -49,7 +49,7 @@ public class CommonCodeInfo extends HttpServlet {
 			
 			switch (requestType) {
 				case "CODE_INFO" :
-					response.getWriter().write( getCodeInfo(request) );
+					response.getWriter().write( getCodeInfo(paramMap) );
 					break;
 				default:
 					break;
@@ -61,8 +61,8 @@ public class CommonCodeInfo extends HttpServlet {
 		
 	}//end of getSysInfo() method statement
 	
-	private String getCodeInfo(HttpServletRequest request) throws SQLException, Exception {
-		ArrayList<HashMap<String, String>> codeInfoArr = ParsingCommon.parsingRequestJsonParamToArrayList(request, "codeInfoData");
+	private String getCodeInfo(HashMap paramMap) throws SQLException, Exception {
+		ArrayList<HashMap<String, String>> codeInfoArr = ParsingCommon.parsingRequestJsonParamToArrayList((String)paramMap.get("codeInfoData"));
 		return gson.toJson( codeInfo.getCodeInfoWithArray( codeInfoArr ));
 	}
 

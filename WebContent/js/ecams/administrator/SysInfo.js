@@ -124,19 +124,10 @@ function dateInit() {
 	datScmOpen.bind(defaultPickerInfo('datScmOpen'));
 }
 
-$('#timeDeploy').timepicker({
-	showMeridian : false,
-	minuteStep: 1
-});
-$('#timeDeployE').timepicker({
-    showMeridian : false,
-    minuteStep: 1
-});
+
 
 $(document).ready(function(){
 	$('input.checkbox-pie').wCheck({theme: 'square-inset blue', selector: 'square-dot-blue', highlightLabel: true});
-	
-	console.log($('input.checkbox-chkSelf'));
 	
 	dateInit();
 	getSysCodeInfo();
@@ -182,7 +173,6 @@ $(document).ready(function(){
 	});
 	
 	$('#chkOpen').bind('click', function() {
-		console.log(this);
 		if($(this).is(':checked')) {
 			screenInit();
 			$('#chkSelfDiv').css('visibility','visible');
@@ -197,7 +187,7 @@ $(document).ready(function(){
 	$('input.checkbox-sysInfo').bind('click', function(e) {
 		var selectedSysInfo = Number(this.value); 
 		var selectedIndexs = sysInfoGrid.selectedDataIndexs;
-		if(selectedIndexs.length == 0 ) {
+		if(selectedIndexs.length == 0 && !($('#chkOpen').is(':checked')) ) {
 			e.preventDefault();
 		    e.stopPropagation();
 			showToast('그리드를 선택후 속성을 선택 하실 수 있습니다.');
@@ -272,7 +262,7 @@ $(document).ready(function(){
 				var sysInfoData;
 				sysInfoData = new Object();
 				sysInfoData = {
-					sysInfo		: JSON.stringify(sysInfo),
+					sysInfo		: sysInfo,
 					requestType	: 'CLOSESYS'
 				}
 				ajaxAsync('/webPage/administrator/SysInfoServlet', sysInfoData, 'json',successSysClose);
@@ -281,7 +271,6 @@ $(document).ready(function(){
 	});
 	
 	$('#btnAdd').bind('click',function() {
-		console.log('test');
 		sysValidationCheck();
 	});
 
@@ -289,6 +278,15 @@ $(document).ready(function(){
 
 function sysValidationCheck() {
 	var gridSelectedIndex 	= sysInfoGrid.selectedDataIndexs;
+	var stDate = null;
+	var edDate = null;
+	var nowDate = null;
+	var stTime = null;
+	var edTime = null;
+	var nowTime = null;
+	var stFullDate = null;
+	var edFullDate = null;
+	var nowFullDate = null;
 	
 	if( $('#chkOpen').is(':checked') && $('#chkSelf').is(':checked') && $('#txtSysCd').val().length === 0) {
 		dialog.alert('시스템코드를 입력하여 주시기 바랍니다.',function(){});
@@ -325,9 +323,72 @@ function sysValidationCheck() {
 		return;
 	}
 	
-	
 	for(var i=0; i<sysInfoData.length; i++) {
-		console.log($('#chkJobName'+ (i+1) ).is(':checked'));
+		if(i === 3 && $('#chkJobName'+ (i+1) ).is(':checked') ) {
+			
+			stDate = $('#datStDate').val().substr(0,4) + $('#datStDate').val().substr(5,2) + $('#datStDate').val().substr(8,2);
+			edDate = $('#datEdDate').val().substr(0,4) + $('#datEdDate').val().substr(5,2) + $('#datEdDate').val().substr(8,2);
+			nowDate = getDate('DATE',0);
+			stTime = $('#timeDeploy').val().substr(0,2) + $('#timeDeploy').val().substr(3,2);
+			edTime = $('#timeDeployE').val().substr(0,2) + $('#timeDeployE').val().substr(3,2);
+			console.log($('#timeDeploy').val());
+			console.log($('#timeDeployE').val());
+			nowTime = getTime();
+			
+			stFullDate = stDate + stTime;
+			edFullDate = edDate + edTime;
+			nowFullDate = nowDate + getTime();
+			
+			if(stDate.length === 0 || stTime.length === 0 
+					|| edDate.length === 0 || edTime.length === 0) {
+				dialog.alert('중단일시 및 시간을 입력해 주시기 바랍니다.',function(){});
+				return;
+			}
+			
+			console.log('stDate : '+stDate);
+			console.log('edDate : '+edDate);
+			console.log('nowDate : '+nowDate);
+			
+			console.log('stTime : ' + stTime );
+			console.log('edTime : ' + edTime );
+			console.log('nowTime : ' + nowTime);
+			
+			console.log('stFullDate : '+stFullDate);
+			console.log('edFullDate : '+edFullDate);
+			console.log('nowFullDate : '+nowFullDate);
+			
+			
+			if( nowFullDate > stFullDate) {
+				dialog.alert('중단시작일시가 현재일 이전입니다. 정확히 선택하여 주십시오.',function(){});
+				return;
+			}
+			
+			if( stFullDate > edFullDate ) {
+				dialog.alert('중단종료시작일시가 중단시작일시 이전입니다. 정확히 선택하여 주십시오',function(){});
+				return;
+			}
+			
+			if( nowFullDate > edFullDate  ) {
+				dialog.alert('중단종료시작일시가 현재일 이전입니다. 정확히 선택하여 주십시오',function(){});
+				return;
+			}
+		}
+		
+		if(i === 5 && $('#chkJobName'+ (i+1) ).is(':checked') && $('#txtTime').val().length === 0 ) {
+			dialog.alert('정기적용시간을 입력하여 주십시오.'
+					,function(){
+						$('#txtTime').focus();
+					});
+			return;
+		}
+		
+		if(i === 12 && $('#chkJobName'+ (i+1) ).is(':checked') && $('#txtPrjName').val().length === 0 ) {
+			dialog.alert('프로젝트 명을 입력하시기 바랍니다.'
+							,function(){
+								$('#txtPrjName').focus();
+							});
+			return;
+		}
 	}
 	
 }
@@ -349,7 +410,7 @@ function successSysClose(data) {
 
 //	화면초기화
 function screenInit() {
-	//$('#chkSelfDiv').css('visibility','hidden');
+	$('#chkSelfDiv').css('visibility','hidden');
 	
 	$('#datStDate').prop( "disabled", 	true );
 	$('#timeDeploy').prop( "disabled", 	true );
@@ -380,9 +441,11 @@ function getSysInfoList() {
 	
 	sysListInfoData = new Object();
 	sysListInfoData = {
-		sysInfo	: 	JSON.stringify(sysListInfo),
+		sysInfo	: 	sysListInfo,
 		requestType	: 	'GETSYSINFOLIST'
 	}
+	console.log(sysListInfo);
+	
 	ajaxAsync('/webPage/administrator/SysInfoServlet', sysListInfoData, 'json',successGetSysInfoList);
 }
 
@@ -404,7 +467,7 @@ function getJobList() {
 	
 	jobInfoCboData = new Object();
 	jobInfoCboData = {
-		jobInfoCbo	: 	JSON.stringify(jobInfoCbo),
+		jobInfoCbo	: 	jobInfoCbo,
 		requestType	: 	'GETJOBLIST'
 	}
 	ajaxAsync('/webPage/administrator/SysInfoServlet', jobInfoCboData, 'json',successGetJobList);
@@ -428,7 +491,7 @@ function getSysInfoCbo() {
 	
 	sysInfoCboData = new Object();
 	sysInfoCboData = {
-		sysInfoCbo	: 	JSON.stringify(sysInfoCbo),
+		sysInfoCbo	: 	sysInfoCbo,
 		requestType	: 	'GETSYSINFOCBO'
 	}
 	ajaxAsync('/webPage/administrator/SysInfoServlet', sysInfoCboData, 'json',successGetSysInfoCbo);
@@ -526,17 +589,13 @@ function cboSysClick() {
 			$('#datStDate').val(strTime);
 			
 			strTime = stDate.substr(8,2) + ':' + stDate.substr(10,2);
-			$('#timeDeploy').focus();
 			$('#timeDeploy').val(strTime);
-			$('#timeDeploy').focusout();
 			
 			strTime = edDate.substr(0,4) + '/' + edDate.substr(4,2) + '/' + edDate.substr(6,2);
 			$('#datEdDate').val(strTime);
 			
 			strTime = edDate.substr(8,2) + ':' + edDate.substr(10,2);
-			$('#timeDeployE').focus();
 			$('#timeDeployE').val(strTime);
-			$('#timeDeployE').focusout();
 			
 		} else {
 			$('#datStDate').prop( "disabled", true );
@@ -572,13 +631,13 @@ function getSysJobInfo(sysCd) {
 	sysJobInfo.SysCd 	= sysCd;
 	sysJobInfo.SecuYn 	= 'N';
 	sysJobInfo.CloseYn 	= 'N';
-	sysJobInfo.SelMsg 	= '';
+	sysJobInfo.SelMsg 	= null;
 	sysJobInfo.sortCd 	= 'CD';
 	
 	sysJobInfoData = new Object();
 	sysJobInfoData = {
-		sysJobInfo	: 	JSON.stringify(sysJobInfo),
-		requestType	: 	'GETJOBINFO'
+		sysJobInfo	: sysJobInfo,
+		requestType	: 'GETJOBINFO'
 	}
 	ajaxAsync('/webPage/administrator/SysInfoServlet', sysJobInfoData, 'json',successGetSysJobInfo);
 }

@@ -37,18 +37,9 @@
 		    		<input id="txtSysCd" name="txtTitle" class="form-control" type="text"></input>
 		    	</div>
 		    	<div class="col-lg-7 col-md-12 col-sm-12 col-12">
-		    		<div class="float-left">
-			    		
-		    		</div>
-		    		<div class="row">
-		    			<div class="col-md-4">
-			    			<input type="checkbox" class="checkbox-pie" id="chkOpen" data-label="신규"  />
-		    			</div>
-		    			<div class="col-md-6">
-					    	<input type="checkbox" class="checkbox-pie" id="chkSelf" data-label="시스템코드수동부여"  />
-		    			</div>
-			    		<div id="chkSelfDiv">
-			    		</div>
+	    			<input type="checkbox" class="checkbox-pie" id="chkOpen" data-label="신규"  />
+		    		<div id="chkSelfDiv" class="dis-i-b">
+				    	<input type="checkbox" class="checkbox-pie" id="chkSelf" data-label="시스템코드수동부여" checked="checked"  />
 		    		</div>
 		    	</div>
 	    	</div>
@@ -163,7 +154,7 @@
 		    		</div>
 		    	</div>
 		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
-		    		<input id="txtTime" name="txtTitle" class="form-control" type="text"></input>
+		    		<input id="txtTime" name="txtTitle" class="form-control" type="time"></input>
 		    	</div>
 	    	</div>
 	    	<div class="row">
@@ -194,10 +185,7 @@
 			        </div>
 	    		</div>
 	    		<div class="col-lg-5 col-md-12 col-sm-12 col-12">
-	    			<div class="input-group bootstrap-timepicker timepicker">
-			            <input  id="timeDeploy"  name="realtime" type="text" class="form-control" required="required" readonly>
-			            <span 	class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-			        </div>
+			        <input id="timeDeploy" class="form-control" type="time"></input>
 	    		</div>
     		</div>
     		<div class="row">
@@ -211,10 +199,7 @@
 			        </div>
 	    		</div>
 	    		<div class="col-lg-5 col-md-12 col-sm-12 col-12">
-	    			<div class="input-group bootstrap-timepicker timepicker">
-			            <input  id="timeDeployE"  name="realtime" type="text" class="form-control" required="required" readonly>
-			            <span 	class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-			        </div>
+			        <input id="timeDeployE" class="form-control" type="time"></input>
 	    		</div>
     		</div>
     	</div>

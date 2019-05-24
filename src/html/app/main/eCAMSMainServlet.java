@@ -34,8 +34,9 @@ public class eCAMSMainServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -43,16 +44,16 @@ public class eCAMSMainServlet extends HttpServlet {
 			
 			switch (requestType) { 
 				case "GETAPPLYLIST":
-					response.getWriter().write( getMainApplyList(request) );
+					response.getWriter().write( getMainApplyList(paramMap) );
 					break;
 				case "GETAPPLYLIPIE":
-					response.getWriter().write( getMainApplyPie(request) );
+					response.getWriter().write( getMainApplyPie(paramMap) );
 					break;
 				case "GETPRGPIE":
-					response.getWriter().write( getMainPrgPie(request) );
+					response.getWriter().write( getMainPrgPie(paramMap) );
 					break;
 				case "GETBARCHART":
-					response.getWriter().write( getMainBar(request) );
+					response.getWriter().write( getMainBar(paramMap) );
 					break;
 				default : 
 					break;
@@ -62,35 +63,29 @@ public class eCAMSMainServlet extends HttpServlet {
 		} finally {
 			requestType = null;
 		}
-		
 	}
 	
-	private String getMainApplyList(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> applyInfo = new HashMap<String, String>();
-		applyInfo = ParsingCommon.parsingRequestJsonParamToHashMap(request, "applyInfo");
+	private String getMainApplyList(HashMap paramMap) throws SQLException, Exception {
+		HashMap<String, String> applyInfo = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("applyInfo").toString());
 		return gson.toJson(cmr3200.get_SelectList_HtmlMain(applyInfo));
 	}
 	
-	private String getMainApplyPie(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> applyInfo = new HashMap<String, String>();
-		String closeSwStr = ParsingCommon.parsingRequestJsonParamToString(request, "pieCloseSw"); 
-		applyInfo = ParsingCommon.parsingRequestJsonParamToHashMap(request, "applyInfo");
+	private String getMainApplyPie(HashMap paramMap) throws SQLException, Exception {
+		HashMap<String, String> applyInfo = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("applyInfo").toString());
+		String closeSwStr =(String)paramMap.get("pieCloseSw"); 
 		boolean closeSw =  closeSwStr.equals("Y") ? true : false;
 		return gson.toJson(cmr3200.getMainAppiPie(applyInfo,closeSw));
 	}
 	
-	private String getMainPrgPie(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> applyInfo = new HashMap<String, String>();
-		String closeSwStr = ParsingCommon.parsingRequestJsonParamToString(request, "piePCloseSw"); 
-		applyInfo = ParsingCommon.parsingRequestJsonParamToHashMap(request, "applyInfo");
+	private String getMainPrgPie(HashMap paramMap) throws SQLException, Exception {
+		HashMap<String, String> applyInfo = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("applyInfo").toString());
+		String closeSwStr = (String)paramMap.get("piePCloseSw"); 
 		boolean closeSw =  closeSwStr.equals("Y") ? true : false;
 		return gson.toJson(cmr3200.getMainPrgPie(applyInfo,closeSw));
 	}
 	
-	private String getMainBar(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> applyInfo = new HashMap<String, String>();
-		applyInfo = ParsingCommon.parsingRequestJsonParamToHashMap(request, "applyInfo");
+	private String getMainBar(HashMap paramMap) throws SQLException, Exception {
+		HashMap<String, String> applyInfo = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("applyInfo").toString());
 		return gson.toJson(cmr3200.getMainBar(applyInfo));
 	}
-
 }
