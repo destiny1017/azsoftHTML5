@@ -34,8 +34,8 @@ public class TaskInfo extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -43,13 +43,13 @@ public class TaskInfo extends HttpServlet {
 			
 			switch (requestType) {
 				case "GETJOBLIST" :
-					response.getWriter().write( getJobList(request) );
+					response.getWriter().write( getJobList(paramMap) );
 					break;
 				case "DELJOBINFO" :
-					response.getWriter().write( delJobInfo(request) );
+					response.getWriter().write( delJobInfo(paramMap) );
 					break;
 				case "SETJOBINFOINDIVIDUAL" :
-					response.getWriter().write( setJobInfoIndividual(request) );
+					response.getWriter().write( setJobInfoIndividual(paramMap) );
 					break;
 				default:
 					break;
@@ -61,17 +61,17 @@ public class TaskInfo extends HttpServlet {
 	}
 	
 	//
-	private String getJobList(HttpServletRequest request) throws SQLException, Exception {
+	private String getJobList(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(cmm0100.getJobList());
 	}
 	
-	private String delJobInfo(HttpServletRequest request) throws SQLException, Exception {
-		ArrayList<HashMap<String, String>> delJobInfoList = ParsingCommon.parsingRequestJsonParamToArrayList(request, "delInfoDataArr");
+	private String delJobInfo(HashMap paramMap) throws SQLException, Exception {
+		ArrayList<HashMap<String, String>> delJobInfoList = ParsingCommon.parsingRequestJsonParamToArrayList((String)paramMap.get("delInfoDataArr").toString());
 		return gson.toJson(cmm0100.delJobInfo(delJobInfoList));
 	}
 	
-	private String setJobInfoIndividual(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> jobInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "jobInfoData");
+	private String setJobInfoIndividual(HashMap paramMap) throws SQLException, Exception {
+		HashMap<String, String> jobInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("jobInfoData").toString());
 		return gson.toJson(cmm0100.setJobInfo_individual(jobInfoMap.get("jobcd"), jobInfoMap.get("jobname")));
 	}
 	

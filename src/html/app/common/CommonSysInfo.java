@@ -39,8 +39,8 @@ public class CommonSysInfo extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -48,10 +48,10 @@ public class CommonSysInfo extends HttpServlet {
 			
 			switch (requestType) {
 				case "SYS_INFO" :
-					response.getWriter().write( getSysInfo(request) );
+					response.getWriter().write( getSysInfo(paramMap) );
 					break;
 				case "JOB_INFO" :
-					response.getWriter().write( getJobInfo(request) );
+					response.getWriter().write( getJobInfo(paramMap) );
 					break;
 				default:
 					break;
@@ -64,8 +64,8 @@ public class CommonSysInfo extends HttpServlet {
 	}//end of getSysInfo() method statement
 	
 	
-	private String getSysInfo(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> DataMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "Data");
+	private String getSysInfo(HashMap paramMap) throws SQLException, Exception {
+		HashMap<String, String> DataMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("Data").toString() );
 		return gson.toJson( sysInfo.getSysInfo(
 								DataMap.get("UserId"), 
 								"", 
@@ -75,8 +75,8 @@ public class CommonSysInfo extends HttpServlet {
 							));
 	}
 
-	private String getJobInfo(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> DataMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "Data");
+	private String getJobInfo(HashMap paramMap) throws SQLException, Exception {
+		HashMap<String, String> DataMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("Data").toString() );
 		return gson.toJson( sysInfo.getJobInfo(
 								DataMap.get("UserId"), 
 								DataMap.get("SysCd"), 

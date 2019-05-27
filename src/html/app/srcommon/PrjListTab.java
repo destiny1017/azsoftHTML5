@@ -42,8 +42,8 @@ public class PrjListTab extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -51,13 +51,13 @@ public class PrjListTab extends HttpServlet {
 			
 			switch (requestType) {
 				case "SET_TEAM_INFO" :
-					response.getWriter().write( setTeamInfo(request) );
+					response.getWriter().write( setTeamInfo(paramMap) );
 					break;
 				case "SET_CAT_TYPE" :
-					response.getWriter().write( setCatType(request) );
+					response.getWriter().write( setCatType(paramMap) );
 					break;
 				case "GET_PRJ_INFO" :
-					response.getWriter().write( getPrjInfo(request) );
+					response.getWriter().write( getPrjInfo(paramMap) );
 					break;
 				default:
 					break;
@@ -69,8 +69,8 @@ public class PrjListTab extends HttpServlet {
 		
 	}
 	
-	private String setTeamInfo(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> teamInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "teamInfoData");
+	private String setTeamInfo(HashMap paramMap) throws SQLException, Exception {
+		HashMap<String, String> teamInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("teamInfoData").toString());
 		return gson.toJson( teamInfo.getTeamInfoGrid2(
 								teamInfoMap.get("SelMsg"), 
 								teamInfoMap.get("cm_useyn"), 
@@ -79,8 +79,8 @@ public class PrjListTab extends HttpServlet {
 							));
 	}
 	
-	private String setCatType(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> catTypeInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "catTypeInfoData");
+	private String setCatType(HashMap paramMap) throws SQLException, Exception {
+		HashMap<String, String> catTypeInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("catTypeInfoData").toString());
 		return gson.toJson( codeInfo.getCodeInfo(
 								catTypeInfoMap.get("MACODE"), 
 								catTypeInfoMap.get("SelMsg"), 
@@ -88,8 +88,8 @@ public class PrjListTab extends HttpServlet {
 							));
 	}
 	
-	private String getPrjInfo(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> prjInfoDataMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "prjInfoData");
+	private String getPrjInfo(HashMap paramMap) throws SQLException, Exception {
+		HashMap<String, String> prjInfoDataMap = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("prjInfoData").toString());
 		return gson.toJson( prjInfo.getPrjList(prjInfoDataMap));
 	}
 	

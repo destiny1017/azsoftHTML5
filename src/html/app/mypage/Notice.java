@@ -43,8 +43,8 @@ public class Notice extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -52,31 +52,31 @@ public class Notice extends HttpServlet {
 			
 			switch (requestType) {
 				case "UserInfo" :
-					response.getWriter().write( checkAdmin(request) );
+					response.getWriter().write( checkAdmin(paramMap) );
 					break;
 				case "CodeInfo" :
-					response.getWriter().write( getCodeInfo(request) );
+					response.getWriter().write( getCodeInfo(paramMap) );
 					break;
 				case "Cmm2100" :
-					response.getWriter().write( getSqlQry(request) );
+					response.getWriter().write( getSqlQry(paramMap) );
 					break;
 				case "SystemPath" :
-					response.getWriter().write( getSysPass(request) );
+					response.getWriter().write( getSysPass(paramMap) );
 					break;
 				case "insertNoticeFileInfo" :
-					response.getWriter().write( insertNoticeFileInfo(request) );
+					response.getWriter().write( insertNoticeFileInfo(paramMap) );
 					break;
 				case "getFileList" :
-					response.getWriter().write( getFileList(request) );
+					response.getWriter().write( getFileList(paramMap) );
 					break;
 				case "getNoticeFolderPath" :
-					response.getWriter().write( getNoticeFolderPath(request) );
+					response.getWriter().write( getNoticeFolderPath(paramMap) );
 					break;
 				case "deleteNoticeFile" :
-					response.getWriter().write( deleteNoticeFile(request) );
+					response.getWriter().write( deleteNoticeFile(paramMap) );
 					break;
 				case "BIG_DATA_LOADING_TEST" :
-					response.getWriter().write( getBigDataTest(request) );
+					response.getWriter().write( getBigDataTest(paramMap) );
 					break;
 				default:
 					break;
@@ -89,34 +89,34 @@ public class Notice extends HttpServlet {
 		
 	}
 	
-	private String checkAdmin(HttpServletRequest request) throws SQLException, Exception {
+	private String checkAdmin(HashMap paramMap) throws SQLException, Exception {
 		String userId = null;
-		userId = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		userId = (String)paramMap.get("UserId");
 		return gson.toJson(userinfo.isAdmin(userId));
 	}
 	
-	private String getCodeInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getCodeInfo(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(codeinfo.getCodeInfo("FIND","","N"));
 	}
 	
-	private String getSqlQry(HttpServletRequest request) throws SQLException, Exception {
+	private String getSqlQry(HashMap paramMap) throws SQLException, Exception {
 		String cboFindMicode = null;
-		cboFindMicode = ParsingCommon.parsingRequestJsonParamToString(request, "CboFind_micode");
+		cboFindMicode = (String)paramMap.get("CboFind_micode");
 		String txtFindText = null;
-		txtFindText = ParsingCommon.parsingRequestJsonParamToString(request, "TxtFind_text");
+		txtFindText = (String)paramMap.get("TxtFind_text");
 		String dateStD = null;
-		dateStD = ParsingCommon.parsingRequestJsonParamToString(request, "strStD");
+		dateStD = (String)paramMap.get("strStD");
 		String dateEdD = null;
-		dateEdD = ParsingCommon.parsingRequestJsonParamToString(request, "strEdD");
+		dateEdD = (String)paramMap.get("strEdD");
 		return gson.toJson(cmm2100.get_sql_Qry(cboFindMicode, txtFindText, dateStD, dateEdD));
 	}
 	
-	private String getSysPass(HttpServletRequest request) throws SQLException, Exception {
+	private String getSysPass(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(systempath.getTmpDir("99"));
 	}
 	
-	private String insertNoticeFileInfo(HttpServletRequest request) throws SQLException, Exception {
-		ArrayList<HashMap<String, String>> tmpList = ParsingCommon.parsingRequestJsonParamToArrayList(request, "fileInfo");
+	private String insertNoticeFileInfo(HashMap paramMap) throws SQLException, Exception {
+		ArrayList<HashMap<String, String>> tmpList = ParsingCommon.parsingRequestJsonParamToArrayList((String)paramMap.get("fileInfo").toString());
 		
 		ArrayList<HashMap<String, String>> fileList = new  ArrayList<HashMap<String,String>>();
 		for(int i=0; i<tmpList.size(); i++) {
@@ -130,22 +130,22 @@ public class Notice extends HttpServlet {
 		return gson.toJson(cmm2101.setDocFile(fileList));
 	}
 	
-	private String getFileList(HttpServletRequest request) throws SQLException, Exception {
-		String acptno = ParsingCommon.parsingRequestJsonParamToString(request, "acptno");
+	private String getFileList(HashMap paramMap) throws SQLException, Exception {
+		String acptno = (String)paramMap.get("acptno");
 		return gson.toJson(cmm2100.getFileList(acptno));
 	}
 	
 	
-	private String getNoticeFolderPath(HttpServletRequest request) throws SQLException, Exception {
+	private String getNoticeFolderPath(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(systempath.getTmpDir("01"));
 	}
 
-	private String deleteNoticeFile(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> fileData = ParsingCommon.parsingRequestJsonParamToHashMap(request, "fileData");
+	private String deleteNoticeFile(HashMap paramMap) throws SQLException, Exception {
+		HashMap<String, String> fileData = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("fileData").toString());
 		return gson.toJson(cmm2101.removeDocFileHtml(fileData));
 	}
 	
-	private String getBigDataTest(HttpServletRequest request) throws SQLException, Exception {
+	private String getBigDataTest(HashMap paramMap) throws SQLException, Exception {
 		
 		
 		for(long i=0; i<1000000000; i++) {

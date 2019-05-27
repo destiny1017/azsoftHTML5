@@ -36,8 +36,8 @@ public class AbsenceRegister extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -45,22 +45,22 @@ public class AbsenceRegister extends HttpServlet {
 			
 			switch (requestType) {
 				case "CodeInfo" :
-					response.getWriter().write( getCodeInfo(request) );
+					response.getWriter().write( getCodeInfo(paramMap) );
 					break;
 				case "Cmm1100":
-					response.getWriter().write( getCbo_User(request) );
+					response.getWriter().write( getCbo_User(paramMap) );
 					break;
 				case "Cmm1100_1":
-					response.getWriter().write( getCbo_User_Click(request) );
+					response.getWriter().write( getCbo_User_Click(paramMap) );
 					break;
 				case "Cmm1100_2":
-					response.getWriter().write( getDaegyulList(request) );
+					response.getWriter().write( getDaegyulList(paramMap) );
 					break;
 				case "Cmm1100_3":
-					response.getWriter().write( getDaegyulState(request) );
+					response.getWriter().write( getDaegyulState(paramMap) );
 					break;
 				case "Cmm1100_4":
-					response.getWriter().write( get_Update(request) );
+					response.getWriter().write( get_Update(paramMap) );
 					break;
 				default:
 					break;
@@ -73,37 +73,37 @@ public class AbsenceRegister extends HttpServlet {
 		
 	}
 	
-	private String getCodeInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getCodeInfo(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(codeinfo.getCodeInfo("DAEGYUL","sel","n"));
 	}
 	
-	private String getCbo_User(HttpServletRequest request) throws SQLException, Exception {
+	private String getCbo_User(HashMap paramMap) throws SQLException, Exception {
 		String UserId = null;
-		UserId = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		UserId = (String)paramMap.get("UserId");
 		return gson.toJson(cmm1100.getCbo_User(UserId,"Y"));
 	}
 	
-	private String getCbo_User_Click(HttpServletRequest request) throws SQLException, Exception {
+	private String getCbo_User_Click(HashMap paramMap) throws SQLException, Exception {
 		String cm_userid = null;
-		cm_userid = ParsingCommon.parsingRequestJsonParamToString(request, "cm_userid");
+		cm_userid = (String)paramMap.get("cm_userid");
 		return gson.toJson(cmm1100.getCbo_User_Click(cm_userid,"Y"));
 	}
 	
-	private String getDaegyulList(HttpServletRequest request) throws SQLException, Exception {
+	private String getDaegyulList(HashMap paramMap) throws SQLException, Exception {
 		String cm_userid = null;
-		cm_userid = ParsingCommon.parsingRequestJsonParamToString(request, "cm_userid");
+		cm_userid = (String)paramMap.get("cm_userid");
 		return gson.toJson(cmm1100.getDaegyulList(cm_userid));
 	}
 	
-	private String getDaegyulState(HttpServletRequest request) throws SQLException, Exception {
+	private String getDaegyulState(HashMap paramMap) throws SQLException, Exception {
 		String cm_userid = null;
-		cm_userid = ParsingCommon.parsingRequestJsonParamToString(request, "cm_userid");
+		cm_userid = (String)paramMap.get("cm_userid");
 		return gson.toJson(cmm1100.getDaegyulState(cm_userid));
 	}
 	
-	private String get_Update(HttpServletRequest request) throws SQLException, Exception {
+	private String get_Update(HashMap paramMap) throws SQLException, Exception {
 		HashMap<String, String> dataObj = null;
-		dataObj = ParsingCommon.parsingRequestJsonParamToHashMap(request, "dataObj");
+		dataObj = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("dataObj").toString());
 		return gson.toJson(cmm1100.get_Update(dataObj));
 	}
 	

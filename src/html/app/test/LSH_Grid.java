@@ -2,6 +2,7 @@ package html.app.test;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,8 +30,8 @@ public class LSH_Grid extends HttpServlet {
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -38,7 +39,7 @@ public class LSH_Grid extends HttpServlet {
 			
 			switch (requestType) {
 				case "getMenuList":
-					response.getWriter().write( getUserInfoChk(request) );
+					response.getWriter().write( getUserInfoChk(paramMap) );
 					break;
 				default : 
 					break;
@@ -50,8 +51,8 @@ public class LSH_Grid extends HttpServlet {
 		}
 	}
 	
-	private String getUserInfoChk(HttpServletRequest request) throws SQLException, Exception {
-		String tmp = ParsingCommon.parsingRequestJsonParamToString(request, "temp");
+	private String getUserInfoChk(HashMap paramMap) throws SQLException, Exception {
+		String tmp = (String)paramMap.get("temp");
 		//return gson.toJson(cmm0500.getMenuList(tmp));
 		return "";
 	}

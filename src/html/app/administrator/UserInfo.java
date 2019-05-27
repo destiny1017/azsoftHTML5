@@ -2,6 +2,7 @@ package html.app.administrator;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -36,8 +37,8 @@ public class UserInfo extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -45,25 +46,25 @@ public class UserInfo extends HttpServlet {
 			
 			switch (requestType) {
 				case "CodeInfo" :
-					response.getWriter().write( getCodeInfo(request) );
+					response.getWriter().write( getCodeInfo(paramMap) );
 					break;
 				case "SysInfo" :
-					response.getWriter().write( getSysInfo(request) );
+					response.getWriter().write( getSysInfo(paramMap) );
 					break;
 				case "SysInfo_1" :
-					response.getWriter().write( getJobInfo(request) );
+					response.getWriter().write( getJobInfo(paramMap) );
 					break;
 				case "Cmm0400" :
-					response.getWriter().write( getUserInfo(request) );
+					response.getWriter().write( getUserInfo(paramMap) );
 					break;
 				case "Cmm0400_1" :
-					response.getWriter().write( getListDuty(request) );
+					response.getWriter().write( getListDuty(paramMap) );
 					break;
 				case "Cmm0400_2" :
-					response.getWriter().write( getjobList(request) );
+					response.getWriter().write( getjobList(paramMap) );
 					break;
 				case "Cmm0400_3" :
-					response.getWriter().write( getUserRgtDept(request) );
+					response.getWriter().write( getUserRgtDept(paramMap) );
 					break;
 				default:
 					break;
@@ -77,44 +78,44 @@ public class UserInfo extends HttpServlet {
 	}
 
 
-	private String getCodeInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getCodeInfo(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(codeinfo.getCodeInfo("POSITION,DUTY,RGTCD","SEL","N"));
 	}
 	
-	private String getSysInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getSysInfo(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(sysinfo.getSysInfo("","N","SEL","N",""));
 	}
 	
-	private String getJobInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getJobInfo(HashMap paramMap) throws SQLException, Exception {
 		String sysCd = null;
-		sysCd = ParsingCommon.parsingRequestJsonParamToString(request, "sysCd");
+		sysCd = (String)paramMap.get("sysCd");
 		return gson.toJson(sysinfo.getJobInfo("",sysCd,"N","N","","CD"));
 	}
 	
-	private String getUserInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getUserInfo(HashMap paramMap) throws SQLException, Exception {
 		String userId = null;
-		userId = ParsingCommon.parsingRequestJsonParamToString(request, "userId");
+		userId = (String)paramMap.get("userId");
 		String userName = null;
-		userName = ParsingCommon.parsingRequestJsonParamToString(request, "userName");
+		userName = (String)paramMap.get("userName");
 		System.out.println("Ω√¿€"+userId+","+userName);
 		return gson.toJson(cmm0400.getUserInfo(userId,userName));
 	}
 	
-	private String getListDuty(HttpServletRequest request) throws SQLException, Exception {
+	private String getListDuty(HashMap paramMap) throws SQLException, Exception {
 		String txtUserId = null;
-		txtUserId = ParsingCommon.parsingRequestJsonParamToString(request, "txtUserId");
+		txtUserId = (String)paramMap.get("txtUserId");
 		return gson.toJson(cmm0400.getUserRGTCD(txtUserId));
 	}
 	
-	private String getjobList(HttpServletRequest request) throws SQLException, Exception {
+	private String getjobList(HashMap paramMap) throws SQLException, Exception {
 		String txtUserId = null;
-		txtUserId = ParsingCommon.parsingRequestJsonParamToString(request, "txtUserId");
+		txtUserId = (String)paramMap.get("txtUserId");
 		return gson.toJson(cmm0400.getUserJobList("USER", txtUserId));
 	}
 	
-	private String getUserRgtDept(HttpServletRequest request) throws SQLException, Exception {
+	private String getUserRgtDept(HashMap paramMap) throws SQLException, Exception {
 		String txtUserId = null;
-		txtUserId = ParsingCommon.parsingRequestJsonParamToString(request, "txtUserId");
+		txtUserId = (String)paramMap.get("txtUserId");
 		return gson.toJson(cmm0400.getUserRgtDept(txtUserId));
 	}
 }

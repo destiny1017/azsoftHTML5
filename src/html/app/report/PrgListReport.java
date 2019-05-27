@@ -36,8 +36,8 @@ public class PrgListReport extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -45,22 +45,22 @@ public class PrgListReport extends HttpServlet {
 			
 			switch (requestType) {
 				case "UserInfo" :
-					response.getWriter().write( isAdmin(request) );
+					response.getWriter().write( isAdmin(paramMap) );
 					break;
 				case "getSysInfo" :
-					response.getWriter().write( getSysInfo(request) );
+					response.getWriter().write( getSysInfo(paramMap) );
 					break;
 				case "getSysInfo2" :
-					response.getWriter().write( getSysInfo(request) );
+					response.getWriter().write( getSysInfo(paramMap) );
 					break;
 				case "getJogun" :
-					response.getWriter().write( getJogun(request) );
+					response.getWriter().write( getJogun(paramMap) );
 					break;
 				case "getCode" :
-					response.getWriter().write( getCode(request) );
+					response.getWriter().write( getCode(paramMap) );
 					break;
 				case "getSql_Qry" :
-					response.getWriter().write( getSql_Qry(request) );
+					response.getWriter().write( getSql_Qry(paramMap) );
 					break;
 				default:
 					break;
@@ -72,37 +72,37 @@ public class PrgListReport extends HttpServlet {
 		}		
 	}
 	
-	private String isAdmin(HttpServletRequest request) throws SQLException, Exception {
+	private String isAdmin(HashMap paramMap) throws SQLException, Exception {
 		String user = null;
-		user = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		user = (String)paramMap.get("UserId");
 		return gson.toJson(userinfo.isAdmin(user));
 	}
 	
-	private String getSysInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getSysInfo(HashMap paramMap) throws SQLException, Exception {
 		String user = null;
 		String tmp = null;
-		user = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
-		tmp = ParsingCommon.parsingRequestJsonParamToString(request, "tmp");
+		user = (String)paramMap.get("UserId");
+		tmp = (String)paramMap.get("tmp");
 		return gson.toJson(sysinfo.getSysInfo(user,tmp,"","N","04"));
 	}
 	
-	private String getJogun(HttpServletRequest request) throws SQLException, Exception {
+	private String getJogun(HashMap paramMap) throws SQLException, Exception {
 		String cnt = null;
-		cnt = ParsingCommon.parsingRequestJsonParamToString(request, "cnt");
+		cnt = (String)paramMap.get("cnt");
 		return gson.toJson(cmd3100.getJogun(Integer.parseInt(cnt)));
 	}
 	
-	private String getCode(HttpServletRequest request) throws SQLException, Exception {
+	private String getCode(HashMap paramMap) throws SQLException, Exception {
 		String cnt = null;
 		String L_SysCd = null;
-		L_SysCd = ParsingCommon.parsingRequestJsonParamToString(request, "L_SysCd");
-		cnt = ParsingCommon.parsingRequestJsonParamToString(request, "cnt");
+		L_SysCd = (String)paramMap.get("L_SysCd");
+		cnt = (String)paramMap.get("cnt");
 		return gson.toJson(cmd3100.getCode(L_SysCd, Integer.parseInt(cnt)));
 	}
 	
-	private String getSql_Qry(HttpServletRequest request) throws SQLException, Exception {
+	private String getSql_Qry(HashMap paramMap) throws SQLException, Exception {
 		HashMap<String, String>	DataInfoMap = null;
-		DataInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "prjData");
+		DataInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("prjData").toString());
 		return gson.toJson( cmd3100.getSql_Qry(DataInfoMap) );
 	}
 }

@@ -39,8 +39,8 @@ public class RequestStatus extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -48,22 +48,22 @@ public class RequestStatus extends HttpServlet {
 			
 			switch (requestType) {
 				case "UserInfochk" :
-					response.getWriter().write( getUserInfo(request) );
+					response.getWriter().write( getUserInfo(paramMap) );
 					break;
 				case "UserPMOInfo" :
-					response.getWriter().write( getPMOInfo(request) );
+					response.getWriter().write( getPMOInfo(paramMap) );
 					break;
 				case "SysInfo" :
-					response.getWriter().write( getSysInfo(request) );
+					response.getWriter().write( getSysInfo(paramMap) );
 					break;
 				case "CodeInfo_1" :
-					response.getWriter().write( getCodeInfo(request) );
+					response.getWriter().write( getCodeInfo(paramMap) );
 					break;
 				case "TeamInfo" :
-					response.getWriter().write( getTeamInfoGrid2(request) );
+					response.getWriter().write( getTeamInfoGrid2(paramMap) );
 					break;
 				case "get_SelectList" :
-					response.getWriter().write( get_SelectList(request) );
+					response.getWriter().write( get_SelectList(paramMap) );
 					break;
 				default:
 					break;
@@ -75,36 +75,36 @@ public class RequestStatus extends HttpServlet {
 		}
 	}
 	
-	private String getUserInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getUserInfo(HashMap paramMap) throws SQLException, Exception {
 		String user = null;
-		user = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		user = (String)paramMap.get("UserId");
 		return gson.toJson(userinfo.getUserInfo(user));
 	}
 	
-	private String getPMOInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getPMOInfo(HashMap paramMap) throws SQLException, Exception {
 		String user = null;
-		user = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		user = (String)paramMap.get("UserId");
 		return gson.toJson(userinfo.getPMOInfo(user));
 	}
 	
-	private String getSysInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getSysInfo(HashMap paramMap) throws SQLException, Exception {
 		String user = null;
-		user = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		user = (String)paramMap.get("UserId");
 		return gson.toJson(sysinfo.getSysInfo(user,"Y","ALL","N",""));
 	}
 	
-	private String getCodeInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getCodeInfo(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(codeinfo.getCodeInfo("REQUEST,R3200STA","ALL","N"));
 	}
 	
-	private String getTeamInfoGrid2(HttpServletRequest request) throws SQLException, Exception {
+	private String getTeamInfoGrid2(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(teaminfo.getTeamInfoGrid2("All","Y","sub","N"));
 	}
 	
-	private String get_SelectList(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String>	prjDataInfoMap = null;
-		prjDataInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "prjData");
-		return gson.toJson( cmr3200.get_SelectList(prjDataInfoMap.get("strSys"),prjDataInfoMap.get("strQry"),prjDataInfoMap.get("strTeam"),
+	private String get_SelectList(HashMap paramMap) throws SQLException, Exception {
+		HashMap<String, String>	prjDataInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("prjData").toString() );
+		return gson.toJson( cmr3200.get_SelectList(prjDataInfoMap.get("strSys"),
+												   prjDataInfoMap.get("strQry"),prjDataInfoMap.get("strTeam"),
 												   prjDataInfoMap.get("strSta"),prjDataInfoMap.get("txtUser"),prjDataInfoMap.get("strStD"),
 												   prjDataInfoMap.get("strEdD"),prjDataInfoMap.get("strUserId"),prjDataInfoMap.get("cboGbn"),
 												   prjDataInfoMap.get("strJob"),prjDataInfoMap.get("dategbn"),prjDataInfoMap.get("txtSpms")) );

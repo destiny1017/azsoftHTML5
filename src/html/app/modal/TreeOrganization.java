@@ -34,8 +34,8 @@ public class TreeOrganization extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -43,10 +43,10 @@ public class TreeOrganization extends HttpServlet {
 			
 			switch (requestType) {
 				case "GET_TREE_INFO" :
-					response.getWriter().write( getTreeInfo(request) );
+					response.getWriter().write( getTreeInfo(paramMap) );
 					break;
 				case "GET_ZTREE_INFO" :
-					response.getWriter().write( getTreeInfo_zTree(request) );
+					response.getWriter().write( getTreeInfo_zTree(paramMap) );
 					break;
 				default:
 					break;
@@ -58,13 +58,13 @@ public class TreeOrganization extends HttpServlet {
 	}
 	
 	//
-	private String getTreeInfo(HttpServletRequest request) throws SQLException, Exception {
-		String treeInfoData = ParsingCommon.parsingRequestJsonParamToString(request, "treeInfoData");
+	private String getTreeInfo(HashMap paramMap) throws SQLException, Exception {
+		String treeInfoData = (String)paramMap.get("treeInfoData");
 		return gson.toJson( teamInfo.getTeamInfoTree_new(Boolean.parseBoolean(treeInfoData)) );
 	}
 	
-	private String getTreeInfo_zTree(HttpServletRequest request) throws SQLException, Exception {
-		String treeInfoData = ParsingCommon.parsingRequestJsonParamToString(request, "treeInfoData");
+	private String getTreeInfo_zTree(HashMap paramMap) throws SQLException, Exception {
+		String treeInfoData = (String)paramMap.get("treeInfoData");
 		return gson.toJson( teamInfo.getTeamInfoTree_zTree(Boolean.parseBoolean(treeInfoData)) );
 	}
 	

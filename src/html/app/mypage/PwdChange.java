@@ -2,6 +2,7 @@ package html.app.mypage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -35,8 +36,8 @@ public class PwdChange extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -44,21 +45,21 @@ public class PwdChange extends HttpServlet {
 			
 			switch (requestType) {
 				case "MemberDAO" :
-					response.getWriter().write(getUserName(request));
+					response.getWriter().write(getUserName(paramMap));
 					break;
 				case "PassWdDAO":
-					response.getWriter().write( selectPassWd(request) );
+					response.getWriter().write( selectPassWd(paramMap) );
 					break;
 				case "PassWdDAO_1":
 				case "PassWdDAO_3":
 				case "PassWdDAO_4":
-					response.getWriter().write( encryptPassWd(request) );
+					response.getWriter().write( encryptPassWd(paramMap) );
 					break;
 				case "PassWdDAO_2":
-					response.getWriter().write( selectLastPassWord(request) );
+					response.getWriter().write( selectLastPassWord(paramMap) );
 					break;
 				case "PassWdDAO_5":
-					response.getWriter().write( updtPassWd(request) );
+					response.getWriter().write( updtPassWd(paramMap) );
 					break;
 				default:
 					break;
@@ -71,35 +72,35 @@ public class PwdChange extends HttpServlet {
 		
 	}
 	
-	private String getUserName(HttpServletRequest request) throws SQLException, Exception {
+	private String getUserName(HashMap paramMap) throws SQLException, Exception {
 		String UserId = null;
-		UserId = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		UserId = (String)paramMap.get("UserId");
 		return gson.toJson(memberdao.selectUserName(UserId));
 	}
 	
-	private String selectPassWd(HttpServletRequest request) throws SQLException, Exception {
+	private String selectPassWd(HashMap paramMap) throws SQLException, Exception {
 		String UserId = null;
-		UserId = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		UserId = (String)paramMap.get("UserId");
 		return gson.toJson(passwddao.selectPassWd(UserId));
 	}
 	
-	private String encryptPassWd(HttpServletRequest request) throws SQLException, Exception {
+	private String encryptPassWd(HashMap paramMap) throws SQLException, Exception {
 		String usr_passwd = null;
-		usr_passwd = ParsingCommon.parsingRequestJsonParamToString(request, "usr_passwd");
+		usr_passwd = (String)paramMap.get("usr_passwd");
 		return gson.toJson(passwddao.encryptPassWd(usr_passwd));
 	}
 	
-	private String selectLastPassWord(HttpServletRequest request) throws SQLException, Exception {
+	private String selectLastPassWord(HashMap paramMap) throws SQLException, Exception {
 		String UserId = null;
-		UserId = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		UserId = (String)paramMap.get("UserId");
 		return gson.toJson(passwddao.selectLastPassWord(UserId));
 	}
 	
-	private String updtPassWd(HttpServletRequest request) throws SQLException, Exception {
+	private String updtPassWd(HashMap paramMap) throws SQLException, Exception {
 		String UserId = null;
-		UserId = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		UserId = (String)paramMap.get("UserId");
 		String usr_passwd = null;
-		usr_passwd = ParsingCommon.parsingRequestJsonParamToString(request, "usr_passwd");
+		usr_passwd = (String)paramMap.get("usr_passwd");
 		return gson.toJson(passwddao.updtPassWd(UserId,usr_passwd));
 	}
 

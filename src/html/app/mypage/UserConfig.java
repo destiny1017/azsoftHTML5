@@ -2,6 +2,7 @@ package html.app.mypage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -36,8 +37,8 @@ public class UserConfig extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -45,16 +46,16 @@ public class UserConfig extends HttpServlet {
 			
 			switch (requestType) {
 				case "UserInfo" :
-					response.getWriter().write( checkAdmin(request) );
+					response.getWriter().write( checkAdmin(paramMap) );
 					break;
 				case "SysInfo" :
-					response.getWriter().write( getSelSysname(request) );
+					response.getWriter().write( getSelSysname(paramMap) );
 					break;
 				case "Cmd1300" :
-					response.getWriter().write( getGrid1(request) );
+					response.getWriter().write( getGrid1(paramMap) );
 					break;
 				case "Cmd1300_1" :
-					response.getWriter().write( getUpdateDir(request) );
+					response.getWriter().write( getUpdateDir(paramMap) );
 					break;
 				default:
 					break;
@@ -68,33 +69,33 @@ public class UserConfig extends HttpServlet {
 	}
 
 
-	private String checkAdmin(HttpServletRequest request) throws SQLException, Exception {
+	private String checkAdmin(HashMap paramMap) throws SQLException, Exception {
 		String userId = null;
-		userId = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		userId = (String)paramMap.get("UserId");
 		return gson.toJson(userinfo.isAdmin(userId));
 	}
 	
-	private String getSelSysname(HttpServletRequest request) throws SQLException, Exception {
+	private String getSelSysname(HashMap paramMap) throws SQLException, Exception {
 		String userId = null;
-		userId = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		userId = (String)paramMap.get("UserId");
 		String secuYn = null;
-		secuYn = ParsingCommon.parsingRequestJsonParamToString(request, "SecuYn");
+		secuYn = (String)paramMap.get("SecuYn");
 		return gson.toJson(sysinfo.getSysInfo(userId, secuYn, "SEL", "N", ""));
 	}
 	
-	private String getGrid1(HttpServletRequest request) throws SQLException, Exception {
+	private String getGrid1(HashMap paramMap) throws SQLException, Exception {
 		String userId = null;
-		userId = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		userId = (String)paramMap.get("UserId");
 		return gson.toJson(cmd1300.getSql_Qry(userId));
 	}
 	
-	private String getUpdateDir(HttpServletRequest request) throws SQLException, Exception {
+	private String getUpdateDir(HashMap paramMap) throws SQLException, Exception {
 		String userId = null;
-		userId = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		userId = (String)paramMap.get("UserId");
 		String selSysCd = null;
-		selSysCd = ParsingCommon.parsingRequestJsonParamToString(request, "selSysCd");
+		selSysCd = (String)paramMap.get("selSysCd");
 		String txtDir = null;
-		txtDir = ParsingCommon.parsingRequestJsonParamToString(request, "txtDir");
+		txtDir = (String)paramMap.get("txtDir");
 		return gson.toJson(cmd1300.getTblUpdate(userId, selSysCd, txtDir));
 	}
 }

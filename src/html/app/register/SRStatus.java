@@ -35,8 +35,8 @@ public class SRStatus extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -44,16 +44,16 @@ public class SRStatus extends HttpServlet {
 			
 			switch (requestType) {
 				case "TeamInfo":
-					response.getWriter().write( getTeamInfo(request) );
+					response.getWriter().write( getTeamInfo(paramMap) );
 					break;
 				case "TeamInfo2":
-					response.getWriter().write( getTeamInfo2(request) );
+					response.getWriter().write( getTeamInfo2(paramMap) );
 					break;
 				case "CodeInfo":
-					response.getWriter().write( getCodeInfo(request) );
+					response.getWriter().write( getCodeInfo(paramMap) );
 					break;
 				case "PrjInfo":
-					response.getWriter().write( getResearch(request) );
+					response.getWriter().write( getResearch(paramMap) );
 					break;
 				default : 
 					break;
@@ -65,21 +65,21 @@ public class SRStatus extends HttpServlet {
 		}
 	}
 
-	private String getTeamInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getTeamInfo(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(teaminfo.getTeamInfoGrid2("ALL","Y","req","N"));
 	}
 	
-	private String getTeamInfo2(HttpServletRequest request) throws SQLException, Exception {
+	private String getTeamInfo2(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(teaminfo.getTeamInfoGrid2("ALL","Y","DEPT","N"));
 	}
 	
-	private String getCodeInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getCodeInfo(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(codeinfo.getCodeInfo("ISRSTA,ISRSTAUSR","ALL","N"));
 	}
 	
-	private String getResearch(HttpServletRequest request) throws SQLException, Exception {
+	private String getResearch(HashMap paramMap) throws SQLException, Exception {
 		HashMap<String, String>				 childrenMap = null;
-		childrenMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "prjData");
+		childrenMap = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("prjData").toString());
 		return gson.toJson( prjinfo.get_SelectList(childrenMap) );	
 	}
 }

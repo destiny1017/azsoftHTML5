@@ -1,213 +1,178 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <c:import url="/webPage/common/common.jsp" />
-<link rel="stylesheet" type="text/css" href="<c:url value="/js/ecams/dev/semantic.min.css"/>">
-<style>
-.white-space-none { white-space:pre-wrap !important;}
+<c:import url="/js/ecams/common/commonscript.jsp" />
 
-@media (min-width: 768px) {
-	.padding-1-left-web {padding-left:1;}
-	.padding-1-right-web {padding-right:1;}
-	
-	.height-35px-web {height:35px;}
+<style>
+select,input[type="text"] {
+	width: 100% !important;
 }
+
+label{
+	margin-top : 8px; !important;
+}
+
+div[class^="col"] { 
+	padding: 0px 10px 0px 0px !important;
+}
+
+div[class^="row"] { 
+	margin: 0px 0px 5px 5px !important;
+}
+
+.fontStyle-error {
+	color: #BE81F7;
+}
+.fontStyle-ing {
+	color: #0000FF;
+}
+.fontStyle-cncl {
+	color: #FF0000;
+}
+
+#tip {
+	position:absolute;
+  	color:#FFFFFF;
+	padding:5px;
+	display:none;
+	background:#450e4c;
+  	border-radius: 5px;
+}
+
+.loding-div{
+    width:100%;
+    height:100%;
+    background-color: white;
+    position: absolute;
+    z-index:1;
+}
+
+.loding-img{
+    position: absolute;
+	z-index: 1;
+    left: calc(50% - 436px/2);
+    top:25%;
+}
+
 </style>
 <section>
-	<div class="container-fluid">
-		<div class="border-style-black">
+<div class="container-fluid">
+	<div class="border-style-black">
+		<div class="form-inline">
 			<div class="row">
-				<div class="col-xs-12 col-sm-1"> 
-					<div class="margin-15-top">
-						<sbux-label id="idx_lbl_sys" class="width-100" text="*시스템" uitype="normal"></sbux-label>
+				<div class="col-sm-3">
+					<div class="col-sm-2">
+						<label  id="lbDept" name="lbDept" >신청부서</label>
 					</div>
-				</div>
-				<div class="col-xs-12 col-sm-3">
-					<div class="margin-5-top">
-						<select id='select_system' name='select_system'></select>
-						<!-- 
-						<sbux-select 
-							id="select_system" name="select_system" class="combo-height width-100" uitype="single" model-name="select_system" 
-							jsondata-text  = "cm_sysmsg" jsondata-value = "cm_syscd"	scroll-style="min-height: 200px;"
-							required jsondata-ref="selectedSysData" onchange="changeSysCombo()"></sbux-select>
-						 -->
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-1">
-					<div class="margin-15-top">
-						<sbux-label id="idx_lbl_rsrc" class="width-100" text="*프로그램종류" uitype="normal"></sbux-label>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-2 padding-1-right-web">
-					<div class="margin-5-top">
-						<sbux-select id="select_rsrc" name="select_rsrc" class="combo-height width-100" uitype="single" model-name="select_rsrc"
-		                  	jsondata-text = "cm_codename" jsondata-value = "cm_micode" scroll-style="min-height: 120px;"
-		                  	required jsondata-ref="selectedRsrcData" onchange="changeRsrcdCombo()"></sbux-select>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-2 padding-1-left-web">
-					<div class="margin-5-top">
-						<sbux-input  id="idx_exeName_text" name="idx_exeName_text" class="width-100" uitype="text" readonly></sbux-input>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-1"> 
-					<div class="margin-15-top">
-						<sbux-label  id="idx_lbl_job" class="width-100" text="*업무" uitype="normal">
-						</sbux-label>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-2 padding-1-left-web">
-					<div class="margin-5-top">
-						<sbux-select 
-							id="select_job" name="select_job" class="combo-height width-100" uitype="single" model-name="select_job" 
-							jsondata-text  = "cm_jobname" jsondata-value = "cm_jobcd" scroll-style="min-height: 200px;"
-		                  	required  jsondata-ref="selectedJobData" onchange="setDir()"></sbux-select>
-					</div>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="col-xs-12 col-sm-1"> 
-					<div class="margin-10-top" >
-						<sbux-label id="idx_lbl_prgName_text" class="width-100" text="*프로그램명" uitype="normal"></sbux-label>
-					</div>
-					
-				</div>
-				<div class="col-xs-12 col-sm-8">
-					<div class="margin-5-top">
-						<sbux-input id="idx_prgName_text" name="idx_prgName_text" class="width-100" uitype="text" 
-							sbux-popover="<font color='blue' style='font-weight:bold;'>프로그램명</font>을 입력" sbux-popover-placement="bottom" sbux-popover-html="true">
-						</sbux-input>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-3 height-35px-web">
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="col-xs-12 col-sm-1"> 
-					<div class="margin-10-top" >
-						<sbux-label id="idx_lbl_prgStory_text" class="width-100" text="*프로그램설명" uitype="normal"></sbux-label>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-8">
-					<div class="margin-5-top">
-						<sbux-input id="idx_prgStory_text" name="idx_prgStory_text" class="width-100" uitype="text"
-							sbux-popover="<font color='blue' style='font-weight:bold;'>프로그램설명</font>을 입력" sbux-popover-placement="bottom" sbux-popover-html="true">
-						</sbux-input>
-					</div>
-				</div>
-				<div id="btnGroup1">
-					<div class="col-xs-12 col-sm-1 padding-1-right-web">
-						<div class="margin-5-top">
-							<sbux-button id="idx_register_btn" name="idx_register_btn" class="width-100" uitype="normal" text="등록" onclick="clickSearchBtn()">
-							</sbux-button>
-						</div>
-					</div>
-					<div class="col-xs-12 col-sm-2 padding-1-left-web">
-						<div class="margin-5-top">
-							<sbux-button id="idx_devRegister_btn" name="idx_devRegister_btn" class="width-100" uitype="normal" text="개발영역연결등록" onclick="clickSearchBtn()">
-							</sbux-button>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="col-xs-12 col-sm-1"> 
-					<div class="margin-10-top" >
-						<sbux-label id="idx_lbl_dirpath_text" class="width-100" text="*프로그램경로" uitype="normal"></sbux-label>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-8">
-					<div class="margin-5-top">
-						<sbux-select 
-							id="select_dir" name="select_dir" class="combo-height width-100" uitype="single" model-name="select_dir" 
-							jsondata-text  = "cm_dirpath" jsondata-value = "cm_dsncd"	scroll-style="min-height: 200px;"
-							required jsondata-ref="selectedDirData"></sbux-select>
-					</div>
-					</div>
-				<div class="col-xs-12 col-sm-1">
-				</div>
-				<div id="btnGroup2">
-					<div class="col-xs-12 col-sm-2 padding-1-left-web">
-						<div class="margin-5-top">
-							<sbux-button id="idx_loaclRegister_btn" name="idx_localRegister_btn" class="width-100" uitype="normal" text="로컬영역연결등록" onclick="clickSearchBtn()">
-							</sbux-button>
-						</div>
-					</div>
-				</div>
-			</div>
-						
-			<div class="row">
-				<div class="col-xs-12 col-sm-1"> 
-					<div class="margin-10-top" >
-						<sbux-label id="idx_lbl_srid_text" class="width-100" text="*SR-ID" uitype="normal"></sbux-label>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-8">
-					<div class="margin-5-top">
-						<sbux-select 
-							id="select_srid" name="select_srid" class="combo-height width-100" uitype="single" model-name="select_srid" 
-							jsondata-text  = "srid" jsondata-value = "cc_srid"	scroll-style="min-height: 200px;"
-							required jsondata-ref="selectedSrIdData"></sbux-select>
+					<div class="form-group col-sm-10 no-padding">
+						 <div data-ax5select="cboDept" data-ax5select-config="{size:'sm',theme:'primary'}" style="width:100%;"></div>
 					</div>
 				</div>
 				
-				<div id="btnArea"></div>
-				<div class="col-xs-12 col-sm-1 padding-1-right-web">
-					<div class="margin-5-top">
-						<sbux-button id="idx_reset_btn" name="idx_reset_btn" class="width-100" uitype="normal" text="초기화" onclick="clickResetBtn()">
-						</sbux-button>
+				<div class="col-sm-3">
+					<div class="col-sm-2">
+						<label  id="lbSysCd" name="lbSysCd">시스템</label>
+					</div>
+					<div class="form-group col-sm-10 no-padding">
+						 <div data-ax5select="cboSysCd" data-ax5select-config="{size:'sm',theme:'primary'}" style="width:100%;"></div>
 					</div>
 				</div>
-				<div class="col-xs-12 col-sm-1 padding-1-left-web  padding-1-right-web">
-					<div class="margin-5-top">
-						<sbux-button id="idx_search_btn" name="idx_search_btn" class="width-100" uitype="normal" text="조회" onclick="clickSearchBtn()">
-						</sbux-button>
+				<div class="col-sm-2">
+					<div class="col-sm-4">
+						<label  id="lbgbn" name="lbgbn">처리구분</label>
+					</div>
+					<div class="form-group col-sm-8 no-padding">
+						<div data-ax5select="cboGbn" data-ax5select-config="{size:'sm',theme:'primary'}" style="width:100%;"></div>
 					</div>
 				</div>
-				<div class="col-xs-12 col-sm-1 padding-1-left-web">
-					<div class="margin-5-top">
-						<sbux-button id="idx_delete_btn" name="idx_delete_btn" class="width-100" uitype="normal" text="삭제" onclick="clickDeletBtn()">
-						</sbux-button>
+				<div class="col-sm-2">
+					<div class="col-sm-3">
+						<label  id="lbEditor" name="lbEditor">신청인</label>
 					</div>
+					<div class="form-group col-sm-9 no-padding">
+						<input class="input-sm" id="txtUser" name="txtUser" type="text" class="form-control" placeholder="신청인을 입력하세요." onkeypress="if(event.keyCode==13) {cmdQry_Proc();}"/>
+					</div>
+				</div>
+				<div class="col-sm-1 col-sm-offset-1">
+					<div class="form-group">
+						<button class="btn btn-default" data-grid-control="excel-export">엑셀저장</button>
+					</div>
+				</div>
+			</div>
+			 
+			<div class="row">
+				<div class="col-sm-3">
+					<div class="col-sm-2">
+						<label  id="lbBlank" name="lbBlank">신청종류</label>
+					</div>
+					<div class="form-group col-sm-10 no-padding">
+						<div data-ax5select="cboSin" data-ax5select-config="{multiple: true, size:'sm', theme:'primary'}" style="width:100%;"></div> 	
+					</div>
+				</div>
+				
+				<div class="col-sm-3">
+					<div class="col-sm-2">
+						<label  id="lbSta" name="lbSta">진행상태</label>
+					</div>
+					<div class="form-group col-sm-10 no-padding">
+						<div data-ax5select="cboSta" data-ax5select-config="{size:'sm',theme:'primary'}" style="width:100%;"></div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="col-sm-2">
+						<label  id="lbSpms" name="lbSpms">SR-ID/SR명</label>
+					</div>
+					<div class="form-group col-sm-10 no-padding">
+						<input class="input-sm" id="txtSpms" name="txtSpms" type="text" class="form-control" placeholder="SR-ID/SR명을 입력하세요." onkeypress="if(event.keyCode==13) {cmdQry_Proc();}"/>
+					</div>
+				</div>
+				<div class="col-sm-1 col-sm-offset-1">
+					<button class="btn btn-default" onclick="cmdQry_Proc();" javascript:;>조&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;회</button>
 				</div>
 			</div>
 			
 			<div class="row">
-				<div class="col-xs-12 col-sm-8"> 
-					<div class="margin-5-top" >
-						<sbux-label id="idx_lbl_etc_text" text="주)" uitype="normal" style="vertical-align:top; padding-left:15px;"></sbux-label>
-						<sbux-label id="idx_lbl_etc1_text" class="width-92 white-space-none" text="1. 프로그램명은 소스파일 기준으로 확장자까지 입력하여 주시기 바랍니다." uitype="normal" style="width:87%"></sbux-label>
-						<sbux-label id="idx_lbl_etc2_text" class="width-99 padding-35-left white-space-none" text="2. 시스템/프로그램종류/프로그램명을 검색조건으로 사용합니다.(조회)" uitype="normal"></sbux-label>
+				<div class="col-sm-3">
+					<div class="form-group">
+						<label  id="lbCnl" class="no-padding" name="lbCnl" style="color:white;  white-space: pre; background-color: #FF0000;">반려 또는 취소</label>
+						<label  id="lbCnl" class="no-padding" name="lbCnl" style="color:white;  white-space: pre; background-color: #BE81F7;">처리 중 에러발생</label>
+						<label  id="lbCnl" class="no-padding" name="lbCnl" style="color:white;  white-space: pre; background-color: #000000;">처리완료</label>
+						<label  id="lbCnl" class="no-padding" name="lbCnl" style="color:white;  white-space: pre; background-color: #0000FF;">진행중</label>
 					</div>
 				</div>
-				<div class="col-xs-12 col-sm-1" style="text-align:right"> 
-					<div class="margin-5-top" >
-						<sbux-label id="idx_lbl_total_text" text="총:" uitype="normal" style="vertical-align:top"></sbux-label>
-						<sbux-label id="idx_lbl_total1_text" text="0" uitype="normal"></sbux-label>
-						<sbux-label id="idx_lbl_total2_text" text="건" uitype="normal"></sbux-label>
+				<div class="col-sm-3">
+					<div class="col-sm-4 form-group">
+						<label><input style="vertical-align: middle;" id="rdoStrDate" name="rdoDate" type="radio" value="0" checked/>&nbsp;&nbsp;신청일기준</label>
+					</div>
+					<div class="col-sm-8 form-group">
+						<label><input style="vertical-align: middle;" id="rdoEndDate" name="rdoDate"  type="radio" value="1"/>&nbsp;&nbsp;완료일기준</label>
 					</div>
 				</div>
-			</div>
-			
+				<div class="col-sm-4">
+					<div class="input-group" data-ax5picker="basic" style="width:100%;">
+			            <input id="datStD" name="datStD" type="text" class="form-control" placeholder="yyyy/mm/dd">
+			            <span class="input-group-addon">~</span>
+			            <input id="datEdD" name="datEdD" type="text" class="form-control" placeholder="yyyy/mm/dd">
+			            <span class="input-group-addon"><i class="fa fa-calendar-o"></i></span>
+			        </div>
+				</div>
+				<div class="col-sm-1">
+					<label  id="lbTotalCnt" name="lbTotalCnt" style="width: 100%; text-align: right;">총0건</label>
+				</div>
+				<div class="col-sm-1 col-sm-offset-1">
+					<button class="btn btn-default" onclick="printGrid();" javascript:;>프&nbsp;&nbsp;린&nbsp;&nbsp;트</button>
+				</div>
+			</div>		
 		</div>
 	</div>
+</div>
 </section>
 
 <section>
 	<div class="container-fluid">
-		<div class="row-fulid" >
-			<div class="col-xs-12 col-sm-12 no-padding">
-				<div id="fileGrid" class="default-grid-height"></div>
-			</div>
-		</div>
+		<div data-ax5grid="first-grid" data-ax5grid-config="{showLineNumber: true, lineNumberColumnWidth: 40}" style="height: 550px;"></div>
 	</div>
 </section>
 
-
-<c:import url="/js/ecams/common/commonscript.jsp" />
 <script type="text/javascript" src="<c:url value="/js/ecams/dev/ProgRegister.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/js/ecams/dev/semantic.min.js"/>"></script>

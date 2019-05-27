@@ -41,8 +41,8 @@ public class ApprovalStatus extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -50,19 +50,19 @@ public class ApprovalStatus extends HttpServlet {
 			
 			switch (requestType) {
 				case "UserInfochk" :
-					response.getWriter().write( getUserInfo(request) );
+					response.getWriter().write( getUserInfo(paramMap) );
 					break;
 				case "SysInfo" :
-					response.getWriter().write( getSysInfo(request) );
+					response.getWriter().write( getSysInfo(paramMap) );
 					break;
 				case "CodeInfo" :
-					response.getWriter().write( getCodeInfo(request) );
+					response.getWriter().write( getCodeInfo(paramMap) );
 					break;
 				case "TeamInfo" :
-					response.getWriter().write( getTeamInfoGrid2(request) );
+					response.getWriter().write( getTeamInfoGrid2(paramMap) );
 					break;	
 				case "get_SelectList" :
-					response.getWriter().write( get_SelectList(request) );
+					response.getWriter().write( get_SelectList(paramMap) );
 					break;	
 				default:
 					break;
@@ -74,29 +74,29 @@ public class ApprovalStatus extends HttpServlet {
 		}		
 	}
 	
-	private String getUserInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getUserInfo(HashMap paramMap) throws SQLException, Exception {
 		String user = null;
-		user = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		user = (String)paramMap.get("UserId");
 		return gson.toJson(userinfo.getUserInfo(user));
 	}
 	
-	private String getSysInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getSysInfo(HashMap paramMap) throws SQLException, Exception {
 		String user = null;
-		user = ParsingCommon.parsingRequestJsonParamToString(request, "UserId");
+		user = (String)paramMap.get("UserId");
 		return gson.toJson(sysinfo.getSysInfo(user,"Y","ALL","N",""));
 	}
 	
-	private String getCodeInfo(HttpServletRequest request) throws SQLException, Exception {
+	private String getCodeInfo(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(codeinfo.getCodeInfo("REQUEST,APPROVAL","ALL","N"));
 	}
 	
-	private String getTeamInfoGrid2(HttpServletRequest request) throws SQLException, Exception {
+	private String getTeamInfoGrid2(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(teaminfo.getTeamInfoGrid2("All","Y","sub","N"));
 	}
 	
-	private String get_SelectList(HttpServletRequest request) throws SQLException, Exception {
+	private String get_SelectList(HashMap paramMap) throws SQLException, Exception {
 		HashMap<String, String>	prjDataInfoMap = null;
-		prjDataInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "prjData");
+		prjDataInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("prjData").toString() );
 		
 		return gson.toJson( cmr3100.get_SelectList(prjDataInfoMap.get("strSys"),prjDataInfoMap.get("strGbn"),
 												   prjDataInfoMap.get("strQry"),prjDataInfoMap.get("strTeam"),

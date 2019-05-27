@@ -2,6 +2,7 @@ package html.app.modal;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,8 +30,8 @@ public class PopUserInfoPwd extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -38,7 +39,7 @@ public class PopUserInfoPwd extends HttpServlet {
 			
 			switch (requestType) {
 				case "Cmm1700" :
-					response.getWriter().write( setPwdReset(request) );
+					response.getWriter().write( setPwdReset(paramMap) );
 					break;
 				default:
 					break;
@@ -50,11 +51,11 @@ public class PopUserInfoPwd extends HttpServlet {
 		}
 	}
 
-	private String setPwdReset(HttpServletRequest request) throws SQLException, Exception {
+	private String setPwdReset(HashMap paramMap) throws SQLException, Exception {
 		String userId = null;
-		userId = ParsingCommon.parsingRequestJsonParamToString(request, "userId");
+		userId = (String)paramMap.get("userId");
 		String userPwd = null;
-		userPwd = ParsingCommon.parsingRequestJsonParamToString(request, "userPwd");
+		userPwd = (String)paramMap.get("userPwd");
 		return gson.toJson(cmm1700.PassWd_reset(userId, userPwd));
 	}
 

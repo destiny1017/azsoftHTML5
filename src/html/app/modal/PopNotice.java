@@ -29,8 +29,8 @@ public class PopNotice extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String requestType = null;
-		requestType = ParsingCommon.parsingRequestJsonParamToString(request, "requestType");
+		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");
 		
 		try {
 			response.setContentType("text/plain");
@@ -38,13 +38,13 @@ public class PopNotice extends HttpServlet {
 			
 			switch (requestType) {
 				case "Cmm2101" :
-					response.getWriter().write( getNoticeInfo(request) );
+					response.getWriter().write( getNoticeInfo(paramMap) );
 					break;
 				case "Cmm2101_1" :
-					response.getWriter().write( update(request) );
+					response.getWriter().write( update(paramMap) );
 					break;
 				case "Cmm2101_2" :
-					response.getWriter().write( delete(request) );
+					response.getWriter().write( delete(paramMap) );
 					break;
 				default:
 					break;
@@ -55,13 +55,13 @@ public class PopNotice extends HttpServlet {
 		}
 	}
 
-	private String getNoticeInfo(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> dataMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "dataObj");
+	private String getNoticeInfo(HashMap paramMap) throws SQLException, Exception {
+		HashMap<String, String> dataMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("dataObj").toString());
 		return gson.toJson(cmm2101.get_sql_Qry(dataMap.get("memo_id"), dataMap.get("memo_date")));
 	}
 	
-	private String update(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> updateMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "dataObj");
+	private String update(HashMap paramMap) throws SQLException, Exception {
+		HashMap<String, String> updateMap = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("dataObj").toString());
 		return gson.toJson(cmm2101.get_update_Qry(updateMap.get("memo_id"), 
 												  updateMap.get("user_id"), 
 												  updateMap.get("txtTitle"), 
@@ -72,8 +72,8 @@ public class PopNotice extends HttpServlet {
 	}
 	
 	
-	private String delete(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> updateMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "dataObj");
+	private String delete(HashMap paramMap) throws SQLException, Exception {
+		HashMap<String, String> updateMap = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("dataObj").toString());
 		
 		return gson.toJson(cmm2101.get_delete_Qry(updateMap.get("memo_id"), 
 												  updateMap.get("user_id"), 

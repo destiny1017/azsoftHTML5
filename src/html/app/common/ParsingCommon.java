@@ -40,6 +40,8 @@ public class ParsingCommon {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		String null_ck = json.toString().replaceAll("\"\"", "null");
+		json = new StringBuffer(null_ck);
 		System.out.println("jsonStr : " + json.toString());
 		TypeToken<HashMap> typeToken = new TypeToken<HashMap>(){};
 		HashMap mapData 	=  gson.fromJson(json.toString(), typeToken.getType());
@@ -69,6 +71,7 @@ public class ParsingCommon {
 	public static HashMap<String, String> parsingRequestJsonParamToHashMap(String str) {
 		String jsonData = null;
 		jsonData 	=str;
+		System.out.println("jsonData = "+jsonData);
 		TypeToken<HashMap<String, String>> typeToken = new TypeToken<HashMap<String, String>>(){};
 		HashMap<String, String> mapData 	=  gson.fromJson(jsonData, typeToken.getType());
 		return mapData;
