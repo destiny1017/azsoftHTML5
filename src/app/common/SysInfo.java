@@ -1452,7 +1452,7 @@ public class SysInfo{
 
 		try {
 			conn = connectionContext.getConnection();
-
+			if (SelMsg == "") System.out.println("check selMsg chkdfhks");
 			if (SelMsg != "") {
 				if (SelMsg.toUpperCase().equals("ALL")){
 					strSelMsg = "ÀüÃ¼";

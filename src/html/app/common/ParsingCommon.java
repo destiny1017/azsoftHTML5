@@ -27,7 +27,7 @@ import com.google.gson.reflect.TypeToken;
 public class ParsingCommon {
 	
 	public static Gson gson = new Gson();
-	
+	private static final String EMPTYDATA = "EMPTYDATACHECK";
 	
 	public static HashMap jsonStrToMap(HttpServletRequest req) {
 		StringBuffer json = new StringBuffer();
@@ -40,7 +40,7 @@ public class ParsingCommon {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		String null_ck = json.toString().replaceAll("\"\"", "null");
+		String null_ck = json.toString().replaceAll("\"\"", EMPTYDATA);
 		json = new StringBuffer(null_ck);
 		System.out.println("jsonStr : " + json.toString());
 		TypeToken<HashMap> typeToken = new TypeToken<HashMap>(){};
@@ -52,7 +52,7 @@ public class ParsingCommon {
 	public static HashMap reqParamToMap(HttpServletRequest req) {
 		return jsonStrToMap(req);
 	}
-
+	
 	/*
 	 * request json string을 String 형태로 변환합니다.
 	 */
@@ -65,17 +65,76 @@ public class ParsingCommon {
 	}
 	
 	
+	public static <T> HashMap<String, ?> test(HashMap<String, T> dataMap) {
+		for(String key : dataMap.keySet()) {
+			if(dataMap.get(key).equals(EMPTYDATA)) dataMap.put(key, (T) "");
+		}
+		return dataMap;
+	}
+	
+	public static <T> ArrayList<HashMap<String, T>> tset2 (ArrayList<HashMap<String, T>> datalist) {
+		ArrayList<HashMap<String, T>> compledtedList = new ArrayList<>();
+		for(HashMap<String, T> map : datalist) {
+			compledtedList.add((HashMap<String, T>) test(map));
+		}
+		return compledtedList;
+	}
+	
 	/*
 	 * json string을 HasMap<String,String> 형태로 변환합니다.
 	 */
 	public static HashMap<String, String> parsingRequestJsonParamToHashMap(String str) {
 		String jsonData = null;
 		jsonData 	=str;
-		System.out.println("jsonData = "+jsonData);
 		TypeToken<HashMap<String, String>> typeToken = new TypeToken<HashMap<String, String>>(){};
 		HashMap<String, String> mapData 	=  gson.fromJson(jsonData, typeToken.getType());
+		mapData = (HashMap<String, String>) test(mapData);
 		return mapData;
 	}
+	
+	/*
+	 * json string을 ArrayList<HashMap<String, String>> 형태로 변환합니다.
+	 */
+	public static ArrayList<HashMap<String, String>> parsingRequestJsonParamToArrayList(String str) {
+		String jsonData = null;
+		jsonData 	= str;
+		TypeToken<ArrayList<HashMap<String, String>>> typeToken = new TypeToken<ArrayList<HashMap<String, String>>>(){};
+		ArrayList<HashMap<String, String>> dataList 	=  gson.fromJson(jsonData, typeToken.getType());
+		dataList =  tset2(dataList);
+		return dataList;
+	}
+	
+	/*
+	 * json string을 ArrayList<HashMap<String, Object>> 형태로 변환합니다.
+	 */
+	public static ArrayList<HashMap<String, Object>> parsingRequestJsonParamToArrayListHashMapObject(String str) {
+		String jsonData = null;
+		jsonData 	= str;
+		TypeToken<ArrayList<HashMap<String, Object>>> typeToken = new TypeToken<ArrayList<HashMap<String, Object>>>(){};
+		ArrayList<HashMap<String, Object>> dataList 	=  gson.fromJson(jsonData, typeToken.getType());
+		dataList =  tset2(dataList);
+		return dataList;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
+	 * request json string을 ArrayList<HashMap<String, Object>> 형태로 변환합니다.
+	 */
+	public static ArrayList<HashMap<String, Object>> parsingRequestJsonParamToArrayListHashMapObject(HttpServletRequest req, String paramKey) {
+		String jsonData = null;
+		jsonData 	= req.getParameter(paramKey);
+		TypeToken<ArrayList<HashMap<String, Object>>> typeToken = new TypeToken<ArrayList<HashMap<String, Object>>>(){};
+		ArrayList<HashMap<String, Object>> dataList 	=  gson.fromJson(jsonData, typeToken.getType());
+		return dataList;
+	}
+	
+	
 	
 	/*
 	 * request json string을 HasMap<String,String> 형태로 변환합니다.
@@ -88,16 +147,7 @@ public class ParsingCommon {
 		return mapData;
 	}
 	
-	/*
-	 * json string을 ArrayList<HashMap<String, String>> 형태로 변환합니다.
-	 */
-	public static ArrayList<HashMap<String, String>> parsingRequestJsonParamToArrayList(String str) {
-		String jsonData = null;
-		jsonData 	= str;
-		TypeToken<ArrayList<HashMap<String, String>>> typeToken = new TypeToken<ArrayList<HashMap<String, String>>>(){};
-		ArrayList<HashMap<String, String>> dataList 	=  gson.fromJson(jsonData, typeToken.getType());
-		return dataList;
-	}
+	
 	
 	
 	/*
@@ -108,28 +158,6 @@ public class ParsingCommon {
 		jsonData 	= req.getParameter(paramKey);
 		TypeToken<ArrayList<HashMap<String, String>>> typeToken = new TypeToken<ArrayList<HashMap<String, String>>>(){};
 		ArrayList<HashMap<String, String>> dataList 	=  gson.fromJson(jsonData, typeToken.getType());
-		return dataList;
-	}
-	
-	/*
-	 * json string을 ArrayList<HashMap<String, Object>> 형태로 변환합니다.
-	 */
-	public static ArrayList<HashMap<String, Object>> parsingRequestJsonParamToArrayListHashMapObject(String str) {
-		String jsonData = null;
-		jsonData 	= str;
-		TypeToken<ArrayList<HashMap<String, Object>>> typeToken = new TypeToken<ArrayList<HashMap<String, Object>>>(){};
-		ArrayList<HashMap<String, Object>> dataList 	=  gson.fromJson(jsonData, typeToken.getType());
-		return dataList;
-	}
-	
-	/*
-	 * request json string을 ArrayList<HashMap<String, Object>> 형태로 변환합니다.
-	 */
-	public static ArrayList<HashMap<String, Object>> parsingRequestJsonParamToArrayListHashMapObject(HttpServletRequest req, String paramKey) {
-		String jsonData = null;
-		jsonData 	= req.getParameter(paramKey);
-		TypeToken<ArrayList<HashMap<String, Object>>> typeToken = new TypeToken<ArrayList<HashMap<String, Object>>>(){};
-		ArrayList<HashMap<String, Object>> dataList 	=  gson.fromJson(jsonData, typeToken.getType());
 		return dataList;
 	}
 	

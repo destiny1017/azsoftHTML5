@@ -631,7 +631,7 @@ function getSysJobInfo(sysCd) {
 	sysJobInfo.SysCd 	= sysCd;
 	sysJobInfo.SecuYn 	= 'N';
 	sysJobInfo.CloseYn 	= 'N';
-	sysJobInfo.SelMsg 	= null;
+	sysJobInfo.SelMsg 	= '';
 	sysJobInfo.sortCd 	= 'CD';
 	
 	sysJobInfoData = new Object();

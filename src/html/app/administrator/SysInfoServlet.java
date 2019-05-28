@@ -2,6 +2,7 @@ package html.app.administrator;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.servlet.ServletException;
@@ -63,6 +64,9 @@ public class SysInfoServlet extends HttpServlet {
 				case "CLOSESYS" :
 					response.getWriter().write(closeSystem(paramMap));
 					break;
+				case "TEST" :
+					response.getWriter().write(testMethod(paramMap));
+					break;
 				default:
 					break;
 			}
@@ -95,7 +99,7 @@ public class SysInfoServlet extends HttpServlet {
 												, sysJobInfo.get("SysCd")
 												, sysJobInfo.get("SecuYn")
 												, sysJobInfo.get("CloseYn")
-												, sysJobInfo.get("SelMsg") == null ? "" : sysJobInfo.get("SelMsg")
+												, sysJobInfo.get("SelMsg")
 												, sysJobInfo.get("sortCd"))	);
 	}
 	
@@ -112,4 +116,13 @@ public class SysInfoServlet extends HttpServlet {
 	private String updateFactUp(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(	cmm0200.factUpdt() );
 	}
+	private String testMethod(HashMap paramMap) throws SQLException, Exception {
+		
+		ArrayList<HashMap<String, Object>> testList = new ArrayList<>();
+		testList = ParsingCommon.parsingRequestJsonParamToArrayListHashMapObject((String)paramMap.get("testList").toString());
+		System.out.println("=========check===============");
+		System.out.println(testList);
+		return gson.toJson(	null );
+	}
+	
 }
