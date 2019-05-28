@@ -42,10 +42,10 @@ public class ParsingCommon {
 		}
 		String null_ck = json.toString().replaceAll("\"\"", EMPTYDATA);
 		json = new StringBuffer(null_ck);
-		System.out.println("jsonStr : " + json.toString());
+		//System.out.println("jsonStr : " + json.toString());
 		TypeToken<HashMap> typeToken = new TypeToken<HashMap>(){};
 		HashMap mapData 	=  gson.fromJson(json.toString(), typeToken.getType());
-		System.out.println("jsonStrTomap : " + mapData.toString());
+		//System.out.println("jsonStrTomap : " + mapData.toString());
 		return mapData;
 	}
 	
@@ -65,17 +65,17 @@ public class ParsingCommon {
 	}
 	
 	
-	public static <T> HashMap<String, ?> test(HashMap<String, T> dataMap) {
+	public static <T> HashMap<String, ?> removeEmptyOfMap(HashMap<String, T> dataMap) {
 		for(String key : dataMap.keySet()) {
-			if(dataMap.get(key).equals(EMPTYDATA)) dataMap.put(key, (T) "");
+			if(EMPTYDATA.equals(dataMap.get(key))) dataMap.put(key, (T) "");
 		}
 		return dataMap;
 	}
 	
-	public static <T> ArrayList<HashMap<String, T>> tset2 (ArrayList<HashMap<String, T>> datalist) {
+	public static <T> ArrayList<HashMap<String, T>> removeEmptyOfList (ArrayList<HashMap<String, T>> datalist) {
 		ArrayList<HashMap<String, T>> compledtedList = new ArrayList<>();
 		for(HashMap<String, T> map : datalist) {
-			compledtedList.add((HashMap<String, T>) test(map));
+			compledtedList.add((HashMap<String, T>) removeEmptyOfMap(map));
 		}
 		return compledtedList;
 	}
@@ -88,7 +88,7 @@ public class ParsingCommon {
 		jsonData 	=str;
 		TypeToken<HashMap<String, String>> typeToken = new TypeToken<HashMap<String, String>>(){};
 		HashMap<String, String> mapData 	=  gson.fromJson(jsonData, typeToken.getType());
-		mapData = (HashMap<String, String>) test(mapData);
+		mapData = (HashMap<String, String>) removeEmptyOfMap(mapData);
 		return mapData;
 	}
 	
@@ -100,7 +100,7 @@ public class ParsingCommon {
 		jsonData 	= str;
 		TypeToken<ArrayList<HashMap<String, String>>> typeToken = new TypeToken<ArrayList<HashMap<String, String>>>(){};
 		ArrayList<HashMap<String, String>> dataList 	=  gson.fromJson(jsonData, typeToken.getType());
-		dataList =  tset2(dataList);
+		dataList =  removeEmptyOfList(dataList);
 		return dataList;
 	}
 	
@@ -112,11 +112,9 @@ public class ParsingCommon {
 		jsonData 	= str;
 		TypeToken<ArrayList<HashMap<String, Object>>> typeToken = new TypeToken<ArrayList<HashMap<String, Object>>>(){};
 		ArrayList<HashMap<String, Object>> dataList 	=  gson.fromJson(jsonData, typeToken.getType());
-		dataList =  tset2(dataList);
+		dataList =  removeEmptyOfList(dataList);
 		return dataList;
 	}
-	
-	
 	
 	
 	
@@ -133,9 +131,6 @@ public class ParsingCommon {
 		ArrayList<HashMap<String, Object>> dataList 	=  gson.fromJson(jsonData, typeToken.getType());
 		return dataList;
 	}
-	
-	
-	
 	/*
 	 * request json string을 HasMap<String,String> 형태로 변환합니다.
 	 */
@@ -146,10 +141,6 @@ public class ParsingCommon {
 		HashMap<String, String> mapData 	=  gson.fromJson(jsonData, typeToken.getType());
 		return mapData;
 	}
-	
-	
-	
-	
 	/*
 	 * request json string을 ArrayList<HashMap<String, String>> 형태로 변환합니다.
 	 */

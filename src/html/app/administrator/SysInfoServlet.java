@@ -116,8 +116,10 @@ public class SysInfoServlet extends HttpServlet {
 	private String updateFactUp(HashMap paramMap) throws SQLException, Exception {
 		return gson.toJson(	cmm0200.factUpdt() );
 	}
+	
+	
+	// TEST METHOD¿‘¥œ¥Ÿ.
 	private String testMethod(HashMap paramMap) throws SQLException, Exception {
-		
 		ArrayList<HashMap<String, Object>> testList = new ArrayList<>();
 		testList = ParsingCommon.parsingRequestJsonParamToArrayListHashMapObject((String)paramMap.get("testList").toString());
 		System.out.println("=========check===============");
