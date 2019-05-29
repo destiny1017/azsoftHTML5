@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import app.common.CodeInfo;
 import app.common.SysInfo;
@@ -40,8 +42,9 @@ public class DistributeStatus extends HttpServlet {
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
-		String requestType = (String)paramMap.get("requestType");
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = jsonParser.parse(ParsingCommon.getJsonStr(request));
+		String requestType	= ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "requestType") );
 		
 		try {
 			response.setContentType("text/plain");
@@ -49,19 +52,19 @@ public class DistributeStatus extends HttpServlet {
 			
 			switch (requestType) {
 				case "UserInfochk":
-					response.getWriter().write( getUserInfoChk(paramMap) );
+					response.getWriter().write( getUserInfoChk(jsonElement) );
 					break;
 				case "CodeInfoSet":
-					response.getWriter().write( getCodeInfo(paramMap) );
+					response.getWriter().write( getCodeInfo(jsonElement) );
 					break;
 				case "SystemPathSet":
-					response.getWriter().write( getSyspath(paramMap) );
+					response.getWriter().write( getSyspath(jsonElement) );
 					break;
 				case "getSysInfo":
-					response.getWriter().write( getSysInfo(paramMap) );
+					response.getWriter().write( getSysInfo(jsonElement) );
 					break;
 				case "getFileList":
-					response.getWriter().write( getFileList(paramMap) );
+					response.getWriter().write( getFileList(jsonElement) );
 					break;
 				default : 
 					break;
@@ -73,29 +76,29 @@ public class DistributeStatus extends HttpServlet {
 		}
 	}
 	
-	private String getUserInfoChk(HashMap paramMap) throws SQLException, Exception {
+	private String getUserInfoChk(JsonElement jsonElement) throws SQLException, Exception {
 		String user = null;
-		user = (String)paramMap.get("UserId");
+		user = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "UserId") );
 		return gson.toJson(userinfo.getUserInfo(user));
 	}
 	
-	private String getCodeInfo(HashMap paramMap) throws SQLException, Exception {
+	private String getCodeInfo(JsonElement jsonElement) throws SQLException, Exception {
 		return gson.toJson(codeinfo.getCodeInfo("REQUEST","all","n"));
 	}
 	
-	private String getSyspath(HashMap paramMap) throws SQLException, Exception {
+	private String getSyspath(JsonElement jsonElement) throws SQLException, Exception {
 		return gson.toJson(syspath.getTmpDir("99"));
 	}
 	
-	private String getSysInfo(HashMap paramMap) throws SQLException, Exception {
+	private String getSysInfo(JsonElement jsonElement) throws SQLException, Exception {
 		String user = null;
-		user = (String)paramMap.get("UserId");
+		user = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "UserId") );
 		return gson.toJson(sysinfo.getSysInfo(user, "Y","ALL","N",""));
 	}
 	
-	private String getFileList (HashMap paramMap) throws SQLException, Exception {
+	private String getFileList (JsonElement jsonElement) throws SQLException, Exception {
 		HashMap<String, String>				 childrenMap = null;
-		childrenMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("prjData").toString() );
+		childrenMap = ParsingCommon.jsonStrToMap(ParsingCommon.jsonEtoStr(jsonElement, "prjData") );
 		return gson.toJson( cmr1100.getFileList(childrenMap) );
 	}
 }

@@ -14,6 +14,8 @@ import com.ecams.service.list.LoginManager;
 import com.ecams.service.list.User;
 import com.ecams.service.msg.dao.MsgDAO;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import app.common.MenuList;
 import app.common.UserInfo;
@@ -40,8 +42,9 @@ public class eCAMSBaseServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
-		String requestType = (String)paramMap.get("requestType");
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = jsonParser.parse(ParsingCommon.getJsonStr(request));
+		String requestType	= ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "requestType") );
 		
 		try {
 			response.setContentType("text/plain");
@@ -49,16 +52,16 @@ public class eCAMSBaseServlet extends HttpServlet {
 			
 			switch (requestType) { 
 				case "MenuList":
-					response.getWriter().write( getMenu(paramMap) );
+					response.getWriter().write( getMenu(jsonElement) );
 					break;
 				case "UserInfo":
-					response.getWriter().write( getUserInfo(paramMap) );
+					response.getWriter().write( getUserInfo(jsonElement) );
 					break;	
 				case "GETSESSIONUSERDATA":
-					response.getWriter().write( getSessionUserData(paramMap) );
+					response.getWriter().write( getSessionUserData(jsonElement) );
 					break;
 				case "LOG_OUT":
-					response.getWriter().write( logOut(paramMap) );
+					response.getWriter().write( logOut(jsonElement) );
 					break;
 				default : 
 					break;
@@ -71,9 +74,9 @@ public class eCAMSBaseServlet extends HttpServlet {
 		
 	}
 	
-	private String getSessionUserData(HashMap paramMap) throws SQLException, Exception {
-		String sessionID = (String) paramMap.get("sessionID");
-		
+	private String getSessionUserData(JsonElement jsonElement) throws SQLException, Exception {
+		String sessionID = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "sessionID") );
+		 
 		HashMap<String, String> userInfoMap = new HashMap<String, String>();
 		userInfoMap.put("userId", 	loginManager.getUserID(sessionID));
 		userInfoMap.put("userName", loginManager.getUserName(userInfoMap.get("userId")));
@@ -84,21 +87,22 @@ public class eCAMSBaseServlet extends HttpServlet {
 		return gson.toJson(userInfoMap);
 	}
 	
-	private String getMenu(HashMap paramMap) throws SQLException, Exception {
+	private String getMenu(JsonElement jsonElement) throws SQLException, Exception {
 		String userId = null;
-		userId = (String) paramMap.get("UserId");
+		userId = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "UserId") );
+		
 		return gson.toJson(menuList.secuMenuList(userId));
 	}
 	
-	private String getUserInfo(HashMap paramMap) throws SQLException, Exception {
+	private String getUserInfo(JsonElement jsonElement) throws SQLException, Exception {
 		String userId = null;
-		userId = (String) paramMap.get("UserId");
+		userId = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "UserId") );
 		return gson.toJson(userinfo.isAdmin(userId));
 	}
 	
-	private String logOut(HashMap paramMap) throws SQLException, Exception {
+	private String logOut(JsonElement jsonElement) throws SQLException, Exception {
 		String userId = null;
-		userId = (String) paramMap.get("UserId");
+		userId = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "UserId") );
 		if(msgDao.updateLogOut(userId) == 1) user.setDelUser(userId);
 		return gson.toJson( "LOG_OUT" );
 	}

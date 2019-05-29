@@ -40,18 +40,21 @@ public class CommonCodeInfo extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
-		String requestType = (String)paramMap.get("requestType");
+		/*HashMap paramMap = ParsingCommon.reqParamToMap(request); 
+		String requestType = (String)paramMap.get("requestType");*/
 		
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = jsonParser.parse(ParsingCommon.getJsonStr(request));
+		String requestType	= ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "requestType") );
 		try {
 			response.setContentType("text/plain");
 			response.setCharacterEncoding("UTF-8");
 			
 			switch (requestType) {
 				case "CODE_INFO" :
-					response.getWriter().write( getCodeInfo(paramMap) );
+					response.getWriter().write( getCodeInfo(jsonElement) );
 					break;
-				default:
+				default: 
 					break;
 			}
 		} catch (Exception e) {
@@ -61,8 +64,8 @@ public class CommonCodeInfo extends HttpServlet {
 		
 	}//end of getSysInfo() method statement
 	
-	private String getCodeInfo(HashMap paramMap) throws SQLException, Exception {
-		ArrayList<HashMap<String, String>> codeInfoArr = ParsingCommon.parsingRequestJsonParamToArrayList((String)paramMap.get("codeInfoData"));
+	private String getCodeInfo(JsonElement jsonElement) throws SQLException, Exception {
+		ArrayList<HashMap<String, String>> codeInfoArr = ParsingCommon.jsonArrToArr(ParsingCommon.jsonEtoStr(jsonElement, "codeInfoData"));
 		return gson.toJson( codeInfo.getCodeInfoWithArray( codeInfoArr ));
 	}
 

@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ecams.service.list.LoginManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import app.eCmm.Cmm1000;
 import html.app.common.ParsingCommon;
@@ -34,8 +36,9 @@ public class HolidayInfo extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
-		String requestType = (String)paramMap.get("requestType");
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = jsonParser.parse(ParsingCommon.getJsonStr(request));
+		String requestType	= ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "requestType") );
 		
 		try {
 			response.setContentType("text/plain");
@@ -43,16 +46,16 @@ public class HolidayInfo extends HttpServlet {
 			
 			switch (requestType) {
 				case "GETHOLIDAY" :
-					response.getWriter().write( getHoliDay(request));
+					response.getWriter().write( getHoliDay(jsonElement));
 					break;
 				case "CHKHOLIDAY" :
-					response.getWriter().write( checkHoliday(request));
+					response.getWriter().write( checkHoliday(jsonElement));
 					break;
 				case "ADDHOLIDAY" :
-					response.getWriter().write( addHoliday(request));
+					response.getWriter().write( addHoliday(jsonElement));
 					break;
 				case "DELHOLIDAY" :
-					response.getWriter().write( delHoliday(request));
+					response.getWriter().write( delHoliday(jsonElement));
 					break;
 				default:
 					break;
@@ -64,22 +67,18 @@ public class HolidayInfo extends HttpServlet {
 		
 	}
 
-	private String getHoliDay(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> holiInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "holiInfoData");
+	private String getHoliDay(JsonElement jsonElement) throws SQLException, Exception {
+		HashMap<String, String> holiInfoMap = ParsingCommon.jsonStrToMap( ParsingCommon.jsonEtoStr(jsonElement, "holiInfoData") );
 		return gson.toJson(cmm1000.getHoliDay(holiInfoMap.get("year")));
 	}
 	
-	private String checkHoliday(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> checkInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "checkInfoData");
-		System.out.println("checkHoliday method");
+	private String checkHoliday(JsonElement jsonElement) throws SQLException, Exception {
+		HashMap<String, String> checkInfoMap = ParsingCommon.jsonStrToMap( ParsingCommon.jsonEtoStr(jsonElement, "checkInfoData") );
 		return gson.toJson(cmm1000.chkHoliDay(checkInfoMap.get("date")));
 	}
 	
-	private String addHoliday(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> addHoliInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "addHoliInfoData");
-		
-		
-		
+	private String addHoliday(JsonElement jsonElement) throws SQLException, Exception {
+		HashMap<String, String> addHoliInfoMap = ParsingCommon.jsonStrToMap( ParsingCommon.jsonEtoStr(jsonElement, "addHoliInfoData") );
 		return gson.toJson(cmm1000.addHoliday(	addHoliInfoMap.get("date"), 
 												addHoliInfoMap.get("holidaygbn"), 
 												addHoliInfoMap.get("holidaycase"), 
@@ -87,8 +86,8 @@ public class HolidayInfo extends HttpServlet {
 							);
 	}
 	
-	private String delHoliday(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> delHoliInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "delHoliInfoData");
+	private String delHoliday(JsonElement jsonElement) throws SQLException, Exception {
+		HashMap<String, String> delHoliInfoMap = ParsingCommon.jsonStrToMap( ParsingCommon.jsonEtoStr(jsonElement, "delHoliInfoData") );
 		return gson.toJson(cmm1000.delHoliday(delHoliInfoMap.get("date")));
 	}
 }

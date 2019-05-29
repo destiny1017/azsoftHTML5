@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import app.eCmm.Cmm0500;
 import html.app.common.ParsingCommon;
@@ -33,8 +35,9 @@ public class LSH_testPage extends HttpServlet {
 
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
-		String requestType = (String)paramMap.get("requestType");
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = jsonParser.parse(ParsingCommon.getJsonStr(request));
+		String requestType	= ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "requestType") );
 		
 		try {
 			response.setContentType("text/plain");
@@ -42,16 +45,16 @@ public class LSH_testPage extends HttpServlet {
 			
 			switch (requestType) {
 				case "getMenuList":
-					response.getWriter().write( getUserInfoChk(paramMap) );
+					response.getWriter().write( getUserInfoChk(jsonElement) );
 					break;
 				case "getLowMenuList":
-					response.getWriter().write( getLowMenuList(paramMap) );
+					response.getWriter().write( getLowMenuList(jsonElement) );
 					break;
 				case "setMenuList":
-					response.getWriter().write( setMenuList(paramMap) );
+					response.getWriter().write( setMenuList(jsonElement) );
 					break;
 				case "getMenuAllList":
-					response.getWriter().write( getMenuAllList(paramMap) );
+					response.getWriter().write( getMenuAllList(jsonElement) );
 					break;
 				default : 
 					break;
@@ -63,24 +66,24 @@ public class LSH_testPage extends HttpServlet {
 		}
 	}
 	
-	private String getUserInfoChk(HashMap paramMap) throws SQLException, Exception {
-		String tmp = (String)paramMap.get("temp");
+	private String getUserInfoChk(JsonElement jsonElement) throws SQLException, Exception {
+		String tmp = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "temp") );
 		return gson.toJson(cmm0500.getMenuList(tmp));
 	}
 	
-	private String getLowMenuList(HashMap paramMap) throws SQLException, Exception {
-		String tmp = (String)paramMap.get("Cbo_Menu");
+	private String getLowMenuList(JsonElement jsonElement) throws SQLException, Exception {
+		String tmp = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "Cbo_Menu") );
 		return gson.toJson(cmm0500.getLowMenuList(tmp));
 	}
 	
-	private String setMenuList(HashMap paramMap) throws SQLException, Exception {
-		String menucd = (String)paramMap.get("menucd");
-		String selectLabel = (String)paramMap.get("selectLabel");
-		ArrayList<HashMap<String, String>> tmpList = ParsingCommon.parsingRequestJsonParamToArrayList((String)paramMap.get("tmpList").toString());
+	private String setMenuList(JsonElement jsonElement) throws SQLException, Exception {
+		String menucd = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "menucd") );
+		String selectLabel = ParsingCommon.jsonStrToStr(ParsingCommon.jsonEtoStr(jsonElement, "selectLabel")  );
+		ArrayList<HashMap<String, String>> tmpList = ParsingCommon.jsonArrToArr(ParsingCommon.jsonEtoStr(jsonElement, "tmpList"));
 		return gson.toJson(cmm0500.setMenuList(selectLabel, menucd, tmpList));
 	}
 	
-	private String getMenuAllList(HashMap paramMap) throws SQLException, Exception {
+	private String getMenuAllList(JsonElement jsonElement) throws SQLException, Exception {
 		return gson.toJson(cmm0500.getMenuAllList());
 	}
 }

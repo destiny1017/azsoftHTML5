@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import app.common.UserInfo;
 import app.common.CodeInfo;
@@ -43,8 +45,9 @@ public class Notice extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
-		String requestType = (String)paramMap.get("requestType");
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = jsonParser.parse(ParsingCommon.getJsonStr(request));
+		String requestType	= ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "requestType") );
 		
 		try {
 			response.setContentType("text/plain");
@@ -52,31 +55,31 @@ public class Notice extends HttpServlet {
 			
 			switch (requestType) {
 				case "UserInfo" :
-					response.getWriter().write( checkAdmin(paramMap) );
+					response.getWriter().write( checkAdmin(jsonElement) );
 					break;
 				case "CodeInfo" :
-					response.getWriter().write( getCodeInfo(paramMap) );
+					response.getWriter().write( getCodeInfo(jsonElement) );
 					break;
 				case "Cmm2100" :
-					response.getWriter().write( getSqlQry(paramMap) );
+					response.getWriter().write( getSqlQry(jsonElement) );
 					break;
 				case "SystemPath" :
-					response.getWriter().write( getSysPass(paramMap) );
+					response.getWriter().write( getSysPass(jsonElement) );
 					break;
 				case "insertNoticeFileInfo" :
-					response.getWriter().write( insertNoticeFileInfo(paramMap) );
+					response.getWriter().write( insertNoticeFileInfo(jsonElement) );
 					break;
 				case "getFileList" :
-					response.getWriter().write( getFileList(paramMap) );
+					response.getWriter().write( getFileList(jsonElement) );
 					break;
 				case "getNoticeFolderPath" :
-					response.getWriter().write( getNoticeFolderPath(paramMap) );
+					response.getWriter().write( getNoticeFolderPath(jsonElement) );
 					break;
 				case "deleteNoticeFile" :
-					response.getWriter().write( deleteNoticeFile(paramMap) );
+					response.getWriter().write( deleteNoticeFile(jsonElement) );
 					break;
 				case "BIG_DATA_LOADING_TEST" :
-					response.getWriter().write( getBigDataTest(paramMap) );
+					response.getWriter().write( getBigDataTest(jsonElement) );
 					break;
 				default:
 					break;
@@ -89,35 +92,35 @@ public class Notice extends HttpServlet {
 		
 	}
 	
-	private String checkAdmin(HashMap paramMap) throws SQLException, Exception {
+	private String checkAdmin(JsonElement jsonElement) throws SQLException, Exception {
 		String userId = null;
-		userId = (String)paramMap.get("UserId");
+		userId = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "UserId") );
 		return gson.toJson(userinfo.isAdmin(userId));
 	}
 	
-	private String getCodeInfo(HashMap paramMap) throws SQLException, Exception {
+	private String getCodeInfo(JsonElement jsonElement) throws SQLException, Exception {
 		return gson.toJson(codeinfo.getCodeInfo("FIND","","N"));
 	}
 	
-	private String getSqlQry(HashMap paramMap) throws SQLException, Exception {
+	private String getSqlQry(JsonElement jsonElement) throws SQLException, Exception {
 		String cboFindMicode = null;
-		cboFindMicode = (String)paramMap.get("CboFind_micode");
+		cboFindMicode = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "CboFind_micode") );
 		String txtFindText = null;
-		txtFindText = (String)paramMap.get("TxtFind_text");
+		txtFindText = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "TxtFind_text") );
 		String dateStD = null;
-		dateStD = (String)paramMap.get("strStD");
+		dateStD = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "strStD") );
 		String dateEdD = null;
-		dateEdD = (String)paramMap.get("strEdD");
+		dateEdD = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "strEdD") );
 		return gson.toJson(cmm2100.get_sql_Qry(cboFindMicode, txtFindText, dateStD, dateEdD));
 	}
 	
-	private String getSysPass(HashMap paramMap) throws SQLException, Exception {
+	private String getSysPass(JsonElement jsonElement) throws SQLException, Exception {
 		return gson.toJson(systempath.getTmpDir("99"));
 	}
 	
-	private String insertNoticeFileInfo(HashMap paramMap) throws SQLException, Exception {
-		ArrayList<HashMap<String, String>> tmpList = ParsingCommon.parsingRequestJsonParamToArrayList((String)paramMap.get("fileInfo").toString());
+	private String insertNoticeFileInfo(JsonElement jsonElement) throws SQLException, Exception {
 		
+		ArrayList<HashMap<String, String>> tmpList = ParsingCommon.jsonArrToArr(ParsingCommon.jsonEtoStr(jsonElement, "fileInfo") );
 		ArrayList<HashMap<String, String>> fileList = new  ArrayList<HashMap<String,String>>();
 		for(int i=0; i<tmpList.size(); i++) {
 			HashMap<String, String> addMap = new HashMap<>();
@@ -130,22 +133,22 @@ public class Notice extends HttpServlet {
 		return gson.toJson(cmm2101.setDocFile(fileList));
 	}
 	
-	private String getFileList(HashMap paramMap) throws SQLException, Exception {
-		String acptno = (String)paramMap.get("acptno");
+	private String getFileList(JsonElement jsonElement) throws SQLException, Exception {
+		String acptno = ParsingCommon.jsonStrToStr(ParsingCommon.jsonEtoStr(jsonElement, "acptno") );
 		return gson.toJson(cmm2100.getFileList(acptno));
 	}
 	
 	
-	private String getNoticeFolderPath(HashMap paramMap) throws SQLException, Exception {
+	private String getNoticeFolderPath(JsonElement jsonElement) throws SQLException, Exception {
 		return gson.toJson(systempath.getTmpDir("01"));
 	}
 
-	private String deleteNoticeFile(HashMap paramMap) throws SQLException, Exception {
-		HashMap<String, String> fileData = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("fileData").toString());
+	private String deleteNoticeFile(JsonElement jsonElement) throws SQLException, Exception {
+		HashMap<String, String> fileData = ParsingCommon.jsonStrToMap(ParsingCommon.jsonEtoStr(jsonElement, "fileData") );
 		return gson.toJson(cmm2101.removeDocFileHtml(fileData));
 	}
 	
-	private String getBigDataTest(HashMap paramMap) throws SQLException, Exception {
+	private String getBigDataTest(JsonElement jsonElement) throws SQLException, Exception {
 		
 		
 		for(long i=0; i<1000000000; i++) {

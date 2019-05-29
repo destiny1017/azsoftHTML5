@@ -55,8 +55,9 @@ public class CheckOut extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
-		String requestType = (String)paramMap.get("requestType");
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = jsonParser.parse(ParsingCommon.getJsonStr(request));
+		String requestType	= ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "requestType") );
 		
 		try {
 			response.setContentType("text/plain");
@@ -64,43 +65,43 @@ public class CheckOut extends HttpServlet {
 			
 			switch (requestType) {
 				case "SYSTEMCOMBO" :
-					response.getWriter().write( getSysInfo(paramMap) );
+					response.getWriter().write( getSysInfo(jsonElement) );
 					break;
 				case "SRIDCOMBO" :
-					response.getWriter().write( getPrjList(paramMap) );
+					response.getWriter().write( getPrjList(jsonElement) );
 					break;
 				case "PRGCOMBO" :
-					response.getWriter().write( getRsrcOpen(paramMap) );
+					response.getWriter().write( getRsrcOpen(jsonElement) );
 					break;
 				case "FILETREE" :
-					response.getWriter().write( getRsrcPath(paramMap) );
+					response.getWriter().write( getRsrcPath(jsonElement) );
 					break;
 				case "CHILDFILETREE" :
-					response.getWriter().write( getChidrenTree(paramMap) );
+					response.getWriter().write( getChidrenTree(jsonElement) );
 					break;
 				case "GETFILEGRID":
-					response.getWriter().write( getFileList(paramMap) );
+					response.getWriter().write( getFileList(jsonElement) );
 					break;
 				case "GRIDDOWNFILE":
-					response.getWriter().write( getDownFileList(paramMap) );
+					response.getWriter().write( getDownFileList(jsonElement) );
 					break;
 				case "GETLOCALHOME":
-					response.getWriter().write( getLocalHomeDir(paramMap));
+					response.getWriter().write( getLocalHomeDir(jsonElement));
 					break;
 				case "CHECKCONFIRM":
-					response.getWriter().write( checkConfirmInfo(paramMap));
+					response.getWriter().write( checkConfirmInfo(jsonElement));
 					break;
 				case "GETCONFIRMINFO":
-					response.getWriter().write( getConfirmInfo(paramMap));
+					response.getWriter().write( getConfirmInfo(jsonElement));
 					break;
 				case "REQUESTCHECKOUT":
-					response.getWriter().write( requestCheckOut(paramMap));
+					response.getWriter().write( requestCheckOut(jsonElement));
 					break;
 				case "SVRFILEMAKE":
-					response.getWriter().write( svrFileMake(paramMap));
+					response.getWriter().write( svrFileMake(jsonElement));
 					break;	
 				case "GETFILELIST":
-					response.getWriter().write( getProgFileList(paramMap));
+					response.getWriter().write( getProgFileList(jsonElement));
 					break;	
 				default:
 					break;
@@ -112,20 +113,20 @@ public class CheckOut extends HttpServlet {
 		
 	}//end of getSysInfo() method statement
 	
-	private String getProgFileList(HashMap paramMap) throws SQLException, Exception {
-		String acptNo = (String)paramMap.get("ACPTNO");
+	private String getProgFileList(JsonElement jsonElement) throws SQLException, Exception {
+		String acptNo = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "ACPTNO") );
 		return gson.toJson( cmr0100.getProgFileList(acptNo, "G"));
 	}
 	
-	private String svrFileMake(HashMap paramMap) throws SQLException, Exception {
-		String acptNo = (String)paramMap.get("ACPTNO");
+	private String svrFileMake(JsonElement jsonElement) throws SQLException, Exception {
+		String acptNo = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "ACPTNO") );
 		return gson.toJson( cmr0100.svrFileMake(acptNo));
 	}
 	
-	private String requestCheckOut(HashMap paramMap) throws SQLException, Exception {
-		HashMap<String, String>	requestMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("requestData").toString() );
-		ArrayList<HashMap<String, String>> requestFiles = ParsingCommon.parsingRequestJsonParamToArrayList((String)paramMap.get("requestFiles").toString() );
-		ArrayList<HashMap<String, Object>> requestConfirmData = changeLinkedTreeMapToMap(ParsingCommon.parsingRequestJsonParamToArrayListHashMapObject((String)paramMap.get("requestConfirmData").toString() ));
+	private String requestCheckOut(JsonElement jsonElement) throws SQLException, Exception {
+		HashMap<String, String>	requestMap = ParsingCommon.jsonStrToMap(ParsingCommon.jsonEtoStr(jsonElement, "requestData"));
+		ArrayList<HashMap<String, String>> requestFiles = ParsingCommon.jsonArrToArr(ParsingCommon.jsonEtoStr(jsonElement, "requestFiles"));
+		ArrayList<HashMap<String, Object>> requestConfirmData = changeLinkedTreeMapToMap(ParsingCommon.jsonStrToArrObj(ParsingCommon.jsonEtoStr(jsonElement, "requestConfirmData")));
 		return gson.toJson( cmr0100.request_Check_Out(requestFiles, requestMap, requestConfirmData) );
 	}
 	
@@ -133,22 +134,22 @@ public class CheckOut extends HttpServlet {
 		
 		for(int i=0; i<changeTargetArr.size(); i++) {
 			String jsonStr = changeTargetArr.get(i).get("arysv").toString();
-			ArrayList<HashMap<String, Object>> arrayList = ParsingCommon.parsingJsonToArrayListHashMapObject(jsonStr);
+			ArrayList<HashMap<String, Object>> arrayList = ParsingCommon.jsonStrToArrObj(jsonStr);
 			changeTargetArr.get(i).put("arysv",arrayList);
 		}
 		
 		return changeTargetArr;
 	}
 	
-	private String getConfirmInfo(HashMap paramMap) throws SQLException, Exception {
+	private String getConfirmInfo(JsonElement jsonElement) throws SQLException, Exception {
 		HashMap<String, String>	confirmInfoMap = null;
-		confirmInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("confirmInfoData").toString() );
+		confirmInfoMap = ParsingCommon.jsonStrToMap(ParsingCommon.jsonEtoStr(jsonElement, "confirmInfoData"));
 		return gson.toJson( confirm.Confirm_Info(confirmInfoMap) );
 	}
 	
-	private String checkConfirmInfo(HashMap paramMap) throws SQLException, Exception {
+	private String checkConfirmInfo(JsonElement jsonElement) throws SQLException, Exception {
 		HashMap<String, String>	confirmInfoMap = null;
-		confirmInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("confirmInfoData").toString() );
+		confirmInfoMap = ParsingCommon.jsonStrToMap(ParsingCommon.jsonEtoStr(jsonElement, "confirmInfoData"));
 		return gson.toJson( cmr0200.confSelect(	confirmInfoMap.get("sysCd"),
 												confirmInfoMap.get("strReqCd"),
 												confirmInfoMap.get("strRsrcCd"),
@@ -156,15 +157,15 @@ public class CheckOut extends HttpServlet {
 												confirmInfoMap.get("strQry")) );
 	}
 	
-	private String getLocalHomeDir(HashMap paramMap) throws SQLException, Exception {
+	private String getLocalHomeDir(JsonElement jsonElement) throws SQLException, Exception {
 		HashMap<String, String>	localHomeMap = null;
-		localHomeMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("devHomeData").toString() );
+		localHomeMap = ParsingCommon.jsonStrToMap(ParsingCommon.jsonEtoStr(jsonElement, "devHomeData"));
 		return gson.toJson( systemPath.getDevHome(localHomeMap.get("userId"), localHomeMap.get("sysCd")) );
 	}
 	
-	private String getChidrenTree(HashMap paramMap) throws SQLException, Exception {
+	private String getChidrenTree(JsonElement jsonElement) throws SQLException, Exception {
 		HashMap<String, String>				 childrenMap = null;
-		childrenMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("childFileTreeData").toString() );
+		childrenMap = ParsingCommon.jsonStrToMap(ParsingCommon.jsonEtoStr(jsonElement, "childFileTreeData"));
 		return makeChildrenTree(
 					childrenMap.get("Rsrccd"), 
 					childrenMap.get("FileInfo"), 
@@ -212,9 +213,9 @@ public class CheckOut extends HttpServlet {
 		
 	}
 	
-	private String getRsrcPath(HashMap paramMap) throws SQLException, Exception {
+	private String getRsrcPath(JsonElement jsonElement) throws SQLException, Exception {
 		HashMap<String, String>				 rsrcPathMap = null;
-		rsrcPathMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("fileTreeData").toString() );
+		rsrcPathMap = ParsingCommon.jsonStrToMap(ParsingCommon.jsonEtoStr(jsonElement, "fileTreeData"));
 		return gson.toJson( systemPath.getRsrcPath(
 								rsrcPathMap.get("UserId"),
 								rsrcPathMap.get("SysCd") , 
@@ -225,22 +226,22 @@ public class CheckOut extends HttpServlet {
 	
 	
 	
-	private String getRsrcOpen(HashMap paramMap) throws SQLException, Exception {
+	private String getRsrcOpen(JsonElement jsonElement) throws SQLException, Exception {
 		HashMap<String, String>				 prgoMap = null;
-		prgoMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("progData").toString() );
+		prgoMap = ParsingCommon.jsonStrToMap(ParsingCommon.jsonEtoStr(jsonElement, "progData"));
 		return gson.toJson( cmd0100.getRsrcOpen(prgoMap.get("SysCd"), prgoMap.get("SelMsg")));
 	}
 	
-	private String getPrjList(HashMap paramMap) throws SQLException, Exception {
+	private String getPrjList(JsonElement jsonElement) throws SQLException, Exception {
 		HashMap<String, String>				 srMap = null;
-		srMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("srData").toString());
+		srMap = ParsingCommon.jsonStrToMap(ParsingCommon.jsonEtoStr(jsonElement, "srData"));
 		return gson.toJson( prjInfo.getPrjList(srMap));
 	}
 	
 	
-	private String getSysInfo(HashMap paramMap) throws SQLException, Exception {
+	private String getSysInfo(JsonElement jsonElement) throws SQLException, Exception {
 		HashMap<String, String>				 sysMap = null;
-		sysMap =  ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("sysData").toString());
+		sysMap =  ParsingCommon.jsonStrToMap(ParsingCommon.jsonEtoStr(jsonElement, "sysData"));
 		return gson.toJson( sysinfo.getSysInfo(
 								sysMap.get("UserId"), 
 								sysMap.get("SecuYn"), 
@@ -249,9 +250,9 @@ public class CheckOut extends HttpServlet {
 								sysMap.get("ReqCd")));
 	}
 	
-	private String getFileList(HashMap paramMap) throws SQLException, Exception {
+	private String getFileList(JsonElement jsonElement) throws SQLException, Exception {
 		HashMap<String, String>				 downFileData = null;
-		downFileData =  ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("getFileData").toString());
+		downFileData =  ParsingCommon.jsonStrToMap(ParsingCommon.jsonEtoStr(jsonElement, "getFileData"));
 		
 		/*HashMap<String, Object> fileReturnMap = new HashMap<>();
 		fileReturnMap.put("fileData", cmr0100.getFileList(downFileData));
@@ -259,12 +260,12 @@ public class CheckOut extends HttpServlet {
 		return  gson.toJson(cmr0100.getFileList(downFileData));
 	}
 	
-	private String getDownFileList(HashMap paramMap) throws SQLException, Exception {
+	private String getDownFileList(JsonElement jsonElement) throws SQLException, Exception {
 		HashMap<String, String>				 downFileData = null;
 		ArrayList<HashMap<String, String>> 	 downFilelist = null;
 		
-		downFileData =  ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("downFileData").toString());
-		downFilelist = ParsingCommon.parsingRequestJsonParamToArrayList((String)paramMap.get("removedFileList").toString());
+		downFileData = ParsingCommon.jsonStrToMap(ParsingCommon.jsonEtoStr(jsonElement, "downFileData"));
+		downFilelist = ParsingCommon.jsonArrToArr(ParsingCommon.jsonEtoStr(jsonElement, "removedFileList"));
 		
 		return gson.toJson(cmr0100.getDownFileList( 	downFileData.get("strUserId"), 
 														downFilelist, 

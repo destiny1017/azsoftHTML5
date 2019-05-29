@@ -39,8 +39,9 @@ public class CommonSysInfo extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
-		String requestType = (String)paramMap.get("requestType");
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = jsonParser.parse(ParsingCommon.getJsonStr(request));
+		String requestType	= ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "requestType") );
 		
 		try {
 			response.setContentType("text/plain");
@@ -48,10 +49,10 @@ public class CommonSysInfo extends HttpServlet {
 			
 			switch (requestType) {
 				case "SYS_INFO" :
-					response.getWriter().write( getSysInfo(paramMap) );
+					response.getWriter().write( getSysInfo(jsonElement) );
 					break;
 				case "JOB_INFO" :
-					response.getWriter().write( getJobInfo(paramMap) );
+					response.getWriter().write( getJobInfo(jsonElement) );
 					break;
 				default:
 					break;
@@ -64,8 +65,8 @@ public class CommonSysInfo extends HttpServlet {
 	}//end of getSysInfo() method statement
 	
 	
-	private String getSysInfo(HashMap paramMap) throws SQLException, Exception {
-		HashMap<String, String> DataMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("Data").toString() );
+	private String getSysInfo(JsonElement jsonElement) throws SQLException, Exception {
+		HashMap<String, String> DataMap = ParsingCommon.jsonStrToMap( ParsingCommon.jsonEtoStr(jsonElement, "Data") );
 		return gson.toJson( sysInfo.getSysInfo(
 								DataMap.get("UserId"), 
 								"", 
@@ -75,8 +76,8 @@ public class CommonSysInfo extends HttpServlet {
 							));
 	}
 
-	private String getJobInfo(HashMap paramMap) throws SQLException, Exception {
-		HashMap<String, String> DataMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("Data").toString() );
+	private String getJobInfo(JsonElement jsonElement) throws SQLException, Exception {
+		HashMap<String, String> DataMap = ParsingCommon.jsonStrToMap( ParsingCommon.jsonEtoStr(jsonElement, "Data") );
 		return gson.toJson( sysInfo.getJobInfo(
 								DataMap.get("UserId"), 
 								DataMap.get("SysCd"), 

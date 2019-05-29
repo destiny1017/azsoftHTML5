@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 import app.eCmm.Cmm1700;
 
 import html.app.common.ParsingCommon;
@@ -30,8 +33,9 @@ public class PopUserInfoPwd extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
-		String requestType = (String)paramMap.get("requestType");
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = jsonParser.parse(ParsingCommon.getJsonStr(request));
+		String requestType	= ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "requestType") );
 		
 		try {
 			response.setContentType("text/plain");
@@ -39,7 +43,7 @@ public class PopUserInfoPwd extends HttpServlet {
 			
 			switch (requestType) {
 				case "Cmm1700" :
-					response.getWriter().write( setPwdReset(paramMap) );
+					response.getWriter().write( setPwdReset(jsonElement) );
 					break;
 				default:
 					break;
@@ -51,11 +55,11 @@ public class PopUserInfoPwd extends HttpServlet {
 		}
 	}
 
-	private String setPwdReset(HashMap paramMap) throws SQLException, Exception {
+	private String setPwdReset(JsonElement jsonElement) throws SQLException, Exception {
 		String userId = null;
-		userId = (String)paramMap.get("userId");
+		userId = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "userId") );
 		String userPwd = null;
-		userPwd = (String)paramMap.get("userPwd");
+		userPwd = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "userPwd") );
 		return gson.toJson(cmm1700.PassWd_reset(userId, userPwd));
 	}
 

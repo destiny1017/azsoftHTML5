@@ -140,7 +140,7 @@ function getCodeInfoCommon(codeInfoArr) {
 	var codeInfo = {};
 	var divisionMacode = '';
 	codeInfo = {
-		codeInfoData: 	JSON.stringify(codeInfoArr),
+		codeInfoData: 	codeInfoArr,
 		requestType: 	'CODE_INFO'
 	};
 	ajaxReturnData = ajaxCallWithJson('/webPage/common/CommonCodeInfo', codeInfo, 'json');
@@ -191,7 +191,11 @@ function getDate(dateSeparator, increaseDecreaseNumber) {
 
 function getTime() {
 	var d = new Date();
-	var currentTime = d.getHours() + '' + d.getMinutes();
+	var hour = '';
+	var min = '';
+	hour = d.getHours() < 10 ? '0' + d.getHours() : d.getHours();
+	min  = d.getMinutes() < 10 ? '0' + d.getMinutes() : d.getMinutes();
+	var currentTime = hour + '' + min;
 	return currentTime;
 }
 
@@ -319,6 +323,11 @@ function defaultPickerInfo(dataAx5picker) {
 		
 	};
 }
+
+String.prototype.trim = function() { 
+	return this.replace(/^\s+|\s+$/g,""); 
+}
+
 /*
 function getRegexp(type) {
 	if( type === 'NUM')

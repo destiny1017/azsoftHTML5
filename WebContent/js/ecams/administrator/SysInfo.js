@@ -29,6 +29,13 @@ var cboSvrCdData	= null;	//	기준서버구분콤보
 var sysInfoGridData = null; // 	시스템 그리드
 var jobGridData 	= null;	//	업무 그리드
 
+var stFullDate = null;	// 중단시작일시
+var edFullDate = null;	// 중단종료일시
+
+var addFg1 = false;
+var addFg2 = false;
+var closeModifyFg = false;
+
 sysInfoGrid.setConfig({
     target: $('[data-ax5grid="sysInfoGrid"]'),
     sortable: true, 
@@ -132,7 +139,7 @@ $(document).ready(function(){
 	dateInit();
 	getSysCodeInfo();
 	getSysInfoCbo();
-	getSysInfoList();
+	getSysInfoList('');
 	screenInit();
 	
 	
@@ -169,18 +176,23 @@ $(document).ready(function(){
 		$('#txtPrjName').prop( "disabled", true );
 		$('#txtTime').prop( "disabled", true );
 		
-		getSysInfoList();
+		getSysInfoList('');
 	});
 	
 	$('#chkOpen').bind('click', function() {
 		if($(this).is(':checked')) {
 			screenInit();
 			$('#chkSelfDiv').css('visibility','visible');
+			$('#txtSysCd').val('');
+			$('[data-ax5select="cboSys"]').ax5select('setValue','00000',true);
+			$('[data-ax5select="cboSys"]').ax5select("disable");
+
 		}
 		
 		if( !($(this).is(':checked')) ) {
 			screenInit();
 			$('#chkSelfDiv').css('visibility','hidden');
+			$('[data-ax5select="cboSys"]').ax5select("enable");
 		}
 	});
 	
@@ -284,9 +296,8 @@ function sysValidationCheck() {
 	var stTime = null;
 	var edTime = null;
 	var nowTime = null;
-	var stFullDate = null;
-	var edFullDate = null;
 	var nowFullDate = null;
+	var isNew		= true;
 	
 	if( $('#chkOpen').is(':checked') && $('#chkSelf').is(':checked') && $('#txtSysCd').val().length === 0) {
 		dialog.alert('시스템코드를 입력하여 주시기 바랍니다.',function(){});
@@ -326,38 +337,26 @@ function sysValidationCheck() {
 	for(var i=0; i<sysInfoData.length; i++) {
 		if(i === 3 && $('#chkJobName'+ (i+1) ).is(':checked') ) {
 			
-			stDate = $('#datStDate').val().substr(0,4) + $('#datStDate').val().substr(5,2) + $('#datStDate').val().substr(8,2);
-			edDate = $('#datEdDate').val().substr(0,4) + $('#datEdDate').val().substr(5,2) + $('#datEdDate').val().substr(8,2);
+			stDate = replaceAllString($('#datStDate').val(), '/', '');  
+			edDate = replaceAllString($('#datEdDate').val(), '/', '');  
 			nowDate = getDate('DATE',0);
-			stTime = $('#timeDeploy').val().substr(0,2) + $('#timeDeploy').val().substr(3,2);
-			edTime = $('#timeDeployE').val().substr(0,2) + $('#timeDeployE').val().substr(3,2);
-			console.log($('#timeDeploy').val());
-			console.log($('#timeDeployE').val());
+			stTime = replaceAllString($('#timeDeploy').val(), ':', '');  
+			edTime = replaceAllString($('#timeDeployE').val(), ':', '');  
 			nowTime = getTime();
-			
 			stFullDate = stDate + stTime;
 			edFullDate = edDate + edTime;
-			nowFullDate = nowDate + getTime();
+			nowFullDate = nowDate + nowTime;
+			
+			console.log(nowDate);
+			console.log(nowTime);
 			
 			if(stDate.length === 0 || stTime.length === 0 
 					|| edDate.length === 0 || edTime.length === 0) {
 				dialog.alert('중단일시 및 시간을 입력해 주시기 바랍니다.',function(){});
 				return;
 			}
-			
-			console.log('stDate : '+stDate);
-			console.log('edDate : '+edDate);
-			console.log('nowDate : '+nowDate);
-			
-			console.log('stTime : ' + stTime );
-			console.log('edTime : ' + edTime );
-			console.log('nowTime : ' + nowTime);
-			
-			console.log('stFullDate : '+stFullDate);
-			console.log('edFullDate : '+edFullDate);
-			console.log('nowFullDate : '+nowFullDate);
-			
-			
+			console.log(nowFullDate);
+			console.log(stFullDate);
 			if( nowFullDate > stFullDate) {
 				dialog.alert('중단시작일시가 현재일 이전입니다. 정확히 선택하여 주십시오.',function(){});
 				return;
@@ -391,6 +390,101 @@ function sysValidationCheck() {
 		}
 	}
 	
+	sysInfoGridData.forEach(function(item,index) {
+		if(item.cm_syscd === $('#txtSysCd').val()) isNew = false; 
+	});
+	
+	if ( $('#chkOpen').is(':checked')  && isNew) {
+		confirmDialog.confirm({
+			msg: '시스템을 신규로 등록하시겠습니까?',
+		}, function(){
+			if(this.key === 'ok') { 
+				updateSystem(isNew);
+				closeModifyFg = false;
+			}
+		});
+	} else{
+		confirmDialog.confirm({
+			msg: '시스템정보를 수정 등록하시겠습니까?',
+		}, function(){
+			if(this.key === 'ok') { 
+				updateSystem(isNew);
+				closeModifyFg = true;
+			}
+		});
+	}
+}
+
+function updateSystem(isNew) {
+	var tmpJob = '';
+	var tmpInfo = '';
+	var tmpDate = '';
+	var tmpMon = 0;
+	var tmpSysGb = $('[data-ax5select="cboSysGb"]').ax5select("getValue")[0].value;
+	var tmpDirBase = $('[data-ax5select="cboSvrCd"]').ax5select("getValue")[0].value;
+	var selectedJobIndexs = jobGrid.selectedDataIndexs;
+	var systemInfo = new Object();
+	systemInfo.cm_syscd = $('#txtSysCd').val();
+	systemInfo.cm_sysmsg = $('#txtSysMsg').val();
+	systemInfo.cm_sysgb = tmpSysGb;
+	systemInfo.cm_dirbase = tmpDirBase;
+	systemInfo.cm_prccnt = $('#txtPrcCnt').val();
+	
+	
+	for(var i=0; i<selectedJobIndexs.length; i++) {
+		var jobItem = jobGrid.list[selectedJobIndexs[i]];
+		if(tmpJob.length > 0 ) tmpJob += ',';
+		tmpJob += jobItem.cm_jobcd;
+		jobItem = null;
+	}
+	
+	for(var i=0; i<sysInfoData.length; i++) {
+		if($('#chkJobName'+ (i+1) ).parent().hasClass('wCheck-on')) tmpInfo += '1'; 
+		else tmpInfo += '0';
+		
+		// 사용중지
+		if($('#chkJobName'+ (i+1) ).parent().hasClass('wCheck-on') && i===3) {
+			systemInfo.cm_stdate = stFullDate;
+			systemInfo.cm_eddate = edFullDate;
+		}
+		
+		// 정기배포사용
+		if($('#chkJobName'+ (i+1) ).parent().hasClass('wCheck-on') && i===5) {
+			systemInfo.cm_systime = replaceAllString($('#txtTime').val(), ':', '');   
+		}
+	}
+	
+	systemInfo.cm_jobcd = tmpJob;
+	systemInfo.cm_sysinfo = tmpInfo;
+	systemInfo.cm_editor = userId;
+	systemInfo.sysopen = replaceAllString($('#datSysOpen').val(), '/', ''); 
+	systemInfo.scmopen = replaceAllString($('#datScmOpen').val(), '/', '');
+	systemInfo.prjname = $('#txtPrjName').val().trim();
+	
+	if($('#chkCls').is(':checked')) systemInfo.closesw = "true";
+	if(!$('#chkCls').is(':checked')) systemInfo.closesw = "false";
+	
+	var systemInfoDta = new Object(); 
+	systemInfoDta = {
+		systemInfo	: 	systemInfo,
+		requestType	: 	'UPDATESYSTEM'
+	}
+	
+	ajaxAsync('/webPage/administrator/SysInfoServlet', systemInfoDta, 'json',successUpdateSysetm);
+}
+
+function successUpdateSysetm(data) {
+	if( data === 'failed') {
+		dialog.alert('폐기된 시스템코드는 사용하실 수 없습니다.',function(){});
+	} else {
+		dialog.alert('시스템정보 등록처리가 완료되었습니다.',
+				function(){
+					$('#txtSysCd').val(data);
+					addFg1 = true;
+					addFg2 = true;
+					getSysInfoCbo();
+				});
+	}
 }
 
 function successSysClose(data) {
@@ -430,14 +524,14 @@ function successFactUpdt(data) {
 
 
 // 시스템 리스트
-function getSysInfoList() {
+function getSysInfoList(sysCd) {
 	var sysClsSw = $('#chkCls').is(':checked');
 	
 	var sysListInfo;
 	var sysListInfoData;
 	sysListInfo 		= new Object();
 	sysListInfo.clsSw 	= sysClsSw;
-	sysListInfo.SysCd 	= null;
+	sysListInfo.SysCd 	= sysCd.length > 0 ? sysCd : null;
 	
 	sysListInfoData = new Object();
 	sysListInfoData = {
@@ -501,13 +595,18 @@ function getSysInfoCbo() {
 function successGetSysInfoCbo(data) {
 	sysInfoCboData = data;
 	cboOptions = [];
-
+	
 	$.each(sysInfoCboData,function(key,value) {
 		cboOptions.push({value: value.cm_syscd, text: value.cm_sysmsg, cm_sysgb: value.cm_sysgb, cm_sysinfo: value.cm_sysinfo, cm_prjname: value.cm_prjname});
 	});
 	$('[data-ax5select="cboSys"]').ax5select({
         options: cboOptions
 	});
+	
+	if( addFg1 && sysInfoCboData.length > 0 ) {
+		$('[data-ax5select="cboSys"]').ax5select('setValue',$('#txtSysCd').val(),true);
+		getSysInfoList($('#txtSysCd').val());
+	}
 }
 
 //	하단 시스템 콤보 선택
@@ -712,7 +811,3 @@ function makeSysInfoUlList() {
 	
 	$('input.checkbox-sysInfo').wCheck({theme: 'square-inset blue', selector: 'square-dot-blue', highlightLabel: true});
 }
-
-
-
-

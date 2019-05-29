@@ -41,8 +41,9 @@ public class SRRegisterTab extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
-		String requestType = (String)paramMap.get("requestType");
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = jsonParser.parse(ParsingCommon.getJsonStr(request));
+		String requestType	= ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "requestType") );
 		
 		try {
 			response.setContentType("text/plain");
@@ -50,7 +51,7 @@ public class SRRegisterTab extends HttpServlet {
 			
 			switch (requestType) {
 				case "GET_USER_COMBO" :
-					response.getWriter().write( getUserCombo(paramMap) );
+					response.getWriter().write( getUserCombo(jsonElement) );
 					break;
 				
 				default:
@@ -63,9 +64,8 @@ public class SRRegisterTab extends HttpServlet {
 		
 	}
 	
-	private String getUserCombo(HashMap paramMap) throws SQLException, Exception {
-		String userId = (String)paramMap.get("userInfoData");
-		//cmc0100.getUserCombo("DEVUSER", "", "", userId)
+	private String getUserCombo(JsonElement jsonElement) throws SQLException, Exception {
+		String userId = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "userInfoData") );
 		return gson.toJson(cmc0100.getUserCombo("REQUSER", "", "", userId));
 	}
 

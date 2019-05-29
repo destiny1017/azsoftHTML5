@@ -154,7 +154,7 @@
 		    		</div>
 		    	</div>
 		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
-		    		<input id="txtTime" name="txtTitle" class="form-control" type="time"></input>
+		    		<input id="txtTime" name="time" class="form-control" type="time" ></input>
 		    	</div>
 	    	</div>
 	    	<div class="row">
@@ -185,7 +185,7 @@
 			        </div>
 	    		</div>
 	    		<div class="col-lg-5 col-md-12 col-sm-12 col-12">
-			        <input id="timeDeploy" class="form-control" type="time"></input>
+			        <input id="timeDeploy" class="form-control" type="time" name="time"></input>
 	    		</div>
     		</div>
     		<div class="row">
@@ -199,7 +199,7 @@
 			        </div>
 	    		</div>
 	    		<div class="col-lg-5 col-md-12 col-sm-12 col-12">
-			        <input id="timeDeployE" class="form-control" type="time"></input>
+			        <input id="timeDeployE" class="form-control" type="time" name="time"  placeholder="hrs:mins" pattern="^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$" ></input>
 	    		</div>
     		</div>
     	</div>

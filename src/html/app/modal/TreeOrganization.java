@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import app.common.CodeInfo;
 import app.common.TeamInfo;
@@ -34,8 +36,9 @@ public class TreeOrganization extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
-		String requestType = (String)paramMap.get("requestType");
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = jsonParser.parse(ParsingCommon.getJsonStr(request));
+		String requestType	= ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "requestType") );
 		
 		try {
 			response.setContentType("text/plain");
@@ -43,10 +46,10 @@ public class TreeOrganization extends HttpServlet {
 			
 			switch (requestType) {
 				case "GET_TREE_INFO" :
-					response.getWriter().write( getTreeInfo(paramMap) );
+					response.getWriter().write( getTreeInfo(jsonElement) );
 					break;
 				case "GET_ZTREE_INFO" :
-					response.getWriter().write( getTreeInfo_zTree(paramMap) );
+					response.getWriter().write( getTreeInfo_zTree(jsonElement) );
 					break;
 				default:
 					break;
@@ -58,13 +61,13 @@ public class TreeOrganization extends HttpServlet {
 	}
 	
 	//
-	private String getTreeInfo(HashMap paramMap) throws SQLException, Exception {
-		String treeInfoData = (String)paramMap.get("treeInfoData");
+	private String getTreeInfo(JsonElement jsonElement) throws SQLException, Exception {
+		String treeInfoData = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "treeInfoData") );
 		return gson.toJson( teamInfo.getTeamInfoTree_new(Boolean.parseBoolean(treeInfoData)) );
 	}
 	
-	private String getTreeInfo_zTree(HashMap paramMap) throws SQLException, Exception {
-		String treeInfoData = (String)paramMap.get("treeInfoData");
+	private String getTreeInfo_zTree(JsonElement jsonElement) throws SQLException, Exception {
+		String treeInfoData = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "treeInfoData") );
 		return gson.toJson( teamInfo.getTeamInfoTree_zTree(Boolean.parseBoolean(treeInfoData)) );
 	}
 	

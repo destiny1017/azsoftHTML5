@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import app.common.CodeInfo;
 import app.eCmm.Cmm1100;
@@ -36,8 +38,9 @@ public class AbsenceRegister extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
-		String requestType = (String)paramMap.get("requestType");
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = jsonParser.parse(ParsingCommon.getJsonStr(request));
+		String requestType	= ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "requestType") );
 		
 		try {
 			response.setContentType("text/plain");
@@ -45,22 +48,22 @@ public class AbsenceRegister extends HttpServlet {
 			
 			switch (requestType) {
 				case "CodeInfo" :
-					response.getWriter().write( getCodeInfo(paramMap) );
+					response.getWriter().write( getCodeInfo(jsonElement) );
 					break;
 				case "Cmm1100":
-					response.getWriter().write( getCbo_User(paramMap) );
+					response.getWriter().write( getCbo_User(jsonElement) );
 					break;
 				case "Cmm1100_1":
-					response.getWriter().write( getCbo_User_Click(paramMap) );
+					response.getWriter().write( getCbo_User_Click(jsonElement) );
 					break;
 				case "Cmm1100_2":
-					response.getWriter().write( getDaegyulList(paramMap) );
+					response.getWriter().write( getDaegyulList(jsonElement) );
 					break;
 				case "Cmm1100_3":
-					response.getWriter().write( getDaegyulState(paramMap) );
+					response.getWriter().write( getDaegyulState(jsonElement) );
 					break;
 				case "Cmm1100_4":
-					response.getWriter().write( get_Update(paramMap) );
+					response.getWriter().write( get_Update(jsonElement) );
 					break;
 				default:
 					break;
@@ -73,37 +76,37 @@ public class AbsenceRegister extends HttpServlet {
 		
 	}
 	
-	private String getCodeInfo(HashMap paramMap) throws SQLException, Exception {
+	private String getCodeInfo(JsonElement jsonElement) throws SQLException, Exception {
 		return gson.toJson(codeinfo.getCodeInfo("DAEGYUL","sel","n"));
 	}
 	
-	private String getCbo_User(HashMap paramMap) throws SQLException, Exception {
+	private String getCbo_User(JsonElement jsonElement) throws SQLException, Exception {
 		String UserId = null;
-		UserId = (String)paramMap.get("UserId");
+		UserId = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "UserId") );
 		return gson.toJson(cmm1100.getCbo_User(UserId,"Y"));
 	}
 	
-	private String getCbo_User_Click(HashMap paramMap) throws SQLException, Exception {
+	private String getCbo_User_Click(JsonElement jsonElement) throws SQLException, Exception {
 		String cm_userid = null;
-		cm_userid = (String)paramMap.get("cm_userid");
+		cm_userid = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "cm_userid") );
 		return gson.toJson(cmm1100.getCbo_User_Click(cm_userid,"Y"));
 	}
 	
-	private String getDaegyulList(HashMap paramMap) throws SQLException, Exception {
+	private String getDaegyulList(JsonElement jsonElement) throws SQLException, Exception {
 		String cm_userid = null;
-		cm_userid = (String)paramMap.get("cm_userid");
+		cm_userid = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "cm_userid") );
 		return gson.toJson(cmm1100.getDaegyulList(cm_userid));
 	}
 	
-	private String getDaegyulState(HashMap paramMap) throws SQLException, Exception {
+	private String getDaegyulState(JsonElement jsonElement) throws SQLException, Exception {
 		String cm_userid = null;
-		cm_userid = (String)paramMap.get("cm_userid");
+		cm_userid = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "cm_userid") );
 		return gson.toJson(cmm1100.getDaegyulState(cm_userid));
 	}
 	
-	private String get_Update(HashMap paramMap) throws SQLException, Exception {
+	private String get_Update(JsonElement jsonElement) throws SQLException, Exception {
 		HashMap<String, String> dataObj = null;
-		dataObj = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("dataObj").toString());
+		dataObj = ParsingCommon.jsonStrToMap( ParsingCommon.jsonEtoStr(jsonElement, "dataObj") );
 		return gson.toJson(cmm1100.get_Update(dataObj));
 	}
 	

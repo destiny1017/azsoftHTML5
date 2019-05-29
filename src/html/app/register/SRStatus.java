@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import app.common.CodeInfo;
 import app.common.PrjInfo;
@@ -35,8 +37,9 @@ public class SRStatus extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
-		String requestType = (String)paramMap.get("requestType");
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = jsonParser.parse(ParsingCommon.getJsonStr(request));
+		String requestType	= ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "requestType") );
 		
 		try {
 			response.setContentType("text/plain");
@@ -44,16 +47,16 @@ public class SRStatus extends HttpServlet {
 			
 			switch (requestType) {
 				case "TeamInfo":
-					response.getWriter().write( getTeamInfo(paramMap) );
+					response.getWriter().write( getTeamInfo(jsonElement) );
 					break;
 				case "TeamInfo2":
-					response.getWriter().write( getTeamInfo2(paramMap) );
+					response.getWriter().write( getTeamInfo2(jsonElement) );
 					break;
 				case "CodeInfo":
-					response.getWriter().write( getCodeInfo(paramMap) );
+					response.getWriter().write( getCodeInfo(jsonElement) );
 					break;
 				case "PrjInfo":
-					response.getWriter().write( getResearch(paramMap) );
+					response.getWriter().write( getResearch(jsonElement) );
 					break;
 				default : 
 					break;
@@ -65,21 +68,21 @@ public class SRStatus extends HttpServlet {
 		}
 	}
 
-	private String getTeamInfo(HashMap paramMap) throws SQLException, Exception {
+	private String getTeamInfo(JsonElement jsonElement) throws SQLException, Exception {
 		return gson.toJson(teaminfo.getTeamInfoGrid2("ALL","Y","req","N"));
 	}
 	
-	private String getTeamInfo2(HashMap paramMap) throws SQLException, Exception {
+	private String getTeamInfo2(JsonElement jsonElement) throws SQLException, Exception {
 		return gson.toJson(teaminfo.getTeamInfoGrid2("ALL","Y","DEPT","N"));
 	}
 	
-	private String getCodeInfo(HashMap paramMap) throws SQLException, Exception {
+	private String getCodeInfo(JsonElement jsonElement) throws SQLException, Exception {
 		return gson.toJson(codeinfo.getCodeInfo("ISRSTA,ISRSTAUSR","ALL","N"));
 	}
 	
-	private String getResearch(HashMap paramMap) throws SQLException, Exception {
+	private String getResearch(JsonElement jsonElement) throws SQLException, Exception {
 		HashMap<String, String>				 childrenMap = null;
-		childrenMap = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("prjData").toString());
+		childrenMap = ParsingCommon.jsonStrToMap( ParsingCommon.jsonEtoStr(jsonElement, "prjData") );
 		return gson.toJson( prjinfo.get_SelectList(childrenMap) );	
 	}
 }

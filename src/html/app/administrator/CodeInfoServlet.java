@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import app.common.CodeInfo;
 import app.eCmm.Cmm0100;
@@ -33,8 +35,9 @@ public class CodeInfoServlet extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
-		String requestType = (String)paramMap.get("requestType");
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = jsonParser.parse(ParsingCommon.getJsonStr(request));
+		String requestType	= ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "requestType") );
 		
 		try {
 			response.setContentType("text/plain");
@@ -42,16 +45,16 @@ public class CodeInfoServlet extends HttpServlet {
 			
 			switch (requestType) {
 				case "GETCODEINFO" :
-					response.getWriter().write( getCodeInfo(request) );
+					response.getWriter().write( getCodeInfo(jsonElement) );
 					break;
 				case "GETCODELIST" :
-					response.getWriter().write( getCodeList(request) );
+					response.getWriter().write( getCodeList(jsonElement) );
 					break;
 				case "GETCODENAME" :
-					response.getWriter().write( getCodeName(request) );
+					response.getWriter().write( getCodeName(jsonElement) );
 					break;
 				case "SETCODEVALUE" :
-					response.getWriter().write( setCodeValue(request) );
+					response.getWriter().write( setCodeValue(jsonElement) );
 					break;
 				default:
 					break;
@@ -63,24 +66,23 @@ public class CodeInfoServlet extends HttpServlet {
 		
 	}
 	
-	private String getCodeInfo(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> codeInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "codeInfoData");
+	private String getCodeInfo(JsonElement jsonElement) throws SQLException, Exception {
+		HashMap<String, String> codeInfoMap = ParsingCommon.jsonStrToMap( ParsingCommon.jsonEtoStr(jsonElement, "codeInfoData") );
 		return gson.toJson(codeInfo.getCodeInfo(codeInfoMap.get("cm_macode"),codeInfoMap.get("selMsg"), codeInfoMap.get("closeYN")));
 	}
 	
-	private String getCodeList(HttpServletRequest request) throws SQLException, Exception {
-		System.out.println("getCodeList");
-		HashMap<String, String> searchInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "searchInfoData");
+	private String getCodeList(JsonElement jsonElement) throws SQLException, Exception {
+		HashMap<String, String> searchInfoMap = ParsingCommon.jsonStrToMap( ParsingCommon.jsonEtoStr(jsonElement, "searchInfoData") );
 		System.out.println(searchInfoMap);
 		return gson.toJson(cmm0100.getCodeList(searchInfoMap));
 	}
 	
-	private String getCodeName(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> codeNameInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "codeNameInfoData");
+	private String getCodeName(JsonElement jsonElement) throws SQLException, Exception {
+		HashMap<String, String> codeNameInfoMap = ParsingCommon.jsonStrToMap( ParsingCommon.jsonEtoStr(jsonElement, "codeNameInfoData") );
 		return gson.toJson(cmm0100.getCodeName(codeNameInfoMap.get("macode")));
 	}
-	private String setCodeValue(HttpServletRequest request) throws SQLException, Exception {
-		HashMap<String, String> codeValueInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap(request, "codeValueInfoData");
+	private String setCodeValue(JsonElement jsonElement) throws SQLException, Exception {
+		HashMap<String, String> codeValueInfoMap = ParsingCommon.jsonStrToMap( ParsingCommon.jsonEtoStr(jsonElement, "codeValueInfoData") );
 		return gson.toJson(cmm0100.setCodeValue(codeValueInfoMap));
 	}
 }

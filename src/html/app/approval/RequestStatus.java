@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ecams.service.list.LoginManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import app.common.CodeInfo;
 import app.common.SysInfo;
@@ -39,8 +41,9 @@ public class RequestStatus extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
-		String requestType = (String)paramMap.get("requestType");
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = jsonParser.parse(ParsingCommon.getJsonStr(request));
+		String requestType	= ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "requestType") );
 		
 		try {
 			response.setContentType("text/plain");
@@ -48,22 +51,22 @@ public class RequestStatus extends HttpServlet {
 			
 			switch (requestType) {
 				case "UserInfochk" :
-					response.getWriter().write( getUserInfo(paramMap) );
+					response.getWriter().write( getUserInfo(jsonElement) );
 					break;
 				case "UserPMOInfo" :
-					response.getWriter().write( getPMOInfo(paramMap) );
+					response.getWriter().write( getPMOInfo(jsonElement) );
 					break;
 				case "SysInfo" :
-					response.getWriter().write( getSysInfo(paramMap) );
+					response.getWriter().write( getSysInfo(jsonElement) );
 					break;
 				case "CodeInfo_1" :
-					response.getWriter().write( getCodeInfo(paramMap) );
+					response.getWriter().write( getCodeInfo(jsonElement) );
 					break;
 				case "TeamInfo" :
-					response.getWriter().write( getTeamInfoGrid2(paramMap) );
+					response.getWriter().write( getTeamInfoGrid2(jsonElement) );
 					break;
 				case "get_SelectList" :
-					response.getWriter().write( get_SelectList(paramMap) );
+					response.getWriter().write( get_SelectList(jsonElement) );
 					break;
 				default:
 					break;
@@ -75,34 +78,34 @@ public class RequestStatus extends HttpServlet {
 		}
 	}
 	
-	private String getUserInfo(HashMap paramMap) throws SQLException, Exception {
+	private String getUserInfo(JsonElement jsonElement) throws SQLException, Exception {
 		String user = null;
-		user = (String)paramMap.get("UserId");
+		user = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "UserId") );
 		return gson.toJson(userinfo.getUserInfo(user));
 	}
 	
-	private String getPMOInfo(HashMap paramMap) throws SQLException, Exception {
+	private String getPMOInfo(JsonElement jsonElement) throws SQLException, Exception {
 		String user = null;
-		user = (String)paramMap.get("UserId");
+		user = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "UserId") );
 		return gson.toJson(userinfo.getPMOInfo(user));
 	}
 	
-	private String getSysInfo(HashMap paramMap) throws SQLException, Exception {
+	private String getSysInfo(JsonElement jsonElement) throws SQLException, Exception {
 		String user = null;
-		user = (String)paramMap.get("UserId");
+		user = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "UserId") );
 		return gson.toJson(sysinfo.getSysInfo(user,"Y","ALL","N",""));
 	}
 	
-	private String getCodeInfo(HashMap paramMap) throws SQLException, Exception {
+	private String getCodeInfo(JsonElement jsonElement) throws SQLException, Exception {
 		return gson.toJson(codeinfo.getCodeInfo("REQUEST,R3200STA","ALL","N"));
 	}
 	
-	private String getTeamInfoGrid2(HashMap paramMap) throws SQLException, Exception {
+	private String getTeamInfoGrid2(JsonElement jsonElement) throws SQLException, Exception {
 		return gson.toJson(teaminfo.getTeamInfoGrid2("All","Y","sub","N"));
 	}
 	
-	private String get_SelectList(HashMap paramMap) throws SQLException, Exception {
-		HashMap<String, String>	prjDataInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap( (String)paramMap.get("prjData").toString() );
+	private String get_SelectList(JsonElement jsonElement) throws SQLException, Exception {
+		HashMap<String, String>	prjDataInfoMap = ParsingCommon.jsonStrToMap( ParsingCommon.jsonEtoStr(jsonElement, "prjData") );
 		return gson.toJson( cmr3200.get_SelectList(prjDataInfoMap.get("strSys"),
 												   prjDataInfoMap.get("strQry"),prjDataInfoMap.get("strTeam"),
 												   prjDataInfoMap.get("strSta"),prjDataInfoMap.get("txtUser"),prjDataInfoMap.get("strStD"),

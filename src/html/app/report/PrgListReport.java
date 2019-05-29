@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ecams.service.list.LoginManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import app.common.SysInfo;
 import app.common.UserInfo;
@@ -36,8 +38,9 @@ public class PrgListReport extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HashMap paramMap = ParsingCommon.reqParamToMap(request); 
-		String requestType = (String)paramMap.get("requestType");
+		JsonParser jsonParser = new JsonParser();
+		JsonElement jsonElement = jsonParser.parse(ParsingCommon.getJsonStr(request));
+		String requestType	= ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "requestType") );
 		
 		try {
 			response.setContentType("text/plain");
@@ -45,22 +48,22 @@ public class PrgListReport extends HttpServlet {
 			
 			switch (requestType) {
 				case "UserInfo" :
-					response.getWriter().write( isAdmin(paramMap) );
+					response.getWriter().write( isAdmin(jsonElement) );
 					break;
 				case "getSysInfo" :
-					response.getWriter().write( getSysInfo(paramMap) );
+					response.getWriter().write( getSysInfo(jsonElement) );
 					break;
 				case "getSysInfo2" :
-					response.getWriter().write( getSysInfo(paramMap) );
+					response.getWriter().write( getSysInfo(jsonElement) );
 					break;
 				case "getJogun" :
-					response.getWriter().write( getJogun(paramMap) );
+					response.getWriter().write( getJogun(jsonElement) );
 					break;
 				case "getCode" :
-					response.getWriter().write( getCode(paramMap) );
+					response.getWriter().write( getCode(jsonElement) );
 					break;
 				case "getSql_Qry" :
-					response.getWriter().write( getSql_Qry(paramMap) );
+					response.getWriter().write( getSql_Qry(jsonElement) );
 					break;
 				default:
 					break;
@@ -72,37 +75,37 @@ public class PrgListReport extends HttpServlet {
 		}		
 	}
 	
-	private String isAdmin(HashMap paramMap) throws SQLException, Exception {
+	private String isAdmin(JsonElement jsonElement) throws SQLException, Exception {
 		String user = null;
-		user = (String)paramMap.get("UserId");
+		user = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "UserId") );
 		return gson.toJson(userinfo.isAdmin(user));
 	}
 	
-	private String getSysInfo(HashMap paramMap) throws SQLException, Exception {
+	private String getSysInfo(JsonElement jsonElement) throws SQLException, Exception {
 		String user = null;
 		String tmp = null;
-		user = (String)paramMap.get("UserId");
-		tmp = (String)paramMap.get("tmp");
+		user = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "UserId") );
+		tmp = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "tmp") );
 		return gson.toJson(sysinfo.getSysInfo(user,tmp,"","N","04"));
 	}
 	
-	private String getJogun(HashMap paramMap) throws SQLException, Exception {
+	private String getJogun(JsonElement jsonElement) throws SQLException, Exception {
 		String cnt = null;
-		cnt = (String)paramMap.get("cnt");
+		cnt = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "cnt") );
 		return gson.toJson(cmd3100.getJogun(Integer.parseInt(cnt)));
 	}
 	
-	private String getCode(HashMap paramMap) throws SQLException, Exception {
+	private String getCode(JsonElement jsonElement) throws SQLException, Exception {
 		String cnt = null;
 		String L_SysCd = null;
-		L_SysCd = (String)paramMap.get("L_SysCd");
-		cnt = (String)paramMap.get("cnt");
+		L_SysCd = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "L_SysCd") );
+		cnt = ParsingCommon.jsonStrToStr( ParsingCommon.jsonEtoStr(jsonElement, "cnt") );
 		return gson.toJson(cmd3100.getCode(L_SysCd, Integer.parseInt(cnt)));
 	}
 	
-	private String getSql_Qry(HashMap paramMap) throws SQLException, Exception {
+	private String getSql_Qry(JsonElement jsonElement) throws SQLException, Exception {
 		HashMap<String, String>	DataInfoMap = null;
-		DataInfoMap = ParsingCommon.parsingRequestJsonParamToHashMap((String)paramMap.get("prjData").toString());
+		DataInfoMap = ParsingCommon.jsonStrToMap( ParsingCommon.jsonEtoStr(jsonElement, "prjData") );
 		return gson.toJson( cmd3100.getSql_Qry(DataInfoMap) );
 	}
 }
