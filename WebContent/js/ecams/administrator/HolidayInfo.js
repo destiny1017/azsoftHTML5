@@ -1,169 +1,227 @@
 /**
- * ajax 공통함수로 교체
+ * 휴일정보
  */
 
-var datagrid;
-var SBGridProperties = {};
-var grid_Data;
+var basepicker 	  = new ax5.ui.picker();
+var holidaypicker = new ax5.ui.picker();
+var holidayGrid   = new ax5.ui.grid();
+var applyData	  = null;
 
-var holidayCaseData;
-var holidaygbnData;
+var cboOptions = [];
 
-$(document).ready(function(){
-	screenInit();
-});
+var holicbData		= null;	// 휴일종류 콤보
+var holigbData  	= null;	// 휴일구분 콤보
+var holidayGridData = null; // 휴일 그리드
 
-function screenInit() {
-	var date = new Date();
-	SBUxMethod.set('picker_year', date.getFullYear());
-	createGrid();
-	getHoliday();
-	code_set();
-	SBUxMethod.set('picker_date', date.getFullYear() + "/" + date.getMonth()+1 + "/" + date.getDate()); 
-}
-
-//휴일목록
-function getHoliday(){
-	var ajaxReturnData = null;
-	var holiData = new Object();
-	holiData.year = SBUxMethod.get('picker_year');
-	
-	var holiInfo = {
-		requestType: 'GETHOLIDAY',
-		holiInfoData: JSON.stringify(holiData)
-	}
-	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/HolidayInfo', holiInfo, 'json');
-	if( ajaxReturnData !== 'ERR'){
-    	grid_Data = ajaxReturnData;
-    	datagrid.rebuild();
-    	datagrid.refresh();
-	}
-}
-
-function year_change(){
-	getHoliday();
-}
+$(document).ready(function() {
   
-  	//그리드 선언
-function createGrid() {
-	SBGridProperties.parentid = 'sbGridArea'; //그리드를 삽입할 영역의 div id (*)
-	SBGridProperties.id = 'datagrid'; //그리드 객체의 ID (*)
-	SBGridProperties.jsonref = 'grid_Data'; //그리드에 표시될 데이터의 JSON 객체 (*)
-	SBGridProperties.columns = [
-		{caption : ['휴일'], 		ref : 'cm_holiday1', 	width : '33.3%', style : 'text-align: center', type : 'output'},
-		{caption : ['휴일구분'], 	ref : 'holigb_nm',		width : '33.3%', style : 'text-align: center', type : 'output'},
-		{caption : ['휴일종류'], 	ref : 'holi_nm',		width : '33.4%', style : 'text-align: center', type : 'output'}
-	];
-	datagrid = _SBGrid.create(SBGridProperties);
-	datagrid.bind('click','gridClick'); //그리드 클릭 이벤트 
+	//조회년도
+	basepicker.bind({
+        target: $('[data-picker-date="year"]'),
+        content: {
+            type: 'date',
+            config: {
+                mode: "year", selectMode: "year"
+            },
+            formatter: {
+                pattern: 'date(year)'
+            }
+        },
+		onStateChanged: function () {
+			getholidayList($('#base_date').val());
+		     /*if (this.state == "open") {
+		     //console.log(this.item);
+		     var selectedValue = this.self.getContentValue(this.item["$target"]);
+		     if (!selectedValue) {
+		         this.item.pickerCalendar[0].ax5uiInstance.setSelection([ax5.util.date(new Date(), {'return': 'yyyy/MM/dd', 'add': {d: 0}})]);
+		         this.item.pickerCalendar[1].ax5uiInstance.setSelection([ax5.util.date(new Date(), {'return': 'yyyy/MM/dd', 'add': {d: 0}})]);
+		     }
+		 	}*/
+		}
+    });
+    
+    $('#base_date').val(new Date().getFullYear());
+    getholidayList($('#base_date').val());
+    
+    //휴일
+    holidaypicker.bind({
+        target: $('[data-ax5picker="basic2"]'),
+        direction: "top",
+        content: {
+            width: 270,
+            margin: 10,
+            type: 'date',
+            config: {
+                control: {
+                    left: '<i class="fa fa-chevron-left"></i>',
+                    yearTmpl: '%s',
+                    monthTmpl: '%s',
+                    right: '<i class="fa fa-chevron-right"></i>'
+                },
+                lang: {
+                    yearTmpl: "%s년",
+                    months: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'],
+                    dayTmpl: "%s"
+                },
+                marker: (function () {
+                    var marker = {};
+                    marker[ax5.util.date(new Date(), {'return': 'yyyy-MM-dd', 'add': {d: 0}})] = true;
+
+                    return marker;
+                })()
+            },
+            formatter: {
+                pattern: 'date'
+            }
+        },
+        onStateChanged: function () {
+            if (this.state == "open") {
+                var selectedValue = this.self.getContentValue(this.item["$target"]);
+                if (!selectedValue) {
+                    this.item.pickerCalendar[0].ax5uiInstance.setSelection([ax5.util.date(new Date(), {'add': {d: 1}})]);
+                }
+            }
+        }
+    });
+    
+    var date = new Date(); 
+    var year = date.getFullYear(); 
+    var month = new String(date.getMonth()+1); 
+    var day = new String(date.getDate()); 
+
+    if(month.length == 1){ 
+      month = "0" + month; 
+    } 
+
+    if(day.length == 1){ 
+      day = "0" + day; 
+    } 
+
+    $('#holiday_date').val(year + "-" + month + "-" + day);
+    
+    //그리드생성
+    holidayGrid.setConfig({
+        target: $('[data-ax5grid="holidayGrid"]'),
+        sortable: true, 
+        multiSort: true,
+        showRowSelector: false,
+        header: {
+            align: "center",
+            columnHeight: 30
+        },
+        body: {
+            columnHeight: 28,
+            onClick: function () {
+            	this.self.clearSelect(); //기존선택된 row deselect 처리 (multipleSelect 할땐 제외해야함)
+                this.self.select(this.dindex);
+            },
+            onDBLClick: function () {
+            	doubleClickGrid1();
+            },
+        	onDataChanged: function(){
+        	    this.self.repaint();
+        	}
+        },
+        columns: [
+            {key: "cm_holiday1", label: "휴일",  width: '33%'},
+            {key: "holigb_nm", label: "휴일구분",  width: '33%'},
+            {key: "holi_nm", label: "휴일종류",  width: '33%'},
+        ]
+    });
+    
+    //휴일종류, 휴일구분
+    getCodeInfo();
+    
+    //조회년도 변경 이벤트
+//    $('#basepicker').bind('change', function() {
+//		if($(this).is(':checked')) {
+//			screenInit();
+//			$('#chkSelfDiv').css('visibility','visible');
+//			$('#txtSysCd').val('');
+//			$('[data-ax5select="cboSys"]').ax5select('setValue','00000',true);
+//			$('[data-ax5select="cboSys"]').ax5select("disable");
+//
+//		}
+//		
+//		if( !($(this).is(':checked')) ) {
+//			screenInit();
+//			$('#chkSelfDiv').css('visibility','hidden');
+//			$('[data-ax5select="cboSys"]').ax5select("enable");
+//		}
+//	});
+})
+
+function getCodeInfo() {
+	var codeInfoCbo;
+	var codeInfoCboData;
+	
+	codeInfoData 			 = new Object();
+	codeInfoData.cm_macode 	 = 'HOLIDAY,HOLICD';
+	codeInfoData.selMsg  	 = 'SEL';
+	codeInfoData.closeYN 	 = 'N';
+	
+	codeInfoCboData = new Object();
+	codeInfoCboData = {
+		codeInfoData	: 	codeInfoData,
+		requestType		: 	'GETCODEINFO'
+	}
+	ajaxAsync('/webPage/administrator/CodeInfo', codeInfoCboData, 'json', successGetCodeInfo);
 }
 
-function gridClick(){
-	var nRow = datagrid.getRow();
+function successGetCodeInfo(data) {
+	holicbData = data;
+	holigbData = data;
+	cboOptions = [];
 	
-	SBUxMethod.set('picker_date', datagrid.getRowData(nRow,false).cm_holiday2.replace("-",""));
-	SBUxMethod.set('selectchk_gbn', datagrid.getRowData(nRow,false).cm_gubuncd);
-	SBUxMethod.set('selectchk_case', datagrid.getRowData(nRow,false).cm_msgcd);
+	//휴일종류
+	holicbData = holicbData.filter(function(data) {
+		return data.cm_macode == "HOLIDAY";
+	});
+	
+	$.each(holicbData,function(key,value) {
+		cboOptions.push({value: value.cm_macode, text: value.cm_codename, cm_macode: value.cm_macode});
+	});
+	$('[data-ax5select="holi_cb"]').ax5select({
+        options: cboOptions
+	});
+	
+	
+	cboOptions = [];
+	
+	//휴일구분
+	holigbData = holigbData.filter(function(data) {
+		return data.cm_macode == "HOLICD";
+	});
+	
+	
+	$.each(holigbData,function(key,value) {
+		cboOptions.push({value: value.cm_macode, text: value.cm_codename, cm_macode: value.cm_macode});
+	});
+	$('[data-ax5select="holigb_cb"]').ax5select({
+        options: cboOptions
+	});
 }
 
-function code_set(){
-	var ajaxReturnData = null;
-	var codeData = new Object();
-	codeData.cm_macode = "HOLIDAY,HOLICD";
-	codeData.selMsg = "SEL";
-	codeData.closeYN = "N";
+//휴일 리스트
+function getholidayList(year) {
+	var sysClsSw = $('#chkCls').is(':checked');
 	
-	var codeInfo = {
-		requestType: 'GETCODEINFO',
-		codeInfoData: JSON.stringify(codeData)
+	var holiday;
+	var holiInfoData;
+	holiday 		= new Object();
+	holiday.year 	= year.length > 0 ? year : null;
+	
+	holidayData = new Object();
+	holidayData = {
+		holiday	: 	holiday,
+		requestType	: 	'GETHOLIDAY'
 	}
-	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/CodeInfo', codeInfo, 'json');
-	if( ajaxReturnData !== 'ERR'){
-    	//filter
-    	holidaygbnData = ajaxReturnData.filter(function(item) {
-    		return item.cm_macode == 'HOLICD';
-    	});
-    	SBUxMethod.refresh('selectchk_gbn');
-    	
-    	holidayCaseData = ajaxReturnData.filter(function(item) {
-    		return item.cm_macode == 'HOLIDAY';
-    	});
-    	SBUxMethod.refresh('selectchk_case');
-	}
+	
+	ajaxAsync('/webPage/administrator/HolidayInfoServlet', holidayData, 'json', successGetholidayList);
 }
 
-function Regist_Click(){
-	var ajaxReturnData = null;
-	if(SBUxMethod.get('selectchk_gbn') == '00') { //value값
-		alert('휴일구분을 입력하여 주십시오.');
-		return;
-	}
-	
-	if(SBUxMethod.get('selectchk_case') == '00') { //value값
-		alert('휴일종류을 입력하여 주십시오.');
-		return;
-	}
-	var checkData = new Object();
-	checkData.date = SBUxMethod.get('picker_date');
-
-	var checkInfo = {
-		requestType: 'CHKHOLIDAY',
-		checkInfoData: JSON.stringify(checkData)
-	}
-	console.log(checkInfo);
-	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/HolidayInfo', checkInfo, 'json');
-	console.log(ajaxReturnData);
-	if( ajaxReturnData !== 'ERR'){
-		console.log(ajaxReturnData);
-    	if(ajaxReturnData > 0) {
-    		SBUxMethod.openModal('modal_dupchk'); //모델명(name)
-    	}else {
-    		addHoliday('0');
-    	}
-	}
-}
-
-function addHoliday(gbn){
-	var ajaxReturnData = null;
-	var addHoliData = new Object();
-	addHoliData.date = SBUxMethod.get('picker_date');
-	addHoliData.holidaygbn = SBUxMethod.get('selectchk_gbn'); //휴일구분
-	addHoliData.holidaycase = SBUxMethod.get('selectchk_case'); //휴일종류
-	addHoliData.updtSW = gbn; //modal: 1, else : 0
-	
-	if(gbn == '1') SBUxMethod.closeModal("modal_dupchk");
-	
-	var addHoliInfo = {
-		requestType: 'ADDHOLIDAY',
-		addHoliInfoData: JSON.stringify(addHoliData)
-	}
-	
-	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/HolidayInfo', addHoliInfo, 'json');
-	if( ajaxReturnData !== 'ERR'){
-		alert(ajaxReturnData.trim());
-    	getHoliday();
-	}
-}
-
-function Delete_Click(){
-	SBUxMethod.openModal('modal_delconfirm'); //모델명(name)
-}
-
-function deleteHoliday(){
-	var ajaxReturnData = null;
-	SBUxMethod.closeModal("modal_delconfirm");
-
-	var delHoliData = new Object();
-	delHoliData.date = SBUxMethod.get('picker_date');
-	
-	var delHoliInfo = {
-		requestType		: 'DELHOLIDAY',
-		delHoliInfoData	: JSON.stringify(delHoliData)
-	}
-	
-	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/HolidayInfo', delHoliInfo, 'json');
-	if( ajaxReturnData !== 'ERR'){
-		alert(ajaxReturnData.trim());
-    	getHoliday();
-	}
+//휴일 리스트
+function successGetholidayList(data) {
+	holidayGridData = data;
+	holidayGrid.setData(holidayGridData);
 }
