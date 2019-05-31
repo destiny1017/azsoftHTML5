@@ -1,364 +1,313 @@
 /**
  * 사용자정보 화면의 기능 정의
  * 
- * <pre>
- * &lt;b&gt;History&lt;/b&gt;
- * 	작성자: 홍소미
+ * 	작성자: 정선희
  * 	버전 : 1.0
- *  수정일 : 2019-02-13
+ *  수정일 : 2019-05-27
  * 
  */
-var userid = window.parent.userId;
-var selPosData;
-var selDutyData;
-var listDutyData;
-var listJobData;
-var rgtDeptData;
+var userId = window.parent.userId;
 
-$(document).ready(function() { // 완료
-	if (userid == "" || userid == null) {
-		alert("로그인 후 사용하시기 바랍니다.");
-		return;
-	}
-	getCodeInfo();
-	getSysInfo();
-	SBUxMethod.hide('lbGroup1');
-	SBUxMethod.hide('lbOrg1');
-})
+var userGrid		= new ax5.ui.grid();
+var jobGrid			= new ax5.ui.grid();
 
-// function createUserGrid() {
-// var userGridProperties = {};
-// userGridProperties.parentid = "divUserList";
-// userGridProperties.id = "userGrid";
-// userGridProperties.jsonref = "userListData";
-// userGridProperties.columns = [ {
-// caption : [ '사번' ],
-// ref : 'cm_userid',
-// width : '16%',
-// style : 'text-align:left',
-// type : 'output'
-// }, {
-// caption : [ '성명' ],
-// ref : 'cm_username',
-// width : '14%',
-// style : 'text-align:center',
-// type : 'output'
-// }, {
-// caption : [ '부서' ],
-// ref : 'deptname1',
-// width : '70%',
-// style : 'text-align:center',
-// type : 'output'
-// } ];
-// userGridProperties.allowuserresize = true;
-// userGridProperties.width = "100%";
-// userGridProperties.height = "100%";
-// userGrid = _SBGrid.create(userGridProperties);
-// userGrid.rebuild();
-// }
+var cboOptions = [];
 
-//function createJobGrid() {
-//	var userGridProperties = {};
-//	jobGridProperties.parentid = "divJobCharged";
-//	jobGridProperties.id = "jobGrid"; //Lv_File1
-//	jobGridProperties.jsonref = "jobListData";
-//	jobGridProperties.columns = [ {
-//		caption : [ '시스템' ],
-//		ref : 'jobgrp',
-//		width : '16%',
-//		style : 'text-align:left',
-//		type : 'output'
-//	}, {
-//		caption : [ '업무명(업무코드)' ],
-//		ref : 'job',
-//		width : '14%',
-//		style : 'text-align:center',
-//		type : 'output'
-//	} ];
-//	jobGridProperties.allowuserresize = true;
-//	jobGridProperties.width = "100%";
-//	jobGridProperties.height = "100%";
-//	jobGrid = _SBGrid.create(jobGridProperties);
-//	jobGrid.rebuild();
-//}
+var userGridData 	= null;	//	사용자 그리드
+var jobGridData 	= null;	//	업무 그리드
+var cboPositionData = null;	//	직급
+var cboDutyData		= null;	// 	직위
+var rgtDataData	    = null;	//	직무 UL List
 
-function getCodeInfo() {
-	var ajaxReturnData = null;
+$(document).ready(function(){
+	$('input.checkbox-pie').wCheck({theme: 'square-inset blue', selector: 'square-dot-blue', highlightLabel: true});
+	
+	getUsrCodeInfo();
+});
 
-	var tmpData = {
-		requestType : 'CodeInfo',
-		UserId : userid
-	}
-	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo',
-			tmpData, 'json');
-
-	if (ajaxReturnData !== 'ERR') {
-
-		selPosData = ajaxReturnData;
-		selPosData = selPosData.filter(function(ajaxReturnData) {
-			return ajaxReturnData.cm_macode === "POSITION";
-		});
-		SBUxMethod.refresh('selPos');
-
-		selDutyData = ajaxReturnData;
-		selDutyData = selDutyData.filter(function(ajaxReturnData) {
-			return ajaxReturnData.cm_macode === "DUTY";
-		});
-		SBUxMethod.refresh('selDuty');
-
-		listDutyData = ajaxReturnData;
-		listDutyData = listDutyData.filter(function(ajaxReturnData) {
-			return ajaxReturnData.cm_macode === "RGTCD"
-					&& ajaxReturnData.cm_micode !== "00";
-		});
-		SBUxMethod.refresh('listDuty');
-
-	}
+//직위, 직급, 직무
+function getUsrCodeInfo() {
+	var codeInfos = getCodeInfoCommon([ new CodeInfo('RGTCD','','N'),
+										new CodeInfo('POSITION','','N'), 
+										new CodeInfo('DUTY','','N') ]);
+	cboPositionData = codeInfos.POSITION;
+	cboDutyData	    = codeInfos.DUTY;
+	rgtDataData 	= codeInfos.RGTCD;
+	
+	cboOptions = [];
+	cboOptions.push({value: '00', text: '선택하세요'});
+	$.each(cboPositionData,function(key,value) {
+		cboOptions.push({value: value.cm_micode, text: value.cm_codename});
+	});
+	$('[data-ax5select="cboPosition"]').ax5select({
+        options: cboOptions
+	});
+	
+	cboOptions = [];
+	cboOptions.push({value: '00', text: '선택하세요'});
+	$.each(cboDutyData,function(key,value) {
+		cboOptions.push({value: value.cm_micode, text: value.cm_codename});
+	});
+	$('[data-ax5select="cboDuty"]').ax5select({
+        options: cboOptions
+	});
+	
+	getSysInfoList();
+	makeRgtUlList();
 }
 
-function getSysInfo() { // 완료 getSysInfo_Handler
-	var ajaxReturnData = null;
-
-	var tmpData = {
-		requestType : 'SysInfo',
-		UserId : userid
-	}
-
-	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo',
-			tmpData, 'json');
-
-	if (ajaxReturnData !== 'ERR') {
-		selSystemData = ajaxReturnData;
-		SBUxMethod.refresh('selSystem');
-	}
+//직무 ul 만들어주기
+function makeRgtUlList() {
+	$('#ulRgt').empty();
+	var liStr = null;
+	var addId = null;
+	rgtDataData.forEach(function(rgtItem, rgtIndex) {
+		addId = Number(rgtItem.cm_micode);
+		liStr  = '';
+		liStr += '<li class="list-group-item">';
+		liStr += '	<input type="checkbox" class="checkbox-rgt" id="chkRgtName'+addId+'" data-label="'+rgtItem.cm_codename+'" value="'+rgtItem.cm_micode+'" />';
+		liStr += '</li>';
+		$('#ulRgt').append(liStr);
+	});
+	
+	//$('input.checkbox-rgt').wCheck({theme: 'square-inset blue', selector: 'square-dot-blue', highlightLabel: true});
 }
 
-function getJobInfo() { // getJobInfo_Handler
-	$('#chkNotice').attr("checked", false);
-	var cm_syscd = SBUxMethod.get('selSystem');
-	var ajaxReturnData = null;
-
-	var tmpData = {
-		requestType : 'SysInfo_1',
-		UserId : userid,
-		sysCd : cm_syscd
+//시스템 리스트
+function getSysInfoList() {
+	var sysListInfo;
+	var sysListInfoData;
+	sysListInfo 		= new Object();
+	sysListInfo.clsSw 	= false;
+	sysListInfo.SysCd 	= null;
+	
+	sysListInfoData = new Object();
+	sysListInfoData = {
+		sysInfo	: 	sysListInfo,
+		requestType	: 	'GETSYSINFOLIST'
 	}
-
-	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo',
-			tmpData, 'json');
-
-	if (ajaxReturnData !== 'ERR') {
-		$("#chkAll").attr("checked", false);
-		listJobData = ajaxReturnData;
-		listJobData = listJobData.filter(function(data) {
-			return data.cm_jobcd != "";
-		});
-		console.log(listJobData);
-		SBUxMethod.refresh('listJob');
+	console.log(sysListInfo);
+	
+	ajaxAsync('/webPage/administrator/SysInfoServlet', sysListInfoData, 'json',successGetSysInfoList);
+}
+//시스템 리스트
+function successGetSysInfoList(data) {
+	cboOptions = [];
+	cboOptions.push({value: "00", text: "선택하세요"});
+	$.each(data,function(key,value) {
+		cboOptions.push({value: value.cm_syscd, text: value.cm_sysmsg});
+	});
+	$('[data-ax5select="cboSys"]').ax5select({
+        options: cboOptions
+	});
+}
+//시스템선택->업무조회
+function cboSysChange() {
+	$('#ulJob').empty();
+	
+	var selectedIndex = $('#cboSys option').index($('#cboSys option:selected'));
+	if(selectedIndex < 1) return;
+	
+	var selectedSysCboSysInfo = $('[data-ax5select="cboSys"]').ax5select("getValue");
+	selectedSysCboSysInfo = selectedSysCboSysInfo[0];
+	
+	getSysJobInfo(selectedSysCboSysInfo.value);
+}
+//선택된 시스템 JOB
+function getSysJobInfo(sysCd) {
+	var sysJobInfo;
+	var sysJobInfoData;
+	sysJobInfo 			= new Object();
+	sysJobInfo.UserID 	= userId;
+	sysJobInfo.SysCd 	= sysCd;
+	sysJobInfo.SecuYn 	= 'N';
+	sysJobInfo.CloseYn 	= 'N';
+	sysJobInfo.SelMsg 	= '';
+	sysJobInfo.sortCd 	= 'CD';
+	
+	sysJobInfoData = new Object();
+	sysJobInfoData = {
+		sysJobInfo	: sysJobInfo,
+		requestType	: 'GETJOBINFO'
 	}
+	ajaxAsync('/webPage/administrator/SysInfoServlet', sysJobInfoData, 'json',successGetSysJobInfo);
+}
+//	선택된 시스템 JOB
+function successGetSysJobInfo(data) {
+	$('#ulJob').empty();
+	var liStr = null;
+	var addId = null;
+	data.forEach(function(jobInfoItem, jobInfoIndex) {
+		addId = Number(jobInfoItem.cm_jobcd);
+		liStr  = '';
+		liStr += '<li class="list-group-item">';
+		liStr += '	<input type="checkbox" class="checkbox-job" id="chkJobName'+addId+'" data-label="'+jobInfoItem.cm_jobname+'" value="'+jobInfoItem.cm_jobcd+'" />';
+		liStr += '</li>';
+		$('#ulJob').append(liStr);
+	});
+	
+	$('input.checkbox-job').wCheck({theme: 'square-inset blue', selector: 'square-dot-blue', highlightLabel: true});
 }
 
-function clickUserList() { // userList_ITEM_CLICK
-	// var selectedIndex =userGrid.getRow();
-	// reset(userGrid.getRowData(selectedIndex, false).cm_userid,""); //Sql_Qry
-}
-
-function getUserInfo(userId, userName) { // getUserInfo_Handler
-	var ajaxReturnData = null;
-
-	var tmpData = {
+//사원번호, 성명 입력 후 엔터
+function getUserInfo(gbn) {
+	
+	var userId   = null;
+	var userName = null;
+	
+	if (gbn == 0) { //사번으로 조회
+		$('#txtUserId').val($.trim(document.getElementById("txtUserId").value));
+		userId   = document.getElementById("txtUserId").value;
+		userName = "";
+	} else { //성명으로 조회
+		$('#txtUserName').val($.trim(document.getElementById("txtUserName").value));
+		userId   = "";
+		userName = document.getElementById("txtUserName").value;
+	}
+	
+	var tmpData;
+	tmpData = new Object();
+	tmpData = {
 		requestType : 'Cmm0400',
 		userId : userId,
 		userName : userName
 	}
-	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo', tmpData, 'json');
-	if (ajaxReturnData !== 'ERR') {
-		userListData = ajaxReturnData;
-		if (userListData[0].ID == "ERROR") {
-			alert("등록되지 않은 사용자입니다.");
-			return;
-		}
-		if (userListData.length > 1) {
-			//userGrid.bind('click', 'clickUserGrid');
-		} else {
-			//userGrid.unbind('click');
-		}
-		$("#txtId").val(userListData[0].cm_userid);
-		$("#txtName").val(userListData[0].cm_username);
-		$("#txtPhone").val(userListData[0].cm_telno1);
-		$("#txtPhone2").val(userListData[0].cm_telno2);
-		$("#txtLastIn").val(userListData[0].cm_logindt);
-		$("#txtPass").val(userListData[0].cm_ercount);
-		$("#txtEmail").val(userListData[0].cm_email);
-
-		var i;
-		var dataLen = selPosData.length;
-		for (i = 0; i < dataLen; i++) {
-			if (selPosData[i].cm_micode == userListData[0].cm_position) {
-				$("#selPos option:eq(" + i + ")").prop("selected", true);
-				break;
-			}
-		}
-		
-		dataLen = selDutyData.length;
-		for (i = 0; i < dataLen; i++) {
-			if (selDutyData[i].cm_micode == userListData[0].cm_duty) {
-				$("#selDuty option:eq(" + i + ")").prop("selected", true);
-				break;
-			}
-		}
-		$("#txtGroup").val(userListData[0].deptname1);
-		document.getElementById("lbGroup1").innerText = userListData[0].cm_project;
-		$("#txtOrg").val(userListData[0].deptname2);
-		document.getElementById("lbOrg1").innerText = userListData[0].cm_project2;
-
-		if (userListData[0].cm_manid == "Y") {
-			$('#rdoOpt0').attr("checked", true);
-		} else {
-			$('#rdoOpt1').attr("checked", true);
-		}
-
-		if (userListData[0].cm_admin == "1") {
-			$('#chkSysAdmin').attr("checked", true);
-		} else {
-			$('#chkSysAdmin').attr("checked", false);
-		}
-
-		if (userListData[0].cm_handrun == "Y") {
-			$('#chkAsynchro').attr("checked", true);
-		} else {
-			$('#chkAsynchro').attr("checked", false);
-		}
-
-		$("#txtIp").val(userListData[0].cm_ipaddress);
-		$("#txtDaeGyul").val(userListData[0].Txt_DaeGyul);
-		$("#txtTerm").val(userListData[0].Txt_BlankTerm);
-		$("#txtSayu").val(userListData[0].Txt_BlankSayu);
-
-		if (userListData[0].cm_active == "1") {
-			$('#rdoAct0').attr("checked", true);
-		} else {
-			$('#rdoAct1').attr("checked", true);
-		}
-
-		getListDuty();
-	}
+	ajaxAsync('/webPage/administrator/UserInfo', tmpData, 'json',successGetUserInfo);
+	
 }
 
-function setUserPwd() { // setUserJumin
-	SBUxMethod.openModal("modalPwd");
-
-	var modalData = {};
-	modalData.userId = document.getElementById("txtId").value;
-	var modalIframe = document.getElementById("popPwd");
-	console.log(modalIframe);
-	modalIframe.contentWindow.pwdTabInit(modalData);// 모달의함수 불러오기
-}
-
-function getUserDutyInfo() {//AllRGTCDSearch
-	SBUxMethod.openModal("modalDuty");
-}
-
-function setModalPwdclose() {
-	SBUxMethod.closeModal("modalPwd");
-}
-
-function fnKeyEnter(userId, userName) {// Sql_Qry
-	if(userId == "" && userName == "") return;
-
-	$("#txtIp").val("");
-	$("#txtPhone").val("");
-	$("#txtPhone2").val("");
-	$("#txtDaeGyu").val("");
-	$("#txtTerm").val("");
-	$("#txtSayu").val("");
-	$("#txtLastIn ").val("");
-	$("#txtPass").val("");
-	$('#chkAsynchro').attr("checked", false);
-
-	$("#txtGroup").val("");
-	$("#selPos option:eq(0)").prop("selected", true);
-	$("#selDuty option:eq(0)").prop("selected", true);
-	$("#rdoOpt0").attr("checked", false);
-	$("#rdoOpt1").attr("checked", false);
-	$('#chkSysAdmin').attr("checked", false);
-	$('#chkAll').attr("checked", false);
-
-	var listDutyLen = listDutyData.length;
-	for (var i = 0; i < listDutyLen; i++) {
-		listDutyData[i].selected = "";
+function successGetUserInfo(data) {
+	console.log(data);
+	
+	var userListData = null;
+	
+	userListData = data;
+	
+	console.log('>>>>>>userid:'+userListData[0].cm_userid);
+	
+	if(userListData[0].ID == "ERROR"){
+		alert("등록되지 않은 사용자입니다.");
+		return;
 	}
+	
+	$("#txtUserId").val(userListData[0].cm_userid);
+	$("#txtUserName").val(userListData[0].cm_username);
+	$("#txtTelNo1").val(userListData[0].cm_telno1);
+	$("#txtTelNo2").val(userListData[0].cm_telno2);
+	$("#txtLoginDt").val(userListData[0].cm_logindt);
+	$("#txtErrCnt").val(userListData[0].cm_ercount);
+	$("#txtEmail").val(userListData[0].cm_email);
 
-	SBUxMethod.refresh('listDuty');
-	jobListData = null;
-	listJobData = null;
-	$("#selSystem option:eq(0)").prop("selected", true);
-	getUserInfo(userId, userName);
-}
-
-function getListDuty() {// getUserRGTCD_Handler
-
-	var ajaxReturnData = null;
-
-	var tmpData = {
-		requestType : 'Cmm0400_1',
-		txtUserId : document.getElementById("txtId").value
-	}
-
-	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo', tmpData, 'json');
-
-	if (ajaxReturnData !== 'ERR') {
-		listDutyData = ajaxReturnData;
-		getjobListData();//getUserJobList_Handler
-		getUserRgtDept();//getUserRgtDept_Handler
-	}
-}
-
-function getjobListData(){//getUserJobList_Handler
-	var ajaxReturnData = null;
-
-	var tmpData = {
-		requestType : 'Cmm0400_2',
-		txtUserId : document.getElementById("txtId").value
-	}
-
-	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo',
-			tmpData, 'json');
-
-	if (ajaxReturnData !== 'ERR') {
-		jobListData = ajaxReturnData;
-		listJobData = null;
-		if(selSystemData.length > 0) $("#selSystem option:eq(0)").prop("selected", true);
-	}
-}
-
-function getUserRgtDept(){//getUserRgtDept_Handler
-	var ajaxReturnData = null;
-
-	var tmpData = {
-		requestType : 'Cmm0400_3',
-		txtUserId : document.getElementById("txtId").value
-	}
-
-	ajaxReturnData = ajaxCallWithJson('/webPage/administrator/UserInfo',
-			tmpData, 'json');
-
-	if (ajaxReturnData !== 'ERR') {
-		rgtDeptData = ajaxReturnData;
-	}
-}
-
-function checkAll(){//All_Select
-	var listJobLen = listJobData.length;
-	console.log(listJobData);
-	for(var i = 0; i<listJobLen; i++){
-		var checkYn = $('#chkAll').prop("checked");
-		if(checkYn){
-			listJobData[i].selected = "selected";
-		} else {
-			listJobData[i].selected = "";
+	var i;
+	for(var i=0; i<cboPositionData.length; i++) {
+		if(cboPositionData[i].cm_micode == userListData[0].cm_position) {
+			$('[data-ax5select="cboPosition"]').ax5select('setValue',userListData[0].cm_position,true);
+			break;
 		}
-		
 	}
-	SBUxMethod.refresh('listJob');
+	for(var i=0; i<cboDutyData.length; i++) {
+		if(cboDutyData[i].cm_micode == userListData[0].cm_duty){
+			$('[data-ax5select="cboDuty"]').ax5select('setValue',userListData[0].cm_duty,true);
+			break;
+		}
+	}
+	
+	$("#txtDept").val(userListData[0].deptname1);
+//		document.getElementById("lbGroup1").innerText = userListData[0].cm_project;
+	$("#txtSubDept").val(userListData[0].deptname2);
+//		document.getElementById("lbOrg1").innerText = userListData[0].cm_project2;
+	
+	if(userListData[0].cm_manid == "Y"){
+		$('#rdoMan0').attr("checked",true);
+	} else {
+		$('#rdoMan1').attr("checked",true);
+	}
+	
+	if(userListData[0].cm_admin == "1"){
+		$('#chkAdmin').parent().removeClass('wCheck-off');
+		$('#chkAdmin').parent().addClass('wCheck-on');
+	} else {
+		$('#chkAdmin').parent().removeClass('wCheck-on');
+		$('#chkAdmin').parent().addClass('wCheck-off');
+	}
+	
+	if(userListData[0].cm_handrun == "Y"){
+		$('#chkSync').parent().removeClass('wCheck-off');
+		$('#chkSync').parent().addClass('wCheck-on');
+	} else {
+		$('#chkSync').parent().removeClass('wCheck-on');
+		$('#chkSync').parent().addClass('wCheck-off');
+	}
+	
+	$("#txtIpAddr").val(userListData[0].cm_ipaddress);
+	$("#txtDaegyul").val(userListData[0].Txt_DaeGyul);
+	$("#txtDaegyulDt").val(userListData[0].Txt_BlankTerm);
+	$("#txtDaegyulSayu").val(userListData[0].Txt_BlankSayu);
+	
+	if(userListData[0].cm_active == "1"){
+		$('#rdoActive0').attr("checked",true);
+	} else {
+		$('#rdoActive1').attr("checked",true);
+	}
+	
 }
+
+//사용자결과조회
+userGrid.setConfig({
+    target: $('[data-ax5grid="userGrid"]'),
+    sortable: true, 
+    multiSort: true,
+    showRowSelector: true,
+    header: {
+        align: "center",
+        columnHeight: 30
+    },
+    body: {
+        columnHeight: 25,
+        onClick: function () {
+        	this.self.clearSelect();
+            this.self.select(this.dindex);
+        },
+        onDBLClick: function () {
+        	doubleClickGrid();
+        },
+    	onDataChanged: function(){
+    		this.self.repaint();
+    	}
+    },
+    columns: [
+        {key: "cm_userid", label: "사번",  width: '20%'},
+        {key: "cm_username", label: "성명",  width: '40%'},
+        {key: "cm_deptname", label: "부서",  width: '40%'}
+    ]
+});
+
+//등록된 업무조회
+jobGrid.setConfig({
+    target: $('[data-ax5grid="jobGrid"]'),
+    sortable: true, 
+    multiSort: true,
+    showRowSelector: true,
+    header: {
+        align: "center",
+        columnHeight: 30
+    },
+    body: {
+        columnHeight: 25,
+        onClick: function () {
+        	this.self.clearSelect();
+            this.self.select(this.dindex);
+        },
+        onDBLClick: function () {
+        	doubleClickGrid();
+        },
+    	onDataChanged: function(){
+    		this.self.repaint();
+    	}
+    },
+    columns: [
+        {key: "cm_sysmsg", label: "시스템",  width: '20%'},
+        {key: "cm_jobname", label: "업무명(업무코드)",  width: '80%'},
+    ]
+});
+

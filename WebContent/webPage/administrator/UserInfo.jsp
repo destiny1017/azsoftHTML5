@@ -1,375 +1,307 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="/webPage/common/common.jsp" />
 
-<style>
-#listDuty li {
-	height: 40px
-}
-
-#listJob li {
-	height: 40px
-}
-
-#divUserList {
-	height: 200px;
-	width: 300px
-}
-
-#divJobCharged {
-	height: 500px;
-	width: 600px
-}
-</style>
-
-<section>
-	<div class="container-fluid">
-		<div class="border-style-black">
-			<div class="row-fluid">
-				<div class="col-xs-12 col-sm-1">
-					<div class="margin-15-left margin-15-top">
-						<sbux-label id="idx_lbl_system" class="width-100" text="사원번호"
-							uitype="normal"> </sbux-label>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-2">
-					<div class="margin-5-top">
-						<sbux-input id="txtId" name="txtId" class="width-100"
-							uitype="text" datastore-id="idxData1" onkeyenter="fnKeyEnter(txtId,'')"> </sbux-input>
-<!-- 						Txt_UserId -->
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-1">
-					<div class="margin-15-left margin-15-top">
-						<sbux-label id="idx_lbl_srid" class="width-100" text="성명"
-							uitype="normal"> </sbux-label>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-2">
-					<div class="margin-5-top">
-						<sbux-input id="txtName" name="txtName" class="width-100"
-							uitype="text" datastore-id="idxData1"
-							onkeyenter="fnKeyEnter('',txtName)"> </sbux-input>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-1">
-					<div class="margin-15-left margin-15-top">
-						<sbux-label id="lbPos" class="width-100" text="직급" uitype="normal">
-						</sbux-label>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-2">
-					<div class="margin-5-top">
-						<sbux-select id="selPos" name="selPos"
-							class="combo-height width-100" uitype="single"
-							jsondata-text="cm_codename" jsondata-ref="selPosData">
-						</sbux-select>
-<!-- 						Cbo_Pos -->
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-1">
-					<div class="margin-15-left margin-15-top">
-						<sbux-label id="lbDuty" class="width-100" text="직위"
-							uitype="normal"> </sbux-label>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-2">
-					<div class="margin-5-top">
-						<sbux-select id="selDuty" name="selDuty"
-							class="combo-height width-100" uitype="single"
-							jsondata-text="cm_codename" jsondata-value="cm_syscd"
-							jsondata-ref="selDutyData"> </sbux-select>
-						<!-- 							Cbo_Duty -->
-					</div>
-				</div>
-			</div>
-
-			<div class="row-fluid">
-				<div class="col-xs-12 col-sm-1"> </div>
-				<div class="col-xs-12 col-sm-2">
-					<div class="margin-15-top">
-						<sbux-radio id="rdoOpt0" name="radiogroup" uitype="normal"
-							text="직원" value="reg"
-							onclick="$('#btnReg').children('span').text($('#rdoOpt0').attr('text'));">
-						</sbux-radio>
-						<sbux-radio id="rdoOpt1" name="radiogroup" uitype="normal"
-							text="외주직원" value="cancel"
-							onclick="$('#btnReg').children('span').text($('#rdoOpt1').attr('text'));">
-						</sbux-radio>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-1"> </div>
-				<div class="col-xs-12 col-sm-2">
-					<div class="margin-15-top">
-						<sbux-checkbox id="chkSysAdmin" name="chkSysAdmin" uitype="normal"
-							text="시스템관리자" onclick="Chk_NotiYN_Click()"></sbux-checkbox>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-1">
-					<div class="margin-15-left margin-15-top">
-						<sbux-label id="lbIp" class="width-100" text="IP Address"
-							uitype="normal"> </sbux-label>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-2">
-					<div class="margin-5-top">
-						<sbux-input id="txtIp" name="txtIp" class="width-100"
-							uitype="text" datastore-id="idxData1"
-							onkeyenter="clickSearchBtn()"> </sbux-input>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-1">
-					<div class="margin-15-left margin-15-top">
-						<sbux-label id="lbEmail" class="width-100" text="E-mail"
-							uitype="normal"> </sbux-label>
-					</div>
-				</div>
-				<div class="col-xs-12 col-sm-2">
-					<div class="margin-5-top">
-						<sbux-input id="txtEmail" name="txtEmail" class="width-100"
-							uitype="text" datastore-id="idxData1"
-							onkeyenter="clickSearchBtn()"> </sbux-input>
-					</div>
-				</div>
-			</div>
-
-			<div class="row-fluid">
-				<div class="col-md-1">
-					<div class="margin-15-left margin-15-top">
-						<sbux-label id="lbGroup" class="width-100" text="소속조직"
-							uitype="normal"> </sbux-label>
-					</div>
-				</div>
-				<div class="col-md-2">
-					<div class="margin-5-top">
-						<sbux-input id="txtGroup" name="txtGroup" class="width-100"
-							uitype="text" datastore-id="idxData1"
-							onkeyenter="clickSearchBtn()"> </sbux-input>
-						<sbux-label id="lbGroup1" class="width-100" text=""
-							uitype="normal"> </sbux-label>
-					</div>
-				</div>
-				<div class="col-md-1"></div>
-				<div class="col-md-2">
-					<div class="margin-15-top">
-						<sbux-checkbox id="chkAsynchro" name="chkAsynchro" uitype="normal"
-							text="동기화제외사용자" onclick="Chk_NotiYN_Click()"></sbux-checkbox>
-					</div>
-				</div>
-				<div class="col-md-1">
-					<div class="margin-15-left margin-15-top">
-						<sbux-label id="lbPhone" class="width-100" text="전화번호1"
-							uitype="normal"> </sbux-label>
-					</div>
-				</div>
-				<div class="col-md-2">
-					<div class="margin-5-top">
-						<sbux-input id="txtPhone" name="txtPhone" class="width-100"
-							uitype="text" datastore-id="idxData1"
-							onkeyenter="clickSearchBtn()"> </sbux-input>
-					</div>
-				</div>
-				<div class="col-md-1">
-					<div class="margin-15-left margin-15-top">
-						<sbux-label id="lbPass" class="width-100" text="비번오류횟수"
-							uitype="normal"> </sbux-label>
-					</div>
-				</div>
-				<div class="col-md-2">
-					<div class="margin-5-top">
-						<sbux-input id="txtPass" name="txtPass" class="width-100"
-							uitype="text" datastore-id="idxData1"
-							onkeyenter="clickSearchBtn()"> </sbux-input>
-					</div>
-				</div>
-			</div>
-
-			<div class="row-fluid">
-				<div class="col-md-1">
-					<div class="margin-15-left margin-15-top">
-						<sbux-label id="lbOrg" class="width-100" text="소속(겸직)"
-							uitype="normal"> </sbux-label>
-					</div>
-				</div>
-				<div class="col-md-2">
-					<div class="margin-5-top">
-						<sbux-input id="txtOrg" name="txtOrg" class="width-100"
-							uitype="text" datastore-id="idxData1"
-							onkeyenter="clickSearchBtn()"> </sbux-input>
-						<sbux-label id="lbOrg1" class="width-100" text=""
-							uitype="normal"> </sbux-label>
-					</div>
-				</div>
-				<div class="col-md-1">
-					<div class="margin-15-left margin-15-top">
-						<sbux-label id="lbLastIn" class="width-100" text="최종로그인"
-							uitype="normal"> </sbux-label>
-					</div>
-				</div>
-				<div class="col-md-2">
-					<div class="margin-5-top">
-						<sbux-input id="txtLastIn" name="txtLastIn" class="width-100"
-							uitype="text" datastore-id="idxData1"
-							onkeyenter="clickSearchBtn()"> </sbux-input>
-					</div>
-				</div>
-				<div class="col-md-1">
-					<div class="margin-15-left margin-15-top">
-						<sbux-label id="lbPhone2" class="width-100" text="*전화번호2"
-							uitype="normal"> </sbux-label>
-					</div>
-				</div>
-				<div class="col-md-2">
-					<div class="margin-5-top">
-						<sbux-input id="txtPhone2" name="txtPhone2" class="width-100"
-							uitype="text" datastore-id="idxData1"
-							onkeyenter="clickSearchBtn()"> </sbux-input>
-					</div>
-				</div>
-				<div class="col-md-1">
-					<div class="margin-15-left margin-15-top">
-						<sbux-label id="lbAct" class="width-100" text="활성화여부"
-							uitype="normal"> </sbux-label>
-					</div>
-				</div>
-				<div class="col-md-2">
-					<div class="margin-15-top">
-						<sbux-radio id="rdoAct0" name="radiogroup1" uitype="normal"
-							text="활성화" value="reg"
-							onclick="$('#btnReg').children('span').text($('#rdoOpt0').attr('text'));">
-						</sbux-radio>
-						<sbux-radio id="rdoAct1" name="radiogroup1" uitype="normal"
-							text="비활성화" value="cancel"
-							onclick="$('#btnReg').children('span').text($('#rdoOpt1').attr('text'));">
-						</sbux-radio>
-					</div>
-				</div>
-			</div>
-		</div>
+<div class="hpanel">
+    <div class="panel-body" id="usrDetailDiv">
+    	<div class="col-lg-3 col-md-3 col-sm-3 col-12">
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label id="lblUserId" class="padding-5-top float-right">사원번호</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+		    		<input id="txtUserId" name="txtUserId" class="form-control" type="text" onkeydown="javascript: if (event.keyCode == 13) {getUserInfo(0);}"></input>
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label class="padding-5-top float-right"></label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12" style="padding-top:3px;">
+					<input style="vertical-align: middle;" id="rdoMan0" name="rdoMan" type="radio" value="0" onclick="changeBtnText()" checked />&nbsp;&nbsp;직원
+					<input style="vertical-align: middle;" id="rdoMan1" name="rdoMan" type="radio" value="1" onclick="changeBtnText()"/>&nbsp;&nbsp;외주
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label id="lblDept" class="padding-5-top float-right">소속조직</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+		    		<input id="txtDept" name="txtDept" class="form-control" type="text"></input>
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label id="lblSubDept" class="padding-5-top float-right">소속(겸직)</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+		    		<input id="txtSubDept" name="txtSubDept" class="form-control" type="text"></input>
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label class="padding-5-top float-right">사용자생성일시</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+		    		<input id="txtCreateDt" name="txtCreateDt" class="form-control" type="text"></input>
+		    	</div>
+	    	</div>
+    	</div>
+    	
+    	<div class="col-lg-3 col-md-3 col-sm-3 col-12">
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label id="lblUserName" class="padding-5-top float-right">성명</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+		    		<input id="txtUserName" name="txtUserName" class="form-control" type="text" onkeydown="javascript: if (event.keyCode == 13) {getUserInfo(1);}"></input>
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label class="padding-5-top float-right"></label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+		    		<div class="float-left" style="padding-top:5px;padding-bottom:3px;">
+	    				<input type="checkbox" class="checkbox-pie" id="chkAdmin" data-label="시스템관리자"></input>
+	    			</div>
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label class="padding-5-top float-right"></label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+		    		<div class="float-left" style="padding-top:3px;padding-bottom:5px;">
+	    				<input type="checkbox" class="checkbox-pie" id="chkSync" data-label="동기화제외사용자"></input>
+	    			</div>
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label id="lblLoginDt" class="padding-5-top float-right">최종로그인</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+		    		<input id="txtLoginDt" name="txtLoginDt" class="form-control" type="text"></input>
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label class="padding-5-top float-right">사용자폐기일시</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+		    		<input id="txtCloseDt" name="txtCloseDt" class="form-control" type="text"></input>
+		    	</div>
+	    	</div>
+    	</div>
+    	
+    	<div class="col-lg-3 col-md-3 col-sm-3 col-12">
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label id="lblPosition" class="padding-5-top float-right">직급</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+			    	<div id="cboPosition" data-ax5select="cboPosition" data-ax5select-config="{size:'sm',theme:'primary'}" style="width:100%;" ></div>
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label id="lblIpAddr" class="padding-5-top float-right">IP Address</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+		    		<input id="txtIpAddr" name="txtIpAddr" class="form-control" type="text"></input>
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label id="lblTelNo1" class="padding-5-top float-right">전화번호1</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+		    		<input id="txtTelNo1" name="txtTelNo1" class="form-control" type="text"></input>
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label id="lblTelNo2" class="padding-5-top float-right">전화번호2</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+		    		<input id="txtTelNo2" name="txtTelNo2" class="form-control" type="text"></input>
+		    	</div>
+	    	</div>
+    	</div>
+    	
+    	<div class="col-lg-3 col-md-3 col-sm-3 col-12">
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label id="lblDuty" class="padding-5-top float-right">직위</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+			    	<div id="cboDuty" data-ax5select="cboDuty" data-ax5select-config="{size:'sm',theme:'primary'}" style="width:100%;" ></div>
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label id="lblEmail" class="padding-5-top float-right">E-mail</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+		    		<input id="txtEmail" name="txtEmail" class="form-control" type="text"></input>
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label id="lblErrCnt" class="padding-5-top float-right">비번오류횟수</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+		    		<input id="txtErrCnt" name="txtErrCnt" class="form-control" type="text"></input>
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label id="lblActive" class="padding-5-top float-right">활성화여부</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12"  style="padding-top:3px;">
+					<label><input style="vertical-align: middle;" id="rdoActive0" name="rdoActive" type="radio" value="0" onclick="changeBtnText()" checked />&nbsp;&nbsp;활성화</label>
+					<label>&nbsp;&nbsp;<input style="vertical-align: middle;" id="rdoActive1" name="rdoActive" type="radio" value="1" onclick="changeBtnText()"/>&nbsp;&nbsp;비활성화</label>
+		    	</div>
+	    	</div>
+    	</div>
 	</div>
-</section>
-
-<section>
-	<div class="container-fluid">
-		<div class="row-fluid margin-15-top">
-			<div class="col-md-3">
-				<sbux-label id="lbCharged" class="width-100" text="담당직무"
-					uitype="normal"> </sbux-label>
-			</div>
-			<div class="col-md-3">
-				<sbux-label id="lbAdd" class="width-100" text="담당업무추가"
-					uitype="normal"> </sbux-label>
-			</div>
-			<div class="col-md-3">
-				<sbux-label id="lbAbsence" class="width-100" text="부재등록정보"
-					uitype="normal"> </sbux-label>
-			</div>
-			<div class="col-md-3">
-				<sbux-label id="lbResult" class="width-100" text="사용자조회결과"
-					uitype="normal"> </sbux-label>
-			</div>
-		</div>
-	</div>
-</section>
-
-<section>
-	<div class="container-fluid margin-15-top">
-		<div class="col-md-3">
-			<sbux-select id="listDuty" name="listDuty" uitype="checkbox"
-				jsondata-ref="listDutyData" jsondata-text="cm_codename"
-				is-list-only="true" style="width:350px;"
-				scroll-style="min-height:400px;"> </sbux-select>
-		</div>
-<!-- 		Lst_Duty -->
-		<div class="col-md-3">
-			<div class="width-100">
-				<sbux-label id="lbSystem" text="시스템" uitype="normal"> </sbux-label>
-				<sbux-select id="selSystem" name="selSystem" uitype="single"
-					jsondata-ref="selSystemData" jsondata-text="cm_sysmsg"
-					jsondata-value="cm_syscd" onchange="getJobInfo()"></sbux-select>
-				<!-- 			Cbo_SysCd -->
-			</div>
-			<div class="width-100 margin-10-bottom">
-				<sbux-label id="lbJob" text="업무" uitype="normal" style="width:50%"> </sbux-label>
-				<sbux-checkbox id="chkAll" name="chkAll" uitype="normal" text="전체선택" onclick="checkAll()" style="width:50%"></sbux-checkbox>
-			</div>
-			<sbux-select id="listJob" name="listJob" uitype="checkbox"
-				jsondata-ref="listJobData" jsondata-text="cm_jobname"
-				is-list-only="true" style="width:350px; height:400px"
-				scroll-style="min-height:400px;"> </sbux-select>
-			<!-- 			Lst_Job -->
-		</div>
-		<div class="col-md-6">
-			<div class="row-fluid">
-				<div class="col-md-6">
-					<sbux-label id="lbDaeGyul" class="width-100" text="대결지정"
-						uitype="normal"> </sbux-label>
-					<sbux-input id="txtDaeGyul" name="txtDaeGyul" class="width-100"
-						uitype="text" datastore-id="idxData1"
-						onkeyenter="clickSearchBtn()"> </sbux-input>
-					<sbux-label id="lbTerm" class="width-100" text="부재기간"
-						uitype="normal"> </sbux-label>
-					<sbux-input id="txtTerm" name="txtTerm" class="width-100"
-						uitype="text" datastore-id="idxData1"
-						onkeyenter="clickSearchBtn()"> </sbux-input>
-					<sbux-label id="lbSayu" class="width-100" text="부재사유"
-						uitype="normal"> </sbux-label>
-					<sbux-input id="txtSayu" name="txtSayu" class="width-100"
-						uitype="text" datastore-id="idxData1"
-						onkeyenter="clickSearchBtn()"> </sbux-input>
-					<sbux-label id="lbJobCharged" text="등록된 담당업무" uitype="normal">
-					</sbux-label>
-					<sbux-button id="btnJobCharged" name="btnJobCharged"
-						uitype="normal" text="담당업무삭제" onclick="new_Click()"></sbux-button>
-					<!-- 					Cmd_Ip3 -->
-				</div>
-				<div class="col-md-6">
-					<div id="divUserList"></div>
-				</div>
-<!-- 				userList -->
-			</div>
-			<div id="divJobCharged"></div>
-		</div>
-	</div>
-</section>
-<section>
-	<div class="row-fluid margin-20-top margin-15-right">
-		<div id="divBtn" style="float: right">
-			<sbux-button id="btnDutyInfo" name="btnDutyInfo" uitype="normal"
-				text="사용자직무조회" onclick="getUserDutyInfo()"></sbux-button>
-			<sbux-button id="btnUserBat" name="btnUserBat" uitype="normal"
-				text="사용자일괄등록" onclick="new_Click()"></sbux-button>
-			<sbux-button id="btnGroupReg" name="btnGroupReg" uitype="normal"
-				text="조직정보등록" onclick="new_Click()"></sbux-button>
-			<sbux-button id="btnCopy" name="btnCopy" uitype="normal" text="권한복사"
-				onclick="new_Click()"></sbux-button>
-			<sbux-button id="btnResetPass" name="btnResetPass" uitype="normal"
-				text="비밀번호초기화" onclick="setUserPwd()"></sbux-button>
-<!-- 				Cmd_Ip4 -->
-			<sbux-button id="btnAtrBat" name="btnAtrBat" uitype="normal"
-				text="업무권한일괄등록" onclick="new_Click()"></sbux-button>
-			<sbux-button id="btnUserInfo" name="btnUserInfo" uitype="normal"
-				text="전체사용자조회" onclick="new_Click()"></sbux-button>
-			<sbux-button id="btnSave" name="btnSave" uitype="normal" text="저장"
-				onclick="new_Click()"></sbux-button>
-			<sbux-button id="btnDisUse" name="btnDisUse" uitype="normal"
-				text="폐기" onclick="new_Click()"></sbux-button>
-		</div>
-	</div>
-</section>
-<sbux-modal id="modalPwd" name="modalPwd" uitype="small" header-title="[비밀번호초기화]" body-html-id="pwdBody" footer-is-close-button="false">
-</sbux-modal>
-<div id="pwdBody">
-	<IFRAME id="popPwd" src="<c:url value="/webPage/modal/PopUserInfoPwd.jsp"/>" width="100%" height="250px"></IFRAME>
 </div>
-
-<sbux-modal id="modalDuty" name="modalDuty" uitype="middle" header-title="사용자직무조회" body-html-id="dutyBody" footer-is-close-button="false">
-</sbux-modal>
-<div id="dutyBody">
-	<IFRAME id="popDuty" src="<c:url value="/webPage/modal/PopUserDutyInfo.jsp"/>" width="100%" height="250px"></IFRAME>
+    	
+<div class="hpanel">
+    <div class="panel-body">
+    	<div class="col-lg-3 col-md-3 col-sm-3 col-12">
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label id="lblRgt" class="padding-5-top float-left">담당직무</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12" style="height:10px">
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-12 col-md-12 col-sm-12 col-12">
+	    			<div class="scrollBind" style="margin-top:5px;height:73%;border-radius: 4px;background-color: inherit;border: 1px solid #e4e5e7;">
+	    				<ul class="list-group" id="ulRgt" style="height:100%">
+		    			</ul>
+	    			</div>
+		    	</div>
+	    	</div>
+    	</div>
+    	<div class="col-lg-3 col-md-3 col-sm-3 col-12">
+	    	<div class="row">
+		    	<div class="col-lg-12 col-md-12 col-sm-12 col-12">
+		    		<label class="padding-5-top float-left">담당업무추가</label>
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-12 col-md-12 col-sm-12 col-12" style="height:5px"></div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label id="lblSys" class="padding-5-top float-left">시스템</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+			    	<div id="cboSys" data-ax5select="cboSys" data-ax5select-config="{size:'sm',theme:'primary'}" style="width:100%;" onchange="cboSysChange()"></div>
+		    	</div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-12 col-md-12 col-sm-12 col-12" style="height:10px"></div>
+	    	</div>
+	    	<div class="row">
+		    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+		    		<label id="lblJob" class="padding-5-top float-left">업무</label>
+		    	</div>
+		    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+		    		<div class="float-right" style="padding:0px;margin-right:0px">
+	    				<input type="checkbox" class="checkbox-pie" id="chkJobAll" data-label="전체선택"></input>
+	    			</div>
+		    	</div>
+		    </div>
+	    	<div class="row">
+		    	<div class="col-lg-12 col-md-12 col-sm-12 col-12">
+	    			<div class="scrollBind" style="margin-top:5px;height:65%;border-radius: 4px;background-color: inherit;border: 1px solid #e4e5e7;">
+	    				<ul class="list-group" id="ulJob" style="height:100%">
+		    				<!-- <li class="list-group-item"><input type="checkbox" class="checkbox-job" id="chkJobName" data-label=""  /></li> -->
+		    			</ul>
+	    			</div>
+		    	</div>
+	    	</div>
+    	</div>
+    	<div class="col-lg-6 col-md-6 col-sm-6 col-12" style="padding: 0px">
+	    	<div class="col-lg-6 col-md-6 col-sm-6 col-12">
+		    	<div class="row">
+			    	<div class="col-lg-12 col-md-12 col-sm-12 col-12">
+			    		<label class="padding-5-top float-left">부재등록정보</label>
+			    	</div>
+		    	</div>
+		    	<div class="row">
+			    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+			    		<label id="lblDaegyul" class="padding-5-top float-left">대결지정</label>
+			    	</div>
+			    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+			    		<input id="txtDaegyul" name="txtDaegyul" class="form-control" type="text"/>
+			    	</div>
+		    	</div>
+		    	<div class="row">
+			    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+			    		<label id="lblDaegyulDt" class="padding-5-top float-left">부재기간</label>
+			    	</div>
+			    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+			    		<input id="txtDaegyulDt" name="txtDaegyulDt" class="form-control" type="text"/>
+			    	</div>
+		    	</div>
+		    	<div class="row">
+			    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+			    		<label id="lblDaegyulSayu" class="padding-5-top float-left">부재사유</label>
+			    	</div>
+			    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+						<textarea id="txtDaegyulSayu" name="txtDaegyulSayu" class="form-control margin-1-top" rows="3"></textarea>
+			    	</div>
+		    	</div>
+			</div>
+			
+	    	<div class="col-lg-6 col-md-6 col-sm-6 col-12">
+		    	<div class="row">
+			    	<div class="col-lg-12 col-md-12 col-sm-12 col-12">
+			    		<label class="padding-5-top float-left">사용자조회결과</label>
+			    	</div>
+		    	</div>
+		    	<div class="row">
+			    	<div class="col-lg-12 col-md-12 col-sm-12 col-12">
+	    				<div data-ax5grid="userGrid" data-ax5grid-config="{lineNumberColumnWidth: 40}" style="height: 13%;"></div>
+	    			</div>
+		    	</div>
+			</div>
+			
+			<div class="col-lg-12 col-md-12 col-sm-12 col-12">
+		    	<div class="row">
+			    	<div class="col-lg-12 col-md-12 col-sm-12 col-12" style="height:10px"></div>
+		    	</div>
+		    	<div class="row">
+			    	<div class="col-lg-3 col-md-12 col-sm-12 col-12">
+			    		<label class="padding-5-top float-left">등록된 담당업무</label>
+			    	</div>
+			    	<div class="col-lg-9 col-md-12 col-sm-12 col-12">
+						<div class="float-right">
+							<button id="btnJobDel"  class="btn btn-default">
+								담당업무삭제 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+							</button>
+						</div>
+			    	</div>
+		    	</div>
+		    	<div class="row">
+			    	<div class="col-lg-12 col-md-12 col-sm-12 col-12" style="height:10px"></div>
+		    	</div>
+		    	<div class="row">
+			    	<div class="col-lg-12 col-md-12 col-sm-12 col-12">
+	    				<div data-ax5grid="jobGrid" data-ax5grid-config="{showLineNumber: true, lineNumberColumnWidth: 40}" style="height: 53%;"></div>
+	    			</div>
+		    	</div>
+			</div>
+		</div>
+	</div>
 </div>
-
+		
 <c:import url="/js/ecams/common/commonscript.jsp" />
 <script type="text/javascript"	src="<c:url value="/js/ecams/administrator/UserInfo.js"/>"></script>
