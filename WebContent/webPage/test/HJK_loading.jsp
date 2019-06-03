@@ -104,7 +104,7 @@ div[class^="row"] {
 			<div class="row">
 				<div class="col-sm-3">
 					<div class="col-sm-2">
-						<label  id="lbBlank" name="lbBlank">신청종류</label>
+						<label  id="lbBlank" name="lbBlank">신청종류</label> 
 					</div>
 					<div class="form-group col-sm-10 no-padding">
 						<div data-ax5select="cboSin" data-ax5select-config="{multiple: true, size:'sm', theme:'primary'}" style="width:100%;"></div> 	
